@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { HttpRequest } from 'axios-core';
 import { options, storage } from 'uione';
-import config from '../../config';
+import config from '../../../config';
 import { MasterDataClient, MasterDataService } from './master-data';
 import { UserClient, UserService } from './user';
 

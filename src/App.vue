@@ -5,11 +5,20 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import * as csv from 'csvtojson';
+import {currency, locale} from 'locale-service';
+import * as moment from 'moment';
+import { phonecodes } from 'phonecodes';
+import { alert, confirm } from 'ui-alert';
+import { loading } from 'ui-loading';
+import { formatFax, formatNumber, formatPhone, resources as uiresources, UIService } from 'ui-plus';
+import { toast } from 'ui-toast';
 import { storage } from 'uione';
+import { resources as vresources } from 'validation-core';
+import { DefaultCsvService, resources as resource } from 'web-clients';
+import { resources } from './common';
 import config from './config';
-import { resources as locales } from "./core/resources";
-
+import { resources as locales } from './core/resources';
 
 // import './App.css';
 import './assets/fonts/material-icon/css/material-icons.css';
@@ -38,14 +47,29 @@ import './assets/css/search.css';
 import './assets/css/layout.css';
 import './assets/css/profile.css';
 import './assets/css/theme.css';
+import { Options, Vue } from 'vue-class-component';
+
+export function parseDate(value: string, format: string): Date {
+  if (!format || format.length === 0) {
+    format = 'MM/DD/YYYY';
+  } else {
+    format = format.toUpperCase();
+  }
+  try {
+    const d = moment(value, format).toDate();
+    return d;
+  } catch (err) {
+    return null;
+  }
+}
 
 export function init() {
   // const conf = merge(config, process.env, env, process.env.ENV);
   storage.setConfig(config);
-  // resource.csv = new DefaultCsvService(csv);
-  // resource.config = {
-  //   list: 'list'
-  // };
+  resource.csv = new DefaultCsvService(csv);
+  resource.config = {
+    list: 'list'
+  };
   if (storage.home == null || storage.home === undefined) {
     storage.home = '/welcome';
   }
@@ -54,22 +78,22 @@ export function init() {
   storage.authentication = '/signin';
   storage.home = '/welcome';
   storage.setResources(locales);
-  // storage.setLoadingService(loading);
-  // storage.setUIService(new UIService());
-  // storage.currency = currency;
-  // storage.locale = locale;
-  // storage.alert = alert;
-  // storage.confirm = confirm;
-  // storage.message = toast;
+  storage.setLoadingService(loading);
+  storage.setUIService(new UIService());
+  storage.currency = currency;
+  storage.locale = locale;
+  storage.alert = alert;
+  storage.confirm = confirm;
+  storage.message = toast;
 
-  // vresources.phonecodes = phonecodes;
-  // uiresources.date = parseDate;
-  // uiresources.currency = currency;
-  // uiresources.resource = storage.resource();
-  // resources.formatPhone = formatPhone;
-  // resources.formatFax = formatFax;
-  // resources.currency = currency;
-  // resources.formatNumber = formatNumber;
+  vresources.phonecodes = phonecodes;
+  uiresources.date = parseDate;
+  uiresources.currency = currency;
+  uiresources.resource = storage.resource();
+  resources.formatPhone = formatPhone;
+  resources.formatFax = formatFax;
+  resources.currency = currency;
+  resources.formatNumber = formatNumber;
 }
 
 @Options({})

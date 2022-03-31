@@ -5,7 +5,7 @@
       <button type="button" class="btn-new" id="btnNew" @click="addUser"></button>
     </header>
     <div>
-      <form id="usersForm" name="usersForm" :novalidate="true" ref="form">
+      <form id="rolesForm" name="rolesForm" :novalidate="true" ref="form">
         <section class="row search-group inline">
           <label class="col s12 m4 l4">
             {{resource.username}}
@@ -121,54 +121,56 @@
 import { alertError } from 'ui-alert';
 import { toast } from 'ui-toast';
 import { getLocale, initForm, registerEvents, storage } from 'uione';
-import Component, { Options } from 'vue-class-component';
+import { Options } from 'vue-class-component';
 import { buildFromUrl, navigate } from '../common';
 import { SearchComponent } from '../common';
-// import PaginateVue from '../core/PaginateVue.vue';
-import { useMasterData, User, UserFilter, useUser } from './service';
+import PaginateVue from '../core/PaginateVue.vue';
+import { useMasterData, User, UserFilter, useUser } from '../admin/service/user';
 
 @Options({
-  // components: { PaginateVue }
+  components: { PaginateVue }
 })
 export default class UsersComponent extends SearchComponent<User, UserFilter> {
   username = '';
   status = [];
   statusList = [];
-
+  displayName = '';
   created() {
     const userService = useUser();
-    // this.onCreated(
-    //   userService,
-    //   storage.resource(),
-    //   storage.ui(),
-    //   getLocale,
-    //   toast,
-    //   alertError,
-    //   storage.loading()
-    // );
+    this.onCreated(
+      userService,
+      storage.resource(),
+      storage.ui(),
+      getLocale,
+      toast,
+      alertError,
+      storage.loading()
+    );
   }
-  // mounted() {
-  //   this.form = initForm(this.$refs.form as any, registerEvents);
-  //   const s = this.mergeFilter(buildFromUrl(), ['status']);
-  //   this.init(s, true);
-  // }
+  mounted() {
+    console.log('form',this.$refs.form);
+    
+    this.form = initForm(this.$refs.form as any, registerEvents);
+    const s = this.mergeFilter(buildFromUrl(), ['status']);
+    this.init(s, true);
+  }
 
-  // init(s: UserFilter, auto: boolean) {
-  //   const com = this;
-  //   const masterDataService = useMasterData();
-  //   masterDataService.getStatus()
-  //     .then(statusList => {
-  //       console.log('statusList',  statusList);
-  //       com.statusList = statusList;
-  //       com.load(s, auto);
-  //     })
-  //     .catch(com.handleError);
-  // }
+  init(s: UserFilter, auto: boolean) {
+    const com = this;
+    const masterDataService = useMasterData();
+    masterDataService.getStatus()
+      .then(statusList => {
+        console.log('statusList',  statusList);
+        com.statusList = statusList;
+        com.load(s, auto);
+      })
+      .catch(com.handleError);
+  }
 
-  // getSearchModel(): UserFilter {
-  //   const model = this.populateFilter();
-  //   return model;
-  // }
+  getSearchModel(): UserFilter {
+    const model = this.populateFilter();
+    return model;
+  }
 
   viewUser(id) {
     navigate(this.$router, 'users', [id]);

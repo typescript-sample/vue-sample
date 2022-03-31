@@ -14,7 +14,7 @@
                   v-bind:isToggleSidebar="toggleSidebar" v-bind:isToggleMenu="toggleSidebar"/>
       </nav>
     </div>
-    <!-- <div class="page-container">
+    <div class="page-container">
       <div class="page-header">
         <form>
           <div class="search-group">
@@ -28,7 +28,7 @@
             </div>
             <label class='search-input'>
               <PageSizeSelect :page-size="pageSize" :page-sizes="pageSizes"
-                              v-bind:on-page-size-changed="pageSizeChanged"/>
+                              :on-page-size-changed="pageSizeChanged"/>
               <input type='text' id='keyword' name='keyword' v-model="keyword" :maxLength="1000"
                      :placeholder="resource.keyword"/>
               <button type='button' :hidden="!keyword || keyword.length === 0" class='btn-remove-text'
@@ -39,7 +39,8 @@
               <div class='dropdown-menu-profile'>
                 <img v-if="user && user.imageURL" id='btnProfile' src="@/assets/images/male.png"
                      @click="toggleProfile"/>
-                <i v-if="(!user || !user.imageURL)" class='material-icons' @click="toggleProfile">person</i>
+                <!-- <i v-if="(!user || !user.imageURL)" class='material-icons' @click="toggleProfile">person</i> -->
+                <i v-if="(!user || !user.imageURL)" :class="`mdi mdi-${person}`"  @click="toggleProfile"></i>
                 <ul id='dropdown-basic' :class="getClassProfile + ' dropdown-content-profile'">
                   <li>
                     <label>User Name: {{username}} </label>
@@ -58,7 +59,7 @@
       <div class="page-body">
         <router-view/>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -70,18 +71,17 @@ import {toast} from 'ui-toast';
 import {options, storage} from 'uione';
 import {getLocale} from 'uione/src/index';
 import { Options } from 'vue-class-component';
-// import {Component, Vue} from 'vue-property-decorator';
-// import {navigate} from '../common';
+import {navigate} from '../common';
 import {BaseComponent} from '../common';
-// import config from '../config';
-// import PageSizeSelect from './PageSizeSelect.vue';
+import config from '../config';
+import PageSizeSelect from './PageSizeSelect.vue';
 import SideBar from './SideBar/index.vue';
 
 @Options({
   name: 'DefaultWapper',
   components: {
-    SideBar
-    // PageSizeSelect
+    SideBar,
+    PageSizeSelect
   }
 })
 export default class 
@@ -144,43 +144,43 @@ extends BaseComponent
     this.isToggleMenu = !dataToggleMenu;
   }
 
-//   pageSizeChanged = (event: any) => {
-//   }
+  pageSizeChanged = (event: any) => {
+  }
 
-//   searchOnClick = () => {
+  searchOnClick = () => {
 
-//   }
+  }
 
-//   toggleProfile() {
-//     this.classProfile = this.classProfile === 'show' ? '' : 'show';
-//   }
+  toggleProfile() {
+    this.classProfile = this.classProfile === 'show' ? '' : 'show';
+  }
 
-//   get getClassProfile() {
-//     return this.classProfile;
-//   }
+  get getClassProfile() {
+    return this.classProfile;
+  }
 
-//   async signout(event: any) {
-//     event.preventDefault();
-//     /*
-//     this.signoutService.signout(GlobalApps.getUserName()).subscribe(success => {
-//       if (success === true) {
-//         this.navigate('signin');
-//       }
-//     }, this.handleError);
-//     */
-//     try {
-//       const url = config.authentication_url + '/authentication/signout/' + storage.username();
-//       const success = await this.httpRequest.get(url);
-//       if (success) {
-//         sessionStorage.setItem('authService', null);
-//         sessionStorage.clear();
-//         storage.setUser(null);
-//         navigate(this.$router, '/');
-//       }
-//     } catch (err) {
-//       this.handleError(err);
-//     }
-//   }
+  async signout(event: any) {
+    event.preventDefault();
+    /*
+    this.signoutService.signout(GlobalApps.getUserName()).subscribe(success => {
+      if (success === true) {
+        this.navigate('signin');
+      }
+    }, this.handleError);
+    */
+    try {
+      const url = config.authentication_url + '/authentication/signout/' + storage.username();
+      const success = await this.httpRequest.get(url);
+      if (success) {
+        sessionStorage.setItem('authService', null);
+        sessionStorage.clear();
+        storage.setUser(null);
+        navigate(this.$router, '/');
+      }
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
 
   clearKeyworkOnClick = () => {
     this.keyword = '';

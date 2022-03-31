@@ -1,11 +1,11 @@
-import {diff, setValue} from 'reflectx';
-import {clone, makeDiff, trim} from 'reflectx';
-import {addParametersIntoUrl, append, buildMessage, changePage, changePageSize, formatResults, getFields, handleSortEvent, initFilter, mergeFilter, more, optimizeFilter, reset, showPaging} from 'search-core';
-import {Attributes, DiffApprService, Filter, getModelName, LoadingService, Locale, message, messageByHttpStatus, MetaModel, ResourceService, SearchResult, SearchService, UIService, ViewService} from './core';
+import { diff, setValue } from 'reflectx';
+import { clone, makeDiff, trim } from 'reflectx';
+import { addParametersIntoUrl, append, buildMessage, changePage, changePageSize, formatResults, getFields, handleSortEvent, initFilter, mergeFilter, more, optimizeFilter, reset, showPaging } from 'search-core';
+import { Attributes, DiffApprService, Filter, getModelName, LoadingService, Locale, message, messageByHttpStatus, MetaModel, ResourceService, SearchResult, SearchService, UIService, ViewService } from './core';
 // import {formatDiffModel} from './diff';
 // import {build, createModel, GenericService, handleStatus, handleVersion, ResultInfo} from './edit';
 // import {format, json} from './formatter';
-import {focusFirstError, readOnly} from './formutil';
+import { focusFirstError, readOnly } from './formutil';
 
 import { Vue } from "vue-class-component";
 
@@ -142,7 +142,7 @@ export class BaseComponent extends Vue {
   form: any;
   ui: UIService | undefined;
   loading?: LoadingService;
-  getLocale: (() => Locale) | undefined;
+  getLocale: (() => Locale) ;
   resourceService?: ResourceService;
   showError: ((m: string, title?: string, detail?: string, callback?: () => void) => void) | undefined;
 
@@ -215,7 +215,7 @@ export class BaseComponent extends Vue {
       e.preventDefault();
     }
     if (ctrl.nodeName === 'SELECT' && ctrl.value && ctrl.classList.contains('invalid')) {
-      this.ui.removeError(ctrl);
+      this.ui!.removeError(ctrl);
     }
 
     const ex: any = this[modelName];
@@ -225,9 +225,9 @@ export class BaseComponent extends Vue {
     const dataField = ctrl.getAttribute('data-field');
     const field = (dataField ? dataField : ctrl.name);
     if (type && type.toLowerCase() === 'checkbox') {
-      setValue(ex, field, this.ui.getValue(ctrl));
+      setValue(ex, field, this.ui!.getValue(ctrl));
     } else {
-      const v = this.ui.getValue(ctrl, locale);
+      const v = this.ui!.getValue(ctrl, locale);
       // tslint:disable-next-line:triple-equals
       if (ctrl.value != v) {
         setValue(ex, field, v);
@@ -590,349 +590,369 @@ export class BaseComponent extends Vue {
 //     this.showError(msg.message, msg.title);
 //   }
 // }
+
 export class SearchComponent<T, S extends Filter> extends BaseComponent {
-//   service: SearchService<T, S>;
-//   showMessage: (msg: string) => void;
-//   // Pagination
-//   nextPageToken?: string;
-//   initPageSize = 20;
-//   pageSize = 20;
-//   pageIndex = 1;
-//   itemTotal = 0;
-//   pageTotal = 0;
-//   showPaging = false;
-//   append = false;
-//   appendMode = false;
-//   appendable = false;
-//   // Sortable
-//   sortField: string;
-//   sortType: string;
-//   sortTarget: any;
-//   // listForm: any;
-//   format?: (obj: T, locale: Locale) => T;
-//   fields: string[];
-//   initFields = false;
-//   sequenceNo = 'sequenceNo';
-//   triggerSearch = false;
-//   tmpPageIndex: number;
+  service: SearchService<T, S> | undefined;
+  showMessage: ((msg: string) => void) | undefined;
+  // Pagination
+  nextPageToken?: string;
+  initPageSize = 20;
+  pageSize = 20;
+  pageIndex = 1;
+  itemTotal = 0;
+  pageTotal = 0;
+  showPaging = false;
+  append = false;
+  appendMode = false;
+  appendable = false;
+  // Sortable
+  sortField: string | undefined;
+  sortType: string | undefined;
+  sortTarget: any;
+  // listForm: any;
+  format?: (obj: T, locale: Locale) => T;
+  fields: string[] | undefined;
+  initFields = false;
+  sequenceNo = 'sequenceNo';
+  triggerSearch = false;
+  tmpPageIndex: number | undefined;
 
-//   pageMaxSize = 20;
-//   pageSizes: number[] = [10, 20, 40, 60, 100, 200, 400, 1000];
+  pageMaxSize = 20;
+  pageSizes: number[] = [10, 20, 40, 60, 100, 200, 400, 1000];
 
-//   model?: S = {} as any;
-//   list: T[] = [];
-//   excluding: any;
-//   hideFilter: boolean;
+  model?: S = {} as any;
+  list: T[] = [];
+  excluding: any;
+  hideFilter: boolean | undefined;
 
-//   chkAll: any = null;
-//   searchable = true;
-//   viewable = true;
-//   addable = true;
-//   editable = true;
-//   approvable = true;
-//   deletable = true;
+  chkAll: any = null;
+  searchable = true;
+  viewable = true;
+  addable = true;
+  editable = true;
+  approvable = true;
+  deletable = true;
 
-//   deleteHeader: string;
-//   deleteConfirm: string;
-//   deleteFailed: string;
+  deleteHeader: string | undefined;
+  deleteConfirm: string | undefined;
+  deleteFailed: string | undefined;
 
-//   onCreated(service: SearchService<T, S>,
-//     resourceService: ResourceService,
-//     ui: UIService,
-//     getLocale: () => Locale,
-//     showMessage: (msg: string) => void,
-//     showError: (m: string, header?: string, detail?: string, callback?: () => void) => void,
-//     loading?: LoadingService) {
-//     this.model = {} as any;
-//     this.service = service;
-//     this.showMessage = showMessage;
+  onCreated(service: SearchService<T, S>,
+    resourceService: ResourceService,
+    ui: UIService,
+    getLocale: () => Locale,
+    showMessage: (msg: string) => void,
+    showError: (m: string, header?: string, detail?: string, callback?: () => void) => void,
+    loading?: LoadingService) {
+    this.model = {} as any;
+    this.service = service;
+    this.showMessage = showMessage;
 
-//     this.ui = ui;
-//     this.getLocale = getLocale;
-//     this.showError = showError;
-//     this.loading = loading;
-//     this.resourceService = resourceService;
-//     this.resource = resourceService.resource();
+    this.ui = ui;
+    this.getLocale = getLocale;
+    this.showError = showError;
+    this.loading = loading;
+    this.resourceService = resourceService;
+    this.resource = resourceService.resource();
 
-//     this.deleteHeader = resourceService.value('msg_delete_header');
-//     this.deleteConfirm = resourceService.value('msg_delete_confirm');
-//     this.deleteFailed = resourceService.value('msg_delete_failed');
-//     this.bindFunctions = this.bindFunctions.bind(this);
-//     this.bindFunctions();
-//   }
-//   bindFunctions(): void {
-//     this.currencySymbol = this.currencySymbol.bind(this);
-//     this.getCurrencyCode = this.getCurrencyCode.bind(this);
-//     this.back = this.back.bind(this);
-//     this.handleError = this.handleError.bind(this);
+    this.deleteHeader = resourceService.value('msg_delete_header');
+    this.deleteConfirm = resourceService.value('msg_delete_confirm');
+    this.deleteFailed = resourceService.value('msg_delete_failed');
+    this.bindFunctions = this.bindFunctions.bind(this);
+    this.bindFunctions();
+  }
+  bindFunctions(): void {
+    this.currencySymbol = this.currencySymbol.bind(this);
+    this.getCurrencyCode = this.getCurrencyCode.bind(this);
+    this.back = this.back.bind(this);
+    this.handleError = this.handleError.bind(this);
 
-//     this.getModelName = this.getModelName.bind(this);
-//     this.updateState = this.updateState.bind(this);
-//     this.updateStateFlat = this.updateStateFlat.bind(this);
+    this.getModelName = this.getModelName.bind(this);
+    this.updateState = this.updateState.bind(this);
+    this.updateStateFlat = this.updateStateFlat.bind(this);
 
-//     this.toggleFilter = this.toggleFilter.bind(this);
-//     this.mapToVModel = this.mapToVModel.bind(this);
-//     this.mergeFilter = this.mergeFilter.bind(this);
-//     this.load = this.load.bind(this);
-//     this.getSearchForm = this.getSearchForm.bind(this);
-//     this.setSearchForm = this.setSearchForm.bind(this);
+    this.toggleFilter = this.toggleFilter.bind(this);
+    this.mapToVModel = this.mapToVModel.bind(this);
+    this.mergeFilter = this.mergeFilter.bind(this);
+    this.load = this.load.bind(this);
+    this.getSearchForm = this.getSearchForm.bind(this);
+    this.setSearchForm = this.setSearchForm.bind(this);
 
-//     this.setFilter = this.setFilter.bind(this);
-//     this.getOriginalFilter = this.getOriginalFilter.bind(this);
-//     this.getFilter = this.getFilter.bind(this);
-//     this.getFields = this.getFields.bind(this);
+    this.setFilter = this.setFilter.bind(this);
+    this.getOriginalFilter = this.getOriginalFilter.bind(this);
+    this.getFilter = this.getFilter.bind(this);
+    this.getFields = this.getFields.bind(this);
 
-//     this.onPageSizeChanged = this.onPageSizeChanged.bind(this);
-//     this.pageSizeChanged = this.pageSizeChanged.bind(this);
-//     this.clear = this.clear.bind(this);
-//     this.search = this.search.bind(this);
+    this.onPageSizeChanged = this.onPageSizeChanged.bind(this);
+    this.pageSizeChanged = this.pageSizeChanged.bind(this);
+    this.clear = this.clear.bind(this);
+    this.search = this.search.bind(this);
 
-//     this.resetAndSearch = this.resetAndSearch.bind(this);
-//     this.onSearch = this.onSearch.bind(this);
-//     this.doSearch = this.doSearch.bind(this);
-//     this.validateSearch = this.validateSearch.bind(this);
-//     this.searchError = this.searchError.bind(this);
-//     this.showResults = this.showResults.bind(this);
-//     this.setList = this.setList.bind(this);
-//     this.getList = this.getList.bind(this);
-//     this.sort = this.sort.bind(this);
-//     this.showMore = this.showMore.bind(this);
-//     this.pageChanged = this.pageChanged.bind(this);
-//   }
-//   toggleFilter(event?: any): void {
-//     this.hideFilter = !this.hideFilter;
-//   }
+    this.resetAndSearch = this.resetAndSearch.bind(this);
+    this.onSearch = this.onSearch.bind(this);
+    this.doSearch = this.doSearch.bind(this);
+    this.validateSearch = this.validateSearch.bind(this);
+    this.searchError = this.searchError.bind(this);
+    this.showResults = this.showResults.bind(this);
+    this.setList = this.setList.bind(this);
+    this.getList = this.getList.bind(this);
+    this.sort = this.sort.bind(this);
+    this.showMore = this.showMore.bind(this);
+    this.pageChanged = this.pageChanged.bind(this);
+  }
+  toggleFilter(event?: any): void {
+    this.hideFilter = !this.hideFilter;
+  }
 
-//   mapToVModel(s: any): void {
-//     const keys = Object.keys(s);
-//     keys.forEach(key => {this.$set(this.$data, key, s[key]); });
-//   }
+  mapToVModel(s: any): void {
+    const keys = Object.keys(s);
 
-//   mergeFilter(obj: any, arrs?: string[]|any, b?: S): S {
-//     const s = mergeFilter(obj, this.pageSizes, arrs, b);
-//     this.mapToVModel(s);
-//     return s;
-//   }
+      // keys.forEach(key => {this.$set(this.$data, key, s[key]); });
+      const objTmp = new Object();
 
-//   load(s: S, auto: boolean) {
-//     const com = this;
-//     const obj2 = initFilter(s, com);
-//     com.setFilter(obj2);
-//     if (auto) {
-//       setTimeout(() => {
-//         com.onSearch(true);
-//       }, 10);
-//     }
-//   }
+    keys.forEach(key => {
+      this.$data[key] = s[key]; 
 
-//   setSearchForm(form: any) {
-//     this.form = form;
-//   }
-//   getSearchForm(): any {
-//     return this.form;
-//   }
+    });
+    
+  }
 
-//   setFilter(obj: S) {
-//     this.model = obj;
-//   }
-//   getOriginalFilter(): S {
-//     return this.model;
-//   }
-//   getFilter(): S {
-//     const obj = this.populateFilter();
-//     return obj;
-//   }
-//   populateFilter(): S {
-//     const obj2 = this.ui.decodeFromForm(this.getSearchForm(), this.getLocale(), this.getCurrencyCode());
-//     const obj = obj2 ? obj2 : {};
-//     const obj3 = optimizeFilter(obj, this, this.getFields());
-//     if (this.excluding) {
-//       obj3.excluding = this.excluding;
-//     }
-//     return obj3;
-//   }
+  mergeFilter(obj: any, arrs?: string[] | any, b?: S): S {
+    const s = mergeFilter(obj, this.pageSizes, arrs, b);
+    console.log(arrs);
+    
+    // this.mapToVModel(s);
+    return s;
+  }
 
-//   getFields(): string[] {
-//     if (this.fields) {
-//       return this.fields;
-//     }
-//     if (!this.initFields) {
-//       const f = this.getSearchForm();
-//       if (f) {
-//         this.fields = getFields(f);
-//       }
-//       this.initFields = true;
-//     }
-//     return this.fields;
-//   }
+  load(s: S, auto: boolean) {
+    const com = this;
+    
+    const obj2 = initFilter(s, com);
+    
+    com.setFilter(obj2);
+    if (auto) {
+      setTimeout(() => {
+        com.onSearch(true);
+      }, 10);
+    }
+  }
 
-//   onPageSizeChanged(event: any): void {
-//     const ctrl = event.currentTarget;
-//     this.pageSizeChanged(Number(ctrl.value), event);
-//   }
-//   pageSizeChanged(size: number, event?: any): void {
-//     changePageSize(this, size);
-//     this.tmpPageIndex = 1;
-//     this.onSearch();
-//   }
+  setSearchForm(form: any) {
+    
+    this.form = form;
+  }
+  getSearchForm(): any {
+    
+    
+    return this.form;
+  }
 
-//   clear(event?: any): void {
-//     if (event) {
-//       event.preventDefault();
-//     }
-//     this.model.q = '';
-//   }
+  setFilter(obj: S) {
+    this.model = obj;
+  }
+  getOriginalFilter(): S {
+    return this.model;
+  }
+  getFilter(): S {
+    const obj = this.populateFilter();
+    return obj;
+  }
+  populateFilter(): S {
+    const obj2 = this.ui?.decodeFromForm(this.getSearchForm(), this.getLocale(), this.getCurrencyCode());
+    const obj = obj2 ? obj2 : {};
+    const obj3 = optimizeFilter(obj, this, this.getFields());
+    if (this.excluding) {
+      obj3.excluding = this.excluding;
+    }
+    return obj3;
+  }
 
-//   search(event?: any) {
-//     if (event) {
-//       event.preventDefault();
-//       if (!this.getSearchForm()) {
-//         this.setSearchForm(event.target.form);
-//       }
-//     }
-//     this.resetAndSearch();
-//   }
+  getFields(): string[] {
+    if (this.fields) {
+      return this.fields;
+    }
+    if (!this.initFields) {
+      const f = this.getSearchForm();
+      if (f) {
+        this.fields = getFields(f);
+      }
+      this.initFields = true;
+    }
+    return this.fields;
+  }
 
-//   resetAndSearch() {
-//     if (this.running === true) {
-//       this.triggerSearch = true;
-//       return;
-//     }
-//     reset(this);
-//     this.tmpPageIndex = 1;
-//     this.onSearch();
-//   }
+  onPageSizeChanged(event: any): void {
+    const ctrl = event.currentTarget;
+    this.pageSizeChanged(Number(ctrl.value), event);
+  }
+  pageSizeChanged(size: number, event?: any): void {
+    changePageSize(this, size);
+    this.tmpPageIndex = 1;
+    this.onSearch();
+  }
 
-//   onSearch(isFirstLoad?: boolean) {
-//     const com = this;
-//     const listForm = com.getSearchForm();
-//     if (listForm && com.ui) {
-//       com.ui.removeFormError(listForm);
-//     }
-//     const s: S = com.getFilter();
-//     com.validateSearch(s, () => {
-//       if (com.running === true) {
-//         return;
-//       }
-//       com.running = true;
-//       if (com.loading) {
-//         com.loading.showLoading();
-//       }
-//       addParametersIntoUrl(s, isFirstLoad);
-//       com.doSearch(s);
-//     });
-//   }
+  clear(event?: any): void {
+    if (event) {
+      event.preventDefault();
+    }
+    this.model.q = '';
+  }
 
-//   doSearch(se: S) {
-//     const s = clone(se);
-//     let page = this.pageIndex;
-//     if (!page || page < 1) {
-//       page = 1;
-//     }
-//     let offset: number;
-//     if (se.firstLimit && se.firstLimit > 0) {
-//       offset = se.limit * (page - 2) + se.firstLimit;
-//     } else {
-//       offset = se.limit * (page - 1);
-//     }
-//     const limit = (page <= 1 && se.firstLimit && se.firstLimit > 0 ? se.firstLimit : se.limit);
-//     const next = (this.nextPageToken && this.nextPageToken.length > 0 ? this.nextPageToken : offset);
-//     const fields = se.fields;
-//     delete se['page'];
-//     delete se['fields'];
-//     delete se['limit'];
-//     delete se['firstLimit'];
-//     const com = this;
-//     // tslint:disable-next-line:no-debugger
-//     debugger;
-//     com.service.search(se, limit, next, fields).then(result => {
-//       com.showResults(s, result);
-//     }).catch(err => {
-//       com.handleError(err);
-//     });
-//   }
+  search(event?: any) {
+    if (event) {
+      event.preventDefault();
+      if (!this.getSearchForm()) {
+        this.setSearchForm(event.target.form);
+      }
+    }
+    this.resetAndSearch();
+  }
 
-//   validateSearch(se: S, callback: () => void): void {
-//     let valid = true;
-//     const listForm = this.getSearchForm();
-//     if (listForm) {
-//       valid = this.ui.validateForm(listForm, this.getLocale());
-//     }
-//     if (valid === true) {
-//       callback();
-//     }
-//   }
+  resetAndSearch() {
+    if (this.running === true) {
+      this.triggerSearch = true;
+      return;
+    }
+    reset(this);
+    this.tmpPageIndex = 1;
+    
+    
+    this.onSearch();
+  }
 
-//   searchError(err: any): void {
-//     this.pageIndex = this.tmpPageIndex;
-//     this.handleError(err);
-//   }
+  onSearch(isFirstLoad?: boolean) {
+    const com = this;
+    const listForm = com.getSearchForm();
+    if (listForm && com.ui) {
+      com.ui.removeFormError(listForm);
+    }
+    const s: S = com.getFilter();
+    com.validateSearch(s, () => {
+      if (com.running === true) {
+        return;
+      }
+      com.running = true;
+      if (com.loading) {
+        com.loading.showLoading();
+      }
+      addParametersIntoUrl(s, isFirstLoad);
+      com.doSearch(s);
+    });
+  }
 
-//   showResults(s: Filter, sr: SearchResult<T>): void {
-//     const com = this;
-//     const results = sr.list;
-//     if (results != null && results.length > 0) {
-//       const locale = this.getLocale();
-//       formatResults(results, this.pageIndex, this.pageSize, this.initPageSize, this.sequenceNo, this.format, locale);
-//     }
-//     const appendMode = com.appendMode;
-//     com.pageIndex = (s.page && s.page >= 1 ? s.page : 1);
-//     if (sr.total) {
-//       com.itemTotal = sr.total;
-//     }
-//     if (appendMode) {
-//       let limit = s.limit;
-//       if (s.page <= 1 && s.firstLimit && s.firstLimit > 0) {
-//         limit = s.firstLimit;
-//       }
-//       com.nextPageToken = sr.nextPageToken;
-//       if (this.append === true && s.page > 1) {
-//         append(this.getList(), results);
-//       } else {
-//         this.setList(results);
-//       }
-//     } else {
-//       showPaging(com, sr.list, s.limit, sr.total);
-//       com.setList(results);
-//       com.tmpPageIndex = s.page;
-//       const r = this.resourceService;
-//       this.showMessage(buildMessage(r, s.page, s.limit, sr.list, sr.total));
-//     }
-//     this.running = false;
-//     if (this.loading) {
-//       this.loading.hideLoading();
-//     }
-//     if (this.triggerSearch === true) {
-//       this.triggerSearch = false;
-//       this.resetAndSearch();
-//     }
-//   }
+  doSearch(se: S) {
+    const s = clone(se);
+    let page = this.pageIndex;
+    if (!page || page < 1) {
+      page = 1;
+    }
+    let offset: number;
+    if (se.firstLimit && se.firstLimit > 0) {
+      offset = se.limit * (page - 2) + se.firstLimit;
+    } else {
+      offset = se.limit * (page - 1);
+    }
+    const limit = (page <= 1 && se.firstLimit && se.firstLimit > 0 ? se.firstLimit : se.limit);
+    const next = (this.nextPageToken && this.nextPageToken.length > 0 ? this.nextPageToken : offset);
+    const fields = se.fields;
+    delete se['page'];
+    delete se['fields'];
+    delete se['limit'];
+    delete se['firstLimit'];
+    const com = this;
+    // tslint:disable-next-line:no-debugger
+    // debugger;
+    com.service.search(se, limit, next, fields).then(result => {
+      com.showResults(s, result);
+    }).catch(err => {
+      com.handleError(err);
+    });
+  }
 
-//   setList(results: T[]) {
-//     this.list = results;
-//   }
-//   getList(): any[] {
-//     return this.list;
-//   }
-//   sort(event?: any) {
-//     handleSortEvent(event, this);
-//     if (this.appendMode === false) {
-//       this.onSearch();
-//     } else {
-//       this.resetAndSearch();
-//     }
-//   }
+  validateSearch(se: S, callback: () => void): void {
+    let valid = true;
+    const listForm = this.getSearchForm();
+    
+    if (listForm) {
+      
+      valid = this.ui.validateForm(listForm, this.getLocale());
+    }
+    if (valid === true) {
+      callback();
+    }
+  }
 
-//   showMore(event?: any): void {
-//     this.tmpPageIndex = this.pageIndex;
-//     more(this);
-//     this.onSearch();
-//   }
+  searchError(err: any): void {
+    this.pageIndex = this.tmpPageIndex;
+    this.handleError(err);
+  }
 
-//   pageChanged({pageIndex, itemsPerPage}, event?: any): void {
-//     changePage(this, pageIndex, itemsPerPage);
-//     this.onSearch();
-//   }
+  showResults(s: Filter, sr: SearchResult<T>): void {
+    const com = this;
+    const results = sr.list;
+    if (results != null && results.length > 0) {
+      const locale = this.getLocale();
+      formatResults(results, this.pageIndex, this.pageSize, this.initPageSize, this.sequenceNo, this.format, locale);
+    }
+    const appendMode = com.appendMode;
+    com.pageIndex = (s.page && s.page >= 1 ? s.page : 1);
+    if (sr.total) {
+      com.itemTotal = sr.total;
+    }
+    if (appendMode) {
+      let limit = s.limit;
+      if (s.page <= 1 && s.firstLimit && s.firstLimit > 0) {
+        limit = s.firstLimit;
+      }
+      com.nextPageToken = sr.nextPageToken;
+      if (this.append === true && s.page > 1) {
+        append(this.getList(), results);
+      } else {
+        this.setList(results);
+      }
+    } else {
+      showPaging(com, sr.list, s.limit, sr.total);
+      com.setList(results);
+      com.tmpPageIndex = s.page;
+      const r = this.resourceService;
+      this.showMessage(buildMessage(r, s.page, s.limit, sr.list, sr.total));
+    }
+    this.running = false;
+    if (this.loading) {
+      this.loading.hideLoading();
+    }
+    if (this.triggerSearch === true) {
+      this.triggerSearch = false;
+      this.resetAndSearch();
+    }
+  }
+
+  setList(results: T[]) {
+    this.list = results;
+  }
+  getList(): any[] {
+    return this.list;
+  }
+  sort(event?: any) {
+    handleSortEvent(event, this);
+    if (this.appendMode === false) {
+      this.onSearch();
+    } else {
+      this.resetAndSearch();
+    }
+  }
+
+  showMore(event?: any): void {
+    this.tmpPageIndex = this.pageIndex;
+    more(this);
+    this.onSearch();
+  }
+
+  pageChanged({ pageIndex, itemsPerPage }, event?: any): void {
+    changePage(this, pageIndex, itemsPerPage);
+    this.onSearch();
+  }
 }
 
 // export class DiffApprComponent<T, ID> extends Vue {
