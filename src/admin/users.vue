@@ -101,7 +101,7 @@
           </table>
         </div>
         <nav class="col s12 m6 l6">
-          <paginateVue
+          <PaginateVue
             :items-per-page="pageSize"
             :item-total="itemTotal"
             :margin-pages="pageSize"
@@ -111,7 +111,7 @@
             :page-class="'page-item'"
             :pageLinkClass="'page-link'"
             :container-class="'pagination'"
-          ></paginateVue>
+          ></PaginateVue>
         </nav>
       </form>
     </div>
@@ -120,12 +120,12 @@
 <script lang="ts">
 import { alertError } from 'ui-alert';
 import { toast } from 'ui-toast';
-import { getLocale, initForm, registerEvents, storage, user } from 'uione';
+import { getLocale, initForm, registerEvents, storage } from 'uione';
 import { Options } from 'vue-class-component';
 import { buildFromUrl, navigate } from '../common';
 import { SearchComponent } from '../common';
 import PaginateVue from '../core/PaginateVue.vue';
-import { useMasterData, User, UserFilter, useUser } from '../admin/service/user';
+import { useMasterData, User, UserFilter, useUser } from './service/';
 
 @Options({
   components: { PaginateVue }
@@ -154,7 +154,7 @@ export default class UsersComponent extends SearchComponent<User, UserFilter> {
     const s = this.mergeFilter(buildFromUrl(), ['status']);
     this.init(s, true);
   }
-
+  
   init(s: UserFilter, auto: boolean) {
     const com = this;
     const userService = useUser();

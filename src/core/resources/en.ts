@@ -61,7 +61,8 @@ export const en = {
   button_advance_search: 'Advance Search',
   button_basic_search: 'Basic Search',
   button_back: 'Back',
-
+  button_create: 'Create',
+  button_edit: 'edit',
   msg_confirm_save: 'Are you sure you want to save?',
   msg_save_success: 'Data have been saved successfully',
   msg_approve_success: 'Data have been approved successfully',

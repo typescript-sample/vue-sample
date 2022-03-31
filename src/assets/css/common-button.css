@@ -164,7 +164,7 @@ footer > .btn-next::after {
 
 footer > .btn-accept::after {
   font-family: Material Icons;
-  content: '\e5ca';
+  content: '\e86c';
   height: 40px;
   width: 40px;
   border-radius: 50%;

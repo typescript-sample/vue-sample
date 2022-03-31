@@ -85,16 +85,4 @@ export const userModel: Attributes = {
     type: 'datetime'
   }
 };
-export class UserClient extends Client<User, string, UserFilter> implements UserService {
-  constructor(http: HttpRequest, url: string) {
-    super(http, url, userModel);
-    this.searchGet = true;
-  }
-  getUsersByRole(id: string): Promise<User[]> {
-    const url = `${this.serviceUrl}?roleId=${id}`;
-    return this.http.get<User[]>(url);
-  }
-  getAllUsers(): Promise<User[]> {
-    return this.http.get<User[]>(`${this.serviceUrl}`);
-  }
-}
+

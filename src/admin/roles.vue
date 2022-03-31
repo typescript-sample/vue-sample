@@ -27,6 +27,7 @@
           id="btnNew"
           name="btnNew"
           className="btn-new"
+          @click="addRole"
         />
       </div>
     </header>
@@ -34,7 +35,7 @@
       <form id="rolesForm" name="rolesForm" :novalidate="true" ref="form">
         <section className="row search-group">
           <label className="col s12 m6 search-input">
-            <!-- <PageSizeSelect size="pageSize" sizes="pageSizes" @change="pageSizeChanged" /> -->
+            <PageSizeSelect size="pageSize" sizes="pageSizes" @change="pageSizeChanged" />
             <input
               type="text"
               id="q"
@@ -110,46 +111,64 @@
         </section>
       </form>
       <form class="list-result">
-        <div class="table-responsive"  v-if="isTable">
+        <div class="table-responsive" v-if="isTable">
           <table>
             <thead>
               <tr>
-                <th>{{resource.sequence}}</th>
+                <th>{{ resource.sequence }}</th>
                 <th data-field="roleId">
-                  <button type="button" id="sortUserId" @click="sort">{{resource.role_id}}</button>
+                  <button type="button" id="sortUserId" @click="sort">
+                    {{ resource.role_id }}
+                  </button>
                 </th>
                 <th data-field="roleName">
-                  <button type="button" id="sortUsername" @click="sort">{{resource.role_name}}</button>
+                  <button type="button" id="sortUsername" @click="sort">
+                    {{ resource.role_name }}
+                  </button>
                 </th>
                 <th data-field="status">
-                  <button type="button" id="sortStatus" @click="sort">{{resource.status}}</button>
+                  <button type="button" id="sortStatus" @click="sort">
+                    {{ resource.status }}
+                  </button>
                 </th>
-                <th className='action'>{{resource.action}}</th>
+                <th className="action">{{ resource.action }}</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(item, i) in list" :key="item.roleId">
-                <td class="text-right">{{item.sequenceNo}}</td>
-                <td>{{item.roleId}}</td>
-                <td>{{item.roleName}}</td>
-                <td>{{item.status}}</td>
+                <td class="text-right">{{ item.sequenceNo }}</td>
+                <td>{{ item.roleId }}</td>
+                <td>{{ item.roleName }}</td>
+                <td>{{ item.status }}</td>
                 <td>
-                  <button v-if="editable" type="button" class="btn-edit" :id="i" @click="viewUser(item.roleId)"></button>
+                  <button
+                    v-if="editable"
+                    type="button"
+                    class="btn-edit"
+                    :id="i"
+                    @click="viewRoles(item.roleId)"
+                  ></button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
         <ul class="row list-view" v-else>
-            <li v-for="(item,i) in list" :key={i} class='col s12 m6 l4 xl3'>
-                  <section>
-                    <div>
-                      <h3 class="item.status === 'I' ? 'inactive' : ''">{{item.roleName}}</h3>
-                      <p>{{item.remark}}</p>
-                    </div>
-                    <button class='btn-detail' v-if="editable" @click="viewUser(item.roleId)"/>
-                  </section>
-                </li>
+          <li v-for="(item, i) in list" :key="{ i }" class="col s12 m6 l4 xl3">
+            <section>
+              <div>
+                <h3 class="item.status === 'I' ? 'inactive' : ''">
+                  {{ item.roleName }}
+                </h3>
+                <p>{{ item.remark }}</p>
+              </div>
+              <button
+                class="btn-detail"
+                v-if="editable"
+                @click="viewRoles(item.roleId)"
+              />
+            </section>
+          </li>
         </ul>
         <nav class="col s12 m6 l6">
           <paginateVue
@@ -165,7 +184,6 @@
           ></paginateVue>
         </nav>
       </form>
-      
     </div>
   </div>
 </template>
@@ -176,25 +194,25 @@ import { registerEvents } from "ui-plus";
 import { toast } from "ui-toast";
 import { getLocale, initForm, privileges, storage } from "uione";
 import { Options } from "vue-class-component";
-import { buildFromUrl, SearchComponent } from "../common";
-import { Role, RoleFilter, useRole } from "./service/role";
-import { useMasterData } from "./service/user";
-import PaginateVue from '../core/PaginateVue.vue';
+import { buildFromUrl, navigate, SearchComponent } from "../common";
+import { Role, RoleFilter } from "./service/role";
+import PaginateVue from "../core/PaginateVue.vue";
+import { useMasterData, useRole } from "./service";
 
 @Options({
-  components: { PaginateVue }
+  components: { PaginateVue },
 })
 export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   status = [];
   statusList = [];
   isTable = true;
-  viewable=true;
-  editable=true;
+  viewable = true;
+  editable = true;
   list = [];
-//   privilegesList=[];
+  //   privilegesList=[];
   created() {
     const roleService = useRole();
-    this.hideFilter=false;
+    this.hideFilter = false;
     this.onCreated(
       roleService,
       storage.resource(),
@@ -204,12 +222,10 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
       alertError,
       storage.loading()
     );
-    
-    
   }
-  mounted(){
-      this.form = initForm(this.$refs.form as any, registerEvents);
-    const s = this.mergeFilter(buildFromUrl(), ['status']);
+  mounted() {
+    this.form = initForm(this.$refs.form as any, registerEvents);
+    const s = this.mergeFilter(buildFromUrl(), ["status"]);
     this.init(s, true);
   }
 
@@ -217,26 +233,33 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
     const com = this;
     const masterDataService = useMasterData();
     const roleService = useRole();
-    masterDataService.getStatus()
-      .then(statusList => {
+    masterDataService
+      .getStatus()
+      .then((statusList) => {
         com.statusList = statusList;
         com.load(s, auto);
-        
-      }).catch(com.handleError);
-     roleService.getRoles().then((list)=>{
-        this.list = list;
-            console.log("list: ",this.list);
-     });
+      })
+      .catch(com.handleError);
+    roleService.getRoles().then((list) => {
+      this.list = list;
+      console.log("list: ", this.list);
+    });
   }
 
   changeView() {
     this.isTable = !this.isTable;
     console.log(this.isTable);
-    
   }
   getSearchModel(): RoleFilter {
     const model = this.populateFilter();
     return model;
+  }
+
+  viewRoles(id) {
+    navigate(this.$router, "roles", [id]);
+  }
+  addRole() {
+    navigate(this.$router, "/admin/roles/add");
   }
 }
 </script>

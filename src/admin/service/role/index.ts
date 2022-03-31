@@ -30,11 +30,11 @@ export class RoleClient extends Client<Role, string, RoleFilter> implements Role
 
 }
 
-class ApplicationContext {
-  readonly roleService = new RoleClient(httpRequest, config.role_url, config.privilege_url);
-}
+// class ApplicationContext {
+//   readonly roleService = new RoleClient(httpRequest, config.role_url, config.privilege_url);
+// }
 
-export const ctx = new ApplicationContext();
-export function useRole(): RoleService {
-  return ctx.roleService;
-}
+// export const ctx = new ApplicationContext();
+// export function useRole(): RoleService {
+//   return ctx.roleService;
+// }
