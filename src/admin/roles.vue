@@ -35,7 +35,7 @@
       <form id="rolesForm" name="rolesForm" :novalidate="true" ref="form">
         <section className="row search-group">
           <label className="col s12 m6 search-input">
-            <PageSizeSelect size="pageSize" sizes="pageSizes" @change="pageSizeChanged" />
+            <PageSizeSelect :pageSize="pageSize" :pageSizes="pageSizes" :onPageSizeChanged="pageSizeChanged" />
             <input
               type="text"
               id="q"
@@ -49,13 +49,13 @@
               type="button"
               className="btn-filter"
               @click="toggleFilter"
-            ></button>
+            />
             <button
               type="submit"
               className="btn-search"
               @click="search"
-            ></button>
-          </label>
+            />
+          </label>        
           <!-- <Pagination className='col s12 m6' total={component.total} size={component.pageSize} max={component.pageMaxSize} page={component.pageIndex} onChange={pageChanged} /> -->
         </section>
         <section class="row search-group inline" :hidden="hideFilter">
@@ -85,7 +85,6 @@
                   name="status"
                   :value="ctrlItem.value"
                   @change="updateState"
-                  v-model="model.status"
                   :checked="ctrlItem.value"
                 />
                 {{ ctrlItem.text }}
@@ -198,9 +197,9 @@ import { buildFromUrl, navigate, SearchComponent } from "../common";
 import { Role, RoleFilter } from "./service/role";
 import PaginateVue from "../core/PaginateVue.vue";
 import { useMasterData, useRole } from "./service";
-
+import PageSizeSelect from "../core/PageSizeSelect.vue"
 @Options({
-  components: { PaginateVue },
+  components: { PaginateVue, PageSizeSelect },
 })
 export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   status = [];
@@ -209,10 +208,10 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   viewable = true;
   editable = true;
   list = [];
+  hideFilter=false;
   //   privilegesList=[];
   created() {
     const roleService = useRole();
-    this.hideFilter = false;
     this.onCreated(
       roleService,
       storage.resource(),
@@ -232,7 +231,7 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   init(s: RoleFilter, auto: boolean) {
     const com = this;
     const masterDataService = useMasterData();
-    const roleService = useRole();
+    // const roleService = useRole();
     masterDataService
       .getStatus()
       .then((statusList) => {
@@ -240,10 +239,9 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
         com.load(s, auto);
       })
       .catch(com.handleError);
-    roleService.getRoles().then((list) => {
-      this.list = list;
-      console.log("list: ", this.list);
-    });
+    // roleService.getRoles().then((list) => {
+    //   this.list = list;
+    // });
   }
 
   changeView() {

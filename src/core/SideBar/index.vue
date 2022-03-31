@@ -41,7 +41,7 @@ import ItemLink from './ItemLink.vue';
   name: 'SideBar',
   props: {
     features:{required:false},
-    isToggleSidebar:{required:true},
+    isToggleSidebar:{required:true, default:true},
   },
   components: {
     ItemLink

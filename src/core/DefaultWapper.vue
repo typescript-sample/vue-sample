@@ -169,14 +169,15 @@ extends BaseComponent
     }, this.handleError);
     */
     try {
-      const url = config.authentication_url + '/authentication/signout/' + storage.username();
-      const success = await this.httpRequest.get(url);
-      if (success) {
-        sessionStorage.setItem('authService', null);
-        sessionStorage.clear();
-        storage.setUser(null);
+      // const url = config.authentication_url + '/authentication/signout/' + storage.username();
+      // const success = await this.httpRequest.get(url);
+      // if (success) {
+      //   sessionStorage.setItem('authService', null);
+      //   sessionStorage.clear();
+      //   storage.setUser(null);
         navigate(this.$router, '/');
-      }
+    
+      // }
     } catch (err) {
       this.handleError(err);
     }

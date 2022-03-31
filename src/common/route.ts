@@ -19,6 +19,7 @@ export function buildParameters(url: string): any {
     urlSearch = url.substr(i + 1);
   }
   const parsed = qs.parse(urlSearch);
+  
   return parsed;
 }
 

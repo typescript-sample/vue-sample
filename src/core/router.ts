@@ -7,8 +7,8 @@ import NotFound from './NotFound.vue';
 const routes = [
     adminRouter,
     authenRouter,
-    // { path: '/404', component: NotFound },
-    // { path: '*', redirect: '/404' },
+    { path: '/404', component: NotFound },
+    { path: '/:pathMatch(.*)*', redirect:'/404'},
 ]
 const router = createRouter({
     history:createWebHistory(),

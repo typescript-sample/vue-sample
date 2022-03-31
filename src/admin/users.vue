@@ -43,7 +43,6 @@
                   name="status"
                   :value="ctrlItem.value"
                   @change="updateState"
-                  v-model="model.status"
                   :checked="ctrlItem.value"
                 />
                 {{ctrlItem.text}}
@@ -57,6 +56,8 @@
             <select @change="onPageSizeChanged">
               <option v-for="p of pageSizes" :value="p" :selected="p === pageSize" :key="p">{{p}}</option>
             </select>
+            <!-- <PageSizeSelect :pageSize="pageSize" :pageSizes="pageSizes" :onPageSizeChanged="onPageSizeChanged" /> -->
+
           </label>
           <button type="submit" class="btn-search" @click="search">{{resource.search}}</button>
         </section>
@@ -126,9 +127,9 @@ import { buildFromUrl, navigate } from '../common';
 import { SearchComponent } from '../common';
 import PaginateVue from '../core/PaginateVue.vue';
 import { useMasterData, User, UserFilter, useUser } from './service/';
-
+import PageSizeSelect from "../core/PageSizeSelect.vue";
 @Options({
-  components: { PaginateVue }
+  components: { PaginateVue, PageSizeSelect }
 })
 export default class UsersComponent extends SearchComponent<User, UserFilter> {
   username = '';
@@ -147,9 +148,7 @@ export default class UsersComponent extends SearchComponent<User, UserFilter> {
       storage.loading()
     );
   }
-  mounted() {
-    console.log('form',this.$refs.form);
-    
+  mounted() {    
     this.form = initForm(this.$refs.form as any, registerEvents);
     const s = this.mergeFilter(buildFromUrl(), ['status']);
     this.init(s, true);
@@ -157,20 +156,18 @@ export default class UsersComponent extends SearchComponent<User, UserFilter> {
   
   init(s: UserFilter, auto: boolean) {
     const com = this;
-    const userService = useUser();
+    // const userService = useUser();
     const masterDataService = useMasterData();
     masterDataService.getStatus()
       .then(statusList => {
-        console.log('statusList',  statusList);
         com.statusList = statusList;
         com.load(s, auto);
       })
       .catch(com.handleError);
-      userService.getAllUsers().then((users)=>{
-        com.list = users;
-        console.log("users: ", com.list);
+      // userService.getAllUsers().then((users)=>{
+      //   com.list = users;
         
-      })
+      // })
   }
 
   getSearchModel(): UserFilter {

@@ -3,8 +3,8 @@ import { clone, makeDiff, trim } from 'reflectx';
 import { addParametersIntoUrl, append, buildMessage, changePage, changePageSize, formatResults, getFields, handleSortEvent, initFilter, mergeFilter, more, optimizeFilter, reset, showPaging } from 'search-core';
 import { Attributes, DiffApprService, Filter, getModelName, LoadingService, Locale, message, messageByHttpStatus, MetaModel, ResourceService, SearchResult, SearchService, UIService, ViewService } from './core';
 // import {formatDiffModel} from './diff';
-import {build, createModel, GenericService, handleStatus, handleVersion, ResultInfo} from './edit';
-import {format, json} from './formatter';
+import { build, createModel, GenericService, handleStatus, handleVersion, ResultInfo } from './edit';
+import { format, json } from './formatter';
 import { focusFirstError, readOnly } from './formutil';
 
 import { Vue } from "vue-class-component";
@@ -142,7 +142,7 @@ export class BaseComponent extends Vue {
   form: any;
   ui: UIService | undefined;
   loading?: LoadingService;
-  getLocale: (() => Locale) ;
+  getLocale: (() => Locale);
   resourceService?: ResourceService;
   showError: ((m: string, title?: string, detail?: string, callback?: () => void) => void) | undefined;
 
@@ -237,7 +237,7 @@ export class BaseComponent extends Vue {
 }
 
 export class EditComponent<T, ID> extends BaseComponent {
-  protected service: GenericService<T, ID, number|ResultInfo<T>>;
+  protected service: GenericService<T, ID, number | ResultInfo<T>>;
   protected name?: string;
   protected metadata?: Attributes;
   protected metamodel?: MetaModel;
@@ -248,22 +248,22 @@ export class EditComponent<T, ID> extends BaseComponent {
   setBack = false;
   patchable = true;
   backOnSuccess = true;
-  protected orginalModel: T|undefined;
+  protected orginalModel: T | undefined;
 
   addable = true;
   editable = true;
   insertSuccessMsg = '';
   updateSuccessMsg = '';
 
-  onCreated(service: GenericService<T, ID, number|ResultInfo<T>>,
-      resourceService: ResourceService,
-      ui: UIService,
-      getLocale: () => Locale,
-      showMessage: (msg: string) => void,
-      showError: (m: string, title?: string, detail?: string, callback?: () => void) => void,
-      confirm: (m2: string, header: string, yesCallback?: () => void, btnLeftText?: string, btnRightText?: string, noCallback?: () => void) => void,
-      loading?: LoadingService, patchable?: boolean, backOnSaveSuccess?: boolean
-    ) {
+  onCreated(service: GenericService<T, ID, number | ResultInfo<T>>,
+    resourceService: ResourceService,
+    ui: UIService,
+    getLocale: () => Locale,
+    showMessage: (msg: string) => void,
+    showError: (m: string, title?: string, detail?: string, callback?: () => void) => void,
+    confirm: (m2: string, header: string, yesCallback?: () => void, btnLeftText?: string, btnRightText?: string, noCallback?: () => void) => void,
+    loading?: LoadingService, patchable?: boolean, backOnSaveSuccess?: boolean
+  ) {
     this.metadata = service.metadata();
     this.metamodel = build(this.metadata);
     if (patchable === false) {
@@ -337,7 +337,7 @@ export class EditComponent<T, ID> extends BaseComponent {
           this.resetState(false, obj, clone(obj));
         }
       } catch (err) {
-        const data = (err &&  (err as any).response) ? (err as any).response : err;
+        const data = (err && (err as any).response) ? (err as any).response : err;
         if (data && data.status === 404) {
           this.handleNotFound(this.form);
         } else {
@@ -465,10 +465,9 @@ export class EditComponent<T, ID> extends BaseComponent {
           this.showMessage(r.value('msg_no_change'));
         } else {
           com.validate(obj, () => {
-            const msg = message(r.resource(), 'msg_confirm_save', 'confirm', 'yes', 'no');            
+            const msg = message(r.resource(), 'msg_confirm_save', 'confirm', 'yes', 'no');
             this.confirm(msg.message, msg.title, () => {
-              console.log("ok");
-              
+
               com.doSave(obj, diffObj, isBack);
             }, msg.no, msg.yes);
           });
@@ -552,7 +551,7 @@ export class EditComponent<T, ID> extends BaseComponent {
     const title = this.resourceService.value('error_internal');
     this.showError(result.message, title);
   }
-  protected postSave(res: number|ResultInfo<T>, backOnSave: boolean): void {
+  protected postSave(res: number | ResultInfo<T>, backOnSave: boolean): void {
     this.running = false;
     if (this.loading) {
       this.loading.hideLoading();
@@ -709,29 +708,27 @@ export class SearchComponent<T, S extends Filter> extends BaseComponent {
   mapToVModel(s: any): void {
     const keys = Object.keys(s);
 
-      // keys.forEach(key => {this.$set(this.$data, key, s[key]); });
-      const objTmp = new Object();
+    // keys.forEach(key => {this.$set(this.$data, key, s[key]); });
 
     keys.forEach(key => {
-      this.$data[key] = s[key]; 
+      this.$data[key] = s[key];
 
     });
-    
+
   }
 
   mergeFilter(obj: any, arrs?: string[] | any, b?: S): S {
-    const s = mergeFilter(obj, this.pageSizes, arrs, b);
-    console.log(arrs);
-    
-    // this.mapToVModel(s);
+
+    const s = mergeFilter(obj, b, arrs, this.pageSizes);
+    this.mapToVModel(s);
     return s;
   }
 
   load(s: S, auto: boolean) {
     const com = this;
-    
+
     const obj2 = initFilter(s, com);
-    
+
     com.setFilter(obj2);
     if (auto) {
       setTimeout(() => {
@@ -741,12 +738,12 @@ export class SearchComponent<T, S extends Filter> extends BaseComponent {
   }
 
   setSearchForm(form: any) {
-    
+
     this.form = form;
   }
   getSearchForm(): any {
-    
-    
+
+
     return this.form;
   }
 
@@ -818,8 +815,8 @@ export class SearchComponent<T, S extends Filter> extends BaseComponent {
     }
     reset(this);
     this.tmpPageIndex = 1;
-    
-    
+
+
     this.onSearch();
   }
 
@@ -875,9 +872,9 @@ export class SearchComponent<T, S extends Filter> extends BaseComponent {
   validateSearch(se: S, callback: () => void): void {
     let valid = true;
     const listForm = this.getSearchForm();
-    
+
     if (listForm) {
-      
+
       valid = this.ui.validateForm(listForm, this.getLocale());
     }
     if (valid === true) {
