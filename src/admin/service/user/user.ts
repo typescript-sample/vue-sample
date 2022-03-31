@@ -16,7 +16,7 @@ export interface UserFilter extends Filter {
 
   q?: string;
   excluding?: any;
-  refId?: string|number;
+  refId?: string | number;
 }
 export interface User extends Tracking {
   userId: string;
@@ -33,6 +33,7 @@ export interface User extends Tracking {
 }
 export interface UserService extends Service<User, string, UserFilter> {
   getUsersByRole(id: string): Promise<User[]>;
+  getAllUsers(): Promise<User[]>;
 }
 
 export const userModel: Attributes = {
@@ -93,5 +94,7 @@ export class UserClient extends Client<User, string, UserFilter> implements User
     const url = `${this.serviceUrl}?roleId=${id}`;
     return this.http.get<User[]>(url);
   }
-  // getAllUsers
+  getAllUsers(): Promise<User[]> {
+    return this.http.get<User[]>(`${this.serviceUrl}`);
+  }
 }

@@ -120,7 +120,7 @@
 <script lang="ts">
 import { alertError } from 'ui-alert';
 import { toast } from 'ui-toast';
-import { getLocale, initForm, registerEvents, storage } from 'uione';
+import { getLocale, initForm, registerEvents, storage, user } from 'uione';
 import { Options } from 'vue-class-component';
 import { buildFromUrl, navigate } from '../common';
 import { SearchComponent } from '../common';
@@ -157,6 +157,7 @@ export default class UsersComponent extends SearchComponent<User, UserFilter> {
 
   init(s: UserFilter, auto: boolean) {
     const com = this;
+    const userService = useUser();
     const masterDataService = useMasterData();
     masterDataService.getStatus()
       .then(statusList => {
@@ -165,6 +166,11 @@ export default class UsersComponent extends SearchComponent<User, UserFilter> {
         com.load(s, auto);
       })
       .catch(com.handleError);
+      userService.getAllUsers().then((users)=>{
+        com.list = users;
+        console.log("users: ", com.list);
+        
+      })
   }
 
   getSearchModel(): UserFilter {

@@ -151,7 +151,7 @@
                   </section>
                 </li>
         </ul>
-        <!-- <nav class="col s12 m6 l6">
+        <nav class="col s12 m6 l6">
           <paginateVue
             :items-per-page="pageSize"
             :item-total="itemTotal"
@@ -163,7 +163,7 @@
             :pageLinkClass="'page-link'"
             :container-class="'pagination'"
           ></paginateVue>
-        </nav> -->
+        </nav>
       </form>
       
     </div>
@@ -175,9 +175,15 @@ import { alertError } from "ui-alert";
 import { registerEvents } from "ui-plus";
 import { toast } from "ui-toast";
 import { getLocale, initForm, privileges, storage } from "uione";
+import { Options } from "vue-class-component";
 import { buildFromUrl, SearchComponent } from "../common";
 import { Role, RoleFilter, useRole } from "./service/role";
 import { useMasterData } from "./service/user";
+import PaginateVue from '../core/PaginateVue.vue';
+
+@Options({
+  components: { PaginateVue }
+})
 export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   status = [];
   statusList = [];
