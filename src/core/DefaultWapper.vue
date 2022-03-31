@@ -113,20 +113,20 @@ extends BaseComponent
     }
   }
 
-//   onCreated() {
-//     this.ui = storage.ui();
-//     this.getLocale = getLocale;
-//     this.showError = toast;
-//     this.loading =  storage.loading();
-//     this.resourceService = storage.resource();
-//     this.resource = storage.resource().resource();
-//   }
+  onCreated() {
+    this.ui = storage.ui();
+    this.getLocale = getLocale;
+    this.showError = toast;
+    this.loading =  storage.loading();
+    this.resourceService = storage.resource();
+    this.resource = storage.resource().resource();
+  }
 
-//   created() {
-//     this.forms = JSON.parse(sessionStorage.getItem('authService'));
-//     this.privileges = this.forms && this.forms['privileges'] ? this.forms['privileges'] : [];
-//     this.onCreated();
-//   }
+  created() {
+    this.forms = JSON.parse(sessionStorage.getItem('authService'));
+    this.privileges = this.forms && this.forms['privileges'] ? this.forms['privileges'] : [];
+    this.onCreated();
+  }
 
   get toggleSidebar() {
     return this.isToggleSidebar;
