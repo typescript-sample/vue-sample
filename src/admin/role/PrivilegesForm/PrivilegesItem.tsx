@@ -129,9 +129,7 @@ export const PrivilegesItem = defineComponent({
         return false;
       }
       for (const m of all) {
-        if (privileges.includes(m.id)) {
-          console.log(privileges.includes(m.id));
-          
+        if (privileges.includes(m.id)) {          
           return true;
         }
       }

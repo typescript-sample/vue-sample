@@ -47,12 +47,12 @@
             />
             <button
               type="button"
-              className="btn-filter"
+              class="btn-filter"
               @click="toggleFilter"
             />
             <button
               type="submit"
-              className="btn-search"
+              class="btn-search"
               @click="search"
             />
           </label>        
@@ -239,9 +239,7 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
         com.load(s, auto);
       })
       .catch(com.handleError);
-    // roleService.getRoles().then((list) => {
-    //   this.list = list;
-    // });
+    
   }
 
   changeView() {
@@ -254,6 +252,8 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   }
 
   viewRoles(id) {
+    console.log(this.$router);
+    
     navigate(this.$router, "roles", [id]);
   }
   addRole() {

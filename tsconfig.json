@@ -22,10 +22,12 @@
     "noImplicitThis": false,
     "noImplicitAny": false,
     "paths": {
-      "components/*": ["src/components/*"]
+      "components/*": ["src/components/*"],
+      "@/*":["src/*"]
     }
   },
   "include": [
+    "./shims-vue.d.ts",
     "./src/**/*.ts",
     "./src/**/*.vue"
 , "src/admin/role/PrivilegesForm/index.js", "src/admin/role/PrivilegesForm/PrivilegesItem.tsx"  ],

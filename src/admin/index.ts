@@ -5,6 +5,7 @@ import RoleComponent from './role.vue';
 import UsersComponent from './users.vue';
 import RolesComponent from './roles.vue';
 import UserComponent from './user.vue';
+import RoleAssignmentForm from './role-assignment-form.vue'
 const adminRouter: RouteRecordRaw = {
   path: '/admin',
   component: DefaultWapper,
@@ -26,7 +27,8 @@ const adminRouter: RouteRecordRaw = {
 
     { path: 'roles', component: RolesComponent, name: 'Roles', meta: { title: '', noCache: true } },
     {path:'roles/add', component: RoleComponent, name: 'RoleAdd', meta: { title: '', noCache: true }},
-    {path:'roles/:id', component: RoleComponent, name: 'RoleEdit', meta: { title: '', noCache: true }}
+    {path:'roles/assigns/:id', component: RoleAssignmentForm, name: 'RoleAssigns', meta: { title: '', noCache: true }},
+    {path:'roles/:id', component: RoleComponent, name: 'RoleEdit', meta: { title: '', noCache: true }},
   ]
 };
 

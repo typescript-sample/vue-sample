@@ -13,10 +13,11 @@ import {
   storage,
 } from "uione";
 import { Options } from "vue-class-component";
-import { buildId, createModel, EditComponent } from "../common";
+import { buildId, createModel, EditComponent, navigate } from "../common";
 import { Role, useRole, useMasterData } from "./service";
 import { PrivilegesForm } from "./role/PrivilegesForm";
 import { useStore } from "vuex";
+import { param } from "web-clients";
 @Options({
   components: {
     PrivilegesForm,
@@ -26,7 +27,7 @@ export default class RoleComponent extends EditComponent<Role, string> {
   store = useStore();
   statusList = [];
   checkedCtrl: string[] = [];
-  userService = useRole();
+  roleService = useRole();
   masterDataService = useMasterData();
   role: Role = {} as any;
   all: string[] = [];
@@ -35,9 +36,10 @@ export default class RoleComponent extends EditComponent<Role, string> {
   allPrivilege: Privilege[] = [];
   checkedAll = false;
   created() {
+    console.log(this.$router);
     this.checkedCtrl = [];
     this.onCreated(
-      this.userService,
+      this.roleService,
       storage.resource(),
       storage.ui(),
       getLocale,
@@ -47,7 +49,7 @@ export default class RoleComponent extends EditComponent<Role, string> {
       storage.loading()
     );
     this.patchable = false;
-    this.userService.getPrivileges().then((allPrivilege) => {
+    this.roleService.getPrivileges().then((allPrivilege) => {
       this.buildAll(this.all, allPrivilege);
       this.shownPrivileges = allPrivilege;
       this.allPrivilege = allPrivilege;
@@ -60,20 +62,21 @@ export default class RoleComponent extends EditComponent<Role, string> {
         this.role.privileges ? this.role.privileges : [],
         this.allPrivilege
       );
-      console.log("this.role.privileges ",this.role.privileges);
-      this.isCheckedAll(this.role.privileges,this.all);
-      
-      
+      this.isCheckedAll(this.role.privileges, this.all);
     });
   }
-
+  assign(roleId: string){
+    console.log(this.$router);
+    navigate(this.$router, `/admin/roles/assigns/${roleId}`);
+  }
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
     const id = buildId(this.service.keys(), this.$route);
     this.load(id);
     this.showModel(this.role);
+    
+    
   }
-
   createModel(): Role {
     const role = createModel<Role>(this.metadata);
     role.status = "A";
@@ -95,14 +98,10 @@ export default class RoleComponent extends EditComponent<Role, string> {
     this.role = obj;
     this.isCheckedAll(this.role.privileges, this.all);
   }
-
   isCheckedAll = (privileges: string[] | undefined, all: string[]) => {
-    console.log("Ok");
-    
     this.checkedAll =
       privileges && all && privileges.length === this.all.length;
   };
-
   handleCheckAll = (event: any) => {
     this.checkedAll = event.target.checked;
     this.role.privileges = this.checkedAll ? this.all : [];
@@ -154,11 +153,9 @@ export default class RoleComponent extends EditComponent<Role, string> {
       );
     return shownPrivileges;
   };
-
   get pickPrivileges() {
     return this.store.getters.pick;
   }
-
   onChange = (e: any) => {
     e.preventDefault();
     this.shownPrivileges = this.buildShownModules(
@@ -205,8 +202,6 @@ export default class RoleComponent extends EditComponent<Role, string> {
         checked = false;
       }
       if (!checked) {
-        console.log("id: ",id);
-       
         return privileges.concat([id]);
       } else {
         return privileges.filter((item) => item !== id);
@@ -223,6 +218,10 @@ export default class RoleComponent extends EditComponent<Role, string> {
         <h2>
           {{ newMode ? resource.button_create : resource.button_edit }}
           {{ resource.role }}
+          <i
+            @click="assign(this.role.roleId)"
+            class="btn mdi mdi-account-multiple"
+          ></i>
         </h2>
       </header>
       <div>

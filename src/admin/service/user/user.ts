@@ -7,7 +7,7 @@ export interface UserFilter extends Filter {
   email: string;
   displayName: string;
   status: string[] | string;
-
+  imageURL:string;
   page?: number;
   limit?: number;
   firstLimit?: number;

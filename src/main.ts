@@ -2,4 +2,6 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './core/router'
 import {store} from './store'
-createApp(App).use(router).use(store).mount('#app')
+import  vfmPlugin  from "vue-final-modal";
+
+createApp(App).use(router).use(store).use(vfmPlugin).mount('#app')

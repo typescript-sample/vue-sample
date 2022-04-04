@@ -161,7 +161,7 @@ export class BaseComponent extends Vue {
     window.history.back();
   }
 
-  handleError(err: any) {
+  handleError(err: any) {    
     this.running = false;
     if (this.loading) {
       this.loading.hideLoading();
@@ -442,6 +442,7 @@ export class EditComponent<T, ID> extends BaseComponent {
     }
   }
   onSave(isBack?: boolean) {
+    
     const r = this.resourceService;
     const newMod = this.newMode;
     if (newMod === true && this.addable === true) {
@@ -458,7 +459,7 @@ export class EditComponent<T, ID> extends BaseComponent {
       }
       const com = this;
       const obj = com.getModel();
-      if (!newMod) {
+      if (!newMod) {        
         const diffObj = makeDiff(this.orginalModel, obj, this.metamodel.keys, this.metamodel.version);
         const l = Object.keys(diffObj).length;
         if (l === 0) {
@@ -802,6 +803,7 @@ export class SearchComponent<T, S extends Filter> extends BaseComponent {
     if (event) {
       event.preventDefault();
       if (!this.getSearchForm()) {
+        
         this.setSearchForm(event.target.form);
       }
     }

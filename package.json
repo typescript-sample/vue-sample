@@ -21,6 +21,7 @@
     "onecore": "^0.0.27",
     "phonecodes": "^0.0.2",
     "query-string": "^7.1.1",
+    "react-modal": "^3.14.4",
     "reflectx": "^0.0.10",
     "search-core": "^0.1.1",
     "ui-alert": "^0.0.7",
@@ -31,6 +32,7 @@
     "validation-core": "^0.0.3",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-0",
+    "vue-final-modal": "^3.4.3",
     "vue-router": "^4.0.14",
     "vuex": "^4.0.2",
     "web-clients": "^0.1.20"

@@ -42,7 +42,6 @@ export default class UserComponent extends EditComponent<User, string> {
     this.form = initForm(this.$refs.form as any, registerEvents);
     const id = buildId(this.service.keys(), this.$route);
     this.load(id);
-    console.log(this.resource);
   }
   updatePhoneState() {}
 

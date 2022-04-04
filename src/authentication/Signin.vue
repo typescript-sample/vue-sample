@@ -217,9 +217,8 @@ export default class SigninComponent extends Vue {
         */
         // tslint:disable-next-line:triple-equals
         if (s == status.success) {
+          
           storage.setUser(result.user);
-                      console.log("OK");
-
           this.navigateToHome();
         } else {
           const message3 = r.value('msg_account_reactivated');
