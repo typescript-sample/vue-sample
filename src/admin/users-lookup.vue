@@ -229,7 +229,7 @@ export default class UsersLookup extends SearchComponent<User, UserFilter> {
     this.usersLookup = [];
     this.availableUsers = [];
     this.model.q = "";
-    console.log(this.usersLookup);
+    this.userIdsLookup = [];
 
     // this.props.onModelSave(this.state.users);
   };
@@ -238,6 +238,7 @@ export default class UsersLookup extends SearchComponent<User, UserFilter> {
     this.usersLookup = [];
     this.availableUsers = [];
     this.model.q = "";
+    this.userIdsLookup = [];
     this.$emit("onModelClose");
     // if (this.props.onModelClose) {
     //   this.props.onModelClose(e);

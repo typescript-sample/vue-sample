@@ -48,23 +48,34 @@ import './assets/css/layout.css';
 import './assets/css/profile.css';
 import './assets/css/theme.css';
 import { Options, Vue } from 'vue-class-component';
+function parseDate(value: string, format: string): Date | null | undefined {
 
-export function parseDate(value: string, format: string): Date {
-  if (!format || format.length === 0) {
-    format = 'MM/DD/YYYY';
-  } else {
-    format = format.toUpperCase();
-  }
-  try {
-    const d = moment(value, format).toDate();
-    return d;
-  } catch (err) {
-    return null;
-  }
+  const dateItems = format.split(/\.|\ |\-/);
+  const valueItems = value.split(/\.|\ |\-/);
+  let monthIndex  = dateItems.indexOf("M");
+  let dayIndex    = dateItems.indexOf("d");
+  let yearIndex   = dateItems.indexOf("yyyy");
+  // if(monthIndex==-1){
+  //   monthIndex  = dateItems.indexOf("MM");
+  // }
+  // if(dayIndex==-1){
+  //   dayIndex  = dateItems.indexOf("DD");
+  // }
+  // if(yearIndex==-1){
+  //   yearIndex  = dateItems.indexOf("YY");
+  // }
+  const month=parseInt(valueItems[monthIndex])-1;
+  let year=parseInt(valueItems[yearIndex]);
+  if(year<100)year+=2000;
+  const day=parseInt(valueItems[dayIndex]);  
+  const formatedDate = new Date(year,month,day);
+  return formatedDate;
 }
 
 export function init() {
   // const conf = merge(config, process.env, env, process.env.ENV);
+  console.log(parseDate('2000.12.25','yyyy.m.d'));
+  
   storage.setConfig(config);
   resource.csv = new DefaultCsvService(csv);
   resource.config = {
