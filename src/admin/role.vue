@@ -36,7 +36,6 @@ export default class RoleComponent extends EditComponent<Role, string> {
   allPrivilege: Privilege[] = [];
   checkedAll = false;
   created() {
-    console.log(this.$router);
     this.checkedCtrl = [];
     this.onCreated(
       this.roleService,
@@ -66,7 +65,6 @@ export default class RoleComponent extends EditComponent<Role, string> {
     });
   }
   assign(roleId: string){
-    console.log(this.$router);
     navigate(this.$router, `/admin/roles/assigns/${roleId}`);
   }
   mounted() {

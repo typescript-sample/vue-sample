@@ -712,7 +712,7 @@ export class SearchComponent<T, S extends Filter> extends BaseComponent {
     // keys.forEach(key => {this.$set(this.$data, key, s[key]); });
 
     keys.forEach(key => {
-      this.$data[key] = s[key];
+      this[key] = s[key];
 
     });
 

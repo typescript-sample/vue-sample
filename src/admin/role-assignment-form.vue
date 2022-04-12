@@ -65,6 +65,26 @@
               <button v-if="isCheckboxShown" type="button" @click="onDelete">
                 {{ resource.delete }}
               </button>
+              <div class="btn-group">
+                <button
+                  v-if="isTable === true"
+                  type="button"
+                  id="btnTable"
+                  name="btnTable"
+                  className="btn-table"
+                  data-view="table"
+                  @click="changeView"
+                />
+                <button
+                  v-if="isTable !== true"
+                  type="button"
+                  id="btnListView"
+                  name="btnListView"
+                  className="btn-list-view"
+                  data-view="listview"
+                  @Click="changeView"
+                />
+              </div>
             </div>
           </h4>
           <label className="col s12 search-input">
@@ -79,48 +99,93 @@
               :placeholder="resource.role_assignment_search_user"
             />
           </label>
-          <ul className="row list-view">
-            <template v-if="users">
-              <li
-                v-for="(user, index) in users"
-                :key="index"
-                class="col s12 m6 l4 xl3"
-                @click="
-                  isCheckboxShown === true
-                    ? this.onCheck(user.userId)
-                    : () => {}
-                "
-              >
-                <section>
-                  <input
-                    v-if="isCheckboxShown === true"
-                    type="checkbox"
-                    name="selected"
-                    :checked="
-                      selectedUsers.find((v) => v.userId === user.userId)
-                        ? true
-                        : false
-                    "
-                  />
-                  <img
-                    :src="
-                      user.imageURL && user.imageURL.length > 0
-                        ? user.imageURL
-                        : user.gender === 'F'
-                        ? this.femaleIcon
-                        : this.maleIcon
-                    "
-                    class="round-border"
-                  />
-                  <div>
-                    <h3>{{ user.displayName }}</h3>
-                    <p>{{ user.email }}</p>
-                  </div>
-                  <button class="btn-detail" />
-                </section>
-              </li>
-            </template>
-          </ul>
+          <form class="list-result">
+            <div class="table-responsive" v-if="isTable">
+              <table>
+                <thead>
+                  <tr>
+                    <th>{{ resource.sequence }}</th>
+                    <th data-field="userId">
+                      <button type="button" id="sortUserId" @click="sort">
+                        {{ resource.user_id }}
+                      </button>
+                    </th>
+                    <th data-field="userName">
+                      <button type="button" id="sortUsername" @click="sort">
+                        {{ resource.username }}
+                      </button>
+                    </th>
+                    <th data-field="status">
+                      <button type="button" id="sortStatus" @click="sort">
+                        {{ resource.status }}
+                      </button>
+                    </th>
+                    <th className="action">{{ resource.action }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, i) in list" :key="item.roleId">
+                    <td class="text-right">{{ item.sequenceNo }}</td>
+                    <td>{{ item.roleId }}</td>
+                    <td>{{ item.roleName }}</td>
+                    <td>{{ item.status }}</td>
+                    <td>
+                      <button
+                        v-if="editable"
+                        type="button"
+                        class="btn-edit"
+                        :id="i"
+                        @click="viewRoles(item.roleId)"
+                      ></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <ul class="row list-view" v-else>
+              <template v-if="users">
+                <li
+                  v-for="(user, index) in users"
+                  :key="index"
+                  class="col s12 m6 l4 xl3"
+                  @click="
+                    isCheckboxShown === true
+                      ? this.onCheck(user.userId)
+                      : () => {}
+                  "
+                >
+                  <section>
+                    <input
+                      v-if="isCheckboxShown === true"
+                      type="checkbox"
+                      name="selected"
+                      :checked="
+                        selectedUsers.find((v) => v.userId === user.userId)
+                          ? true
+                          : false
+                      "
+                    />
+                    <img
+                      :src="
+                        user.imageURL && user.imageURL.length > 0
+                          ? user.imageURL
+                          : user.gender === 'F'
+                          ? this.femaleIcon
+                          : this.maleIcon
+                      "
+                      class="round-border"
+                    />
+                    <div>
+                      <h3>{{ user.displayName }}</h3>
+                      <p>{{ user.email }}</p>
+                    </div>
+                    <button class="btn-detail" />
+                  </section>
+                </li>
+              </template>
+            </ul>
+          </form> 
         </section>
       </div>
       <footer>
@@ -157,12 +222,14 @@ export default class RoleAssignmentForm extends EditComponent<Role, string> {
   role: Role = {} as any;
   users: User[] = [];
   q = "";
+  isTable = true;
+
   isOpenModel = false;
   isCheckboxShown = false;
   selectedUsers: User[] = [];
   userService = useUser();
   roleService = useRole();
-  
+
   femaleIcon: "../../../assets/images/female.png";
   maleIcon: "../../../assets/images/male.png";
   created() {
@@ -175,7 +242,7 @@ export default class RoleAssignmentForm extends EditComponent<Role, string> {
       alertError,
       confirm,
       storage.loading()
-    );    
+    );
   }
   mounted() {
     const id = buildId(this.service.keys(), this.$route);
@@ -223,20 +290,26 @@ export default class RoleAssignmentForm extends EditComponent<Role, string> {
   getIds = (users?: User[]): string[] => {
     return users ? users.map((item) => item.userId) : [];
   };
-  save(e: any){
+  save(e: any) {
     e.preventDefault();
     const userIDs = this.getIds(this.users);
-    const msg = message(this.resource, "msg_confirm_save", "confirm", "yes", "no");
+    const msg = message(
+      this.resource,
+      "msg_confirm_save",
+      "confirm",
+      "yes",
+      "no"
+    );
     confirm(
       msg.message,
       msg.title,
-      () => {        
+      () => {
         this.roleService
           .assign(this.role.roleId, userIDs)
           .then((result) => {
             this.showMessage(this.resource.msg_save_success);
           })
-          .catch((error)=>this.handleError(error));
+          .catch((error) => this.handleError(error));
       },
       msg.no,
       msg.yes
@@ -276,6 +349,9 @@ export default class RoleAssignmentForm extends EditComponent<Role, string> {
         this[key] = obj[key];
       });
     }
+  }
+  changeView() {
+    this.isTable = !this.isTable;
   }
   onModelClose(e: any) {
     this.isOpenModel = false;

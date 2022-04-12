@@ -35,27 +35,28 @@
       <form id="rolesForm" name="rolesForm" :novalidate="true" ref="form">
         <section className="row search-group">
           <label className="col s12 m6 search-input">
-            <PageSizeSelect :pageSize="pageSize" :pageSizes="pageSizes" :onPageSizeChanged="pageSizeChanged" />
+            <PageSizeSelect
+              :pageSize="pageSize"
+              :pageSizes="pageSizes"
+              :onPageSizeChanged="pageSizeChanged"
+            />
             <input
               type="text"
               id="q"
               name="q"
-              :value="model.q"
-              @change="updateState"
+              v-model="model.q"
               maxLength="255"
               :placeholder="resource.keyword"
             />
             <button
               type="button"
-              class="btn-filter"
-              @click="toggleFilter"
+              :hidden="!model.q || model.q.length === 0"
+              class="btn-remove-text"
+              @click="clearKeyworkOnClick"
             />
-            <button
-              type="submit"
-              class="btn-search"
-              @click="search"
-            />
-          </label>        
+            <button type="button" class="btn-filter" @click="toggleFilter" />
+            <button type="submit" class="btn-search" @click="search" />
+          </label>
           <!-- <Pagination className='col s12 m6' total={component.total} size={component.pageSize} max={component.pageMaxSize} page={component.pageIndex} onChange={pageChanged} /> -->
         </section>
         <section class="row search-group inline" :hidden="hideFilter">
@@ -197,7 +198,7 @@ import { buildFromUrl, navigate, SearchComponent } from "../common";
 import { Role, RoleFilter } from "./service/role";
 import PaginateVue from "../core/PaginateVue.vue";
 import { useMasterData, useRole } from "./service";
-import PageSizeSelect from "../core/PageSizeSelect.vue"
+import PageSizeSelect from "../core/PageSizeSelect.vue";
 @Options({
   components: { PaginateVue, PageSizeSelect },
 })
@@ -208,7 +209,7 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   viewable = true;
   editable = true;
   list = [];
-  hideFilter=false;
+  hideFilter = false;
   //   privilegesList=[];
   created() {
     const roleService = useRole();
@@ -239,12 +240,10 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
         com.load(s, auto);
       })
       .catch(com.handleError);
-    
   }
 
   changeView() {
     this.isTable = !this.isTable;
-    console.log(this.isTable);
   }
   getSearchModel(): RoleFilter {
     const model = this.populateFilter();
@@ -253,11 +252,15 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
 
   viewRoles(id) {
     console.log(this.$router);
-    
+
     navigate(this.$router, "roles", [id]);
   }
   addRole() {
     navigate(this.$router, "/admin/roles/add");
+  }
+
+  clearKeyworkOnClick() {
+    this.model.q = "";
   }
 }
 </script>
