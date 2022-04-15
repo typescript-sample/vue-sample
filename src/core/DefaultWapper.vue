@@ -39,8 +39,8 @@
               <div class='dropdown-menu-profile'>
                 <img v-if="user && user.imageURL" id='btnProfile' src="@/assets/images/male.png"
                      @click="toggleProfile"/>
-                <!-- <i v-if="(!user || !user.imageURL)" class='material-icons' @click="toggleProfile">person</i> -->
-                <i v-if="(!user || !user.imageURL)" class="mdi mdi-account"  @click="toggleProfile"></i>
+                <i v-if="(!user || !user.imageURL)" class='material-icons' @click="toggleProfile">person</i>
+                <!-- <i v-if="(!user || !user.imageURL)" class="mdi mdi-account"  @click="toggleProfile"></i> -->
                 <ul id='dropdown-basic' :class="getClassProfile + ' dropdown-content-profile'">
                   <li>
                     <label>User Name: {{username}} </label>

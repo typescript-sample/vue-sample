@@ -1,8 +1,8 @@
 const config = {
-  authentication_url: 'http://localhost:8080',
-  user_url: 'http://localhost:8080/users',
-  role_url: 'http://localhost:8080/roles',
-  privilege_url: 'http://localhost:8080/privileges',
+  authentication_url: 'http://localhost:8083',
+  user_url: 'http://localhost:8083/users',
+  role_url: 'http://localhost:8083/roles',
+  privilege_url: 'http://localhost:8083/privileges',
 
 };
 

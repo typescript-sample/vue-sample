@@ -9,8 +9,8 @@
         :class="`btn-pin ${isPinnedModules ? 'pinned' : ''}`"
         @click="pinModulesHandler(index, module.sequence)"
       />
-      <!-- <i class="material-icons">{{ className }}</i> -->
-      <i :class="`mdi mdi-${className}`"></i>
+      <i class="material-icons">{{ className }}</i>
+      <!-- <i :class="`mdi mdi-${className}`"></i> -->
 
       <span>{{ name }}</span>
       <i class="entity-icon down" />
@@ -33,8 +33,8 @@
   </li>
   <li v-else :class="activeWithPath(module.path, false)">
     <router-link :to="module.path">
-      <!-- <i class="material-icons">{{ className }}</i> -->
-      <i :class="`mdi mdi-${className}`"></i>
+      <i class="material-icons">{{ className }}</i>
+      <!-- <i :class="`mdi mdi-${className}`"></i> -->
 
       <span>{{ name }}</span>
     </router-link>
