@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import Router, { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import adminRouter from '../admin';
 import authenRouter from '../authentication';
 import NotFound from './NotFound.vue';

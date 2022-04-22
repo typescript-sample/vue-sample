@@ -178,7 +178,7 @@ export default class UsersLookup extends SearchComponent<User, UserFilter> {
     this.onCreated(
       userService,
       storage.resource(),
-      storage.ui(),
+      storage.ui() as any,
       getLocale,
       toast,
       alertError,
@@ -228,7 +228,9 @@ export default class UsersLookup extends SearchComponent<User, UserFilter> {
     this.$emit("onModelSave", this.usersLookup);
     this.usersLookup = [];
     this.availableUsers = [];
-    this.model.q = "";
+    if(this.model){
+      this.model.q = "";
+    }
     this.userIdsLookup = [];
 
     // this.props.onModelSave(this.state.users);
@@ -237,7 +239,9 @@ export default class UsersLookup extends SearchComponent<User, UserFilter> {
   onModelClose() {
     this.usersLookup = [];
     this.availableUsers = [];
-    this.model.q = "";
+    if(this.model){
+      this.model.q = "";
+    }
     this.userIdsLookup = [];
     this.$emit("onModelClose");
     // if (this.props.onModelClose) {

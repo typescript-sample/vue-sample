@@ -32,10 +32,9 @@
     </ul>
   </li>
   <li v-else :class="activeWithPath(module.path, false)">
-    <router-link :to="module.path">
+    <router-link :to="module.path" class="menu-item">
       <i class="material-icons">{{ className }}</i>
       <!-- <i :class="`mdi mdi-${className}`"></i> -->
-
       <span>{{ name }}</span>
     </router-link>
   </li>
@@ -94,7 +93,18 @@ export default class extends Vue {
       }
     }
   }
-
+  findParent(ele: HTMLElement, node: string): HTMLElement | null {
+    let current: HTMLElement | null = ele;
+    while (true) {
+      current = current.parentElement;
+      if (!current) {
+        return null;
+      }
+      if (current.nodeName === node) {
+        return current;
+      }
+    }
+  }
   activeWithPath = (path: string, isParent: boolean, features?: any[]) => {
     const pathName = window.location.pathname;
     if (isParent && features && Array.isArray(features)) {
@@ -130,30 +140,77 @@ export default class extends Vue {
     }
     this.$emit("setPinnedModules", pinnedModulesTemp);
   }
-
-  toggleMenuItem = (event: any) => {
-    let target = event.currentTarget;
-    const currentTarget = event.currentTarget;
-    const elI = currentTarget.querySelectorAll(".menu-item > i")[1];
-    if (elI) {
-      if (elI.classList.contains("down")) {
-        elI.classList.remove("down");
-        elI.classList.add("up");
-      } else {
-        if (elI.classList.contains("up")) {
-          elI.classList.remove("up");
-          elI.classList.add("down");
+  isCollapsedAll(parent: HTMLElement): boolean {
+    const navbar = Array.from(
+      parent.querySelectorAll(".sidebar>nav>ul>li>ul.list-child")
+    );
+    if (navbar.length > 0) {
+      let i = 0;
+      for (i = 0; i < navbar.length; i++) {
+        if (navbar[i].classList.contains("expanded")) {
+          return false;
         }
       }
+      return true;
     }
-    if (currentTarget.nextElementSibling) {
-      currentTarget.nextElementSibling.classList.toggle("expanded");
+    return false;
+  }
+  isExpandedAll(parent: HTMLElement): boolean {
+    const navbar = Array.from(
+      parent.querySelectorAll(".sidebar>nav>ul>li>ul.list-child")
+    );
+    if (navbar.length > 0) {
+      let i = 0;
+      for (i = 0; i < navbar.length; i++) {
+        if (!navbar[i].classList.contains("expanded")) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+  toggleMenuItem = (event: any) => {
+    event.preventDefault();
+    let target: HTMLElement | null = event.currentTarget;
+    const currentTarget = event.currentTarget;
+    const nul = currentTarget.nextElementSibling;
+    if (nul) {
+      const elI = currentTarget.querySelectorAll(".menu-item > i.entity-icon");
+      if (nul.classList.contains("expanded")) {
+        nul.classList.remove("expanded");
+        if (elI && elI.length > 0) {
+          elI[0].classList.add("up");
+          elI[0].classList.remove("down");
+        }
+      } else {
+        nul.classList.add("expanded");
+        if (elI && elI.length > 0) {
+          elI[0].classList.remove("up");
+          elI[0].classList.add("down");
+        }
+      }
     }
     if (target.nodeName === "A") {
       target = target.parentElement;
     }
-    if (target.nodeName === "LI") {
+    if (target && target.nodeName === "LI") {
       target.classList.toggle("open");
+    }
+    const parent = this.findParent(currentTarget, "NAV");
+    if (parent) {
+      setTimeout(() => {
+        if (this.isExpandedAll(parent)) {
+          parent.classList.remove("collapsed-all");
+          parent.classList.add("expanded-all");
+        } else if (this.isCollapsedAll(parent)) {
+          parent.classList.remove("expanded-all");
+          parent.classList.add("collapsed-all");
+        } else {
+          parent.classList.remove("expanded-all");
+          parent.classList.remove("collapsed-all");
+        }
+      }, 0);
     }
   };
 }

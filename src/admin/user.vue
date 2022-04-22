@@ -28,7 +28,7 @@ export default class UserComponent extends EditComponent<User, string> {
     this.onCreated(
       this.userService,
       storage.resource(),
-      storage.ui(),
+      storage.ui() as any,
       getLocale,
       toast,
       alertError,
@@ -40,8 +40,10 @@ export default class UserComponent extends EditComponent<User, string> {
 
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
+    if(this.service.keys){
     const id = buildId(this.service.keys(), this.$route);
     this.load(id);
+    }
   }
   updatePhoneState() {}
 

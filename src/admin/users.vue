@@ -134,14 +134,14 @@ import PageSizeSelect from "../core/PageSizeSelect.vue";
 export default class UsersComponent extends SearchComponent<User, UserFilter> {
   username = '';
   status = [];
-  statusList = [];
+  statusList:any = [];
   displayName = '';
   created() {
     const userService = useUser();
     this.onCreated(
       userService,
       storage.resource(),
-      storage.ui(),
+      storage.ui() as any,
       getLocale,
       toast,
       alertError,

@@ -7,6 +7,12 @@ export const vi = {
   settings: 'Settings',
   help: 'Help',
   events_history: 'Event History',
+  menu: 'Menu',
+  sidebar: 'Sidebar',
+  dark_mode: 'Dark mode',
+  light_mode: 'Light mode',
+  classic_menu: 'Classic menu',
+  modern_menu: 'Modern menu',
 
   confirm: 'Confirm',
   create: 'Create',
@@ -61,9 +67,7 @@ export const vi = {
   button_advance_search: 'Advance Search',
   button_basic_search: 'Basic Search',
   button_back: 'Back',
-  button_create: 'Create',
-  button_edit: 'edit',
-  
+
   msg_confirm_save: 'Are you sure you want to save?',
   msg_save_success: 'Data have been saved successfully',
   msg_approve_success: 'Data have been approved successfully',
@@ -218,5 +222,9 @@ export const vi = {
 
   filter_playlists: 'Filter Playlists...',
   filter_videos: 'Filter Videos...',
-  filter_items: 'Filter Items...'
+  filter_items: 'Filter Items...',
+  videos: 'Videos',
+  playlists: 'Playlists',
+  channels: 'Channels',
+  subscriptions: 'Subscriptions'
 };

@@ -17,6 +17,7 @@ module.exports = {
     'no-irregular-whitespace':'off',
     'no-empty':'off',
     'no-useless-escape':'off',
+    'no-constant-condition':'off',
     '@typescript-eslint/no-this-alias':'off',
     '@typescript-eslint/no-empty-function':'off'
   }

@@ -1,11 +1,11 @@
 <template>
   <ul>
     <li>
-      <a class="toggle-menu" @click="toggleMenu" />
+      <!-- <a class="toggle-menu" @click="toggleMenu" /> -->
       <p class="sidebar-off-menu">
-        <i class="toggle" @click="toggleSidebar" />
+        <button class="toggle" @click="toggleMenu"></button>
         <i v-if="!isToggleSidebar" class="expand" @click="onShowAllMenu" />
-        <i v-if="!isToggleSidebar " class="collapse" @click="onHideAllMenu" />
+        <i v-if="!isToggleSidebar" class="collapse" @click="onHideAllMenu" />
       </p>
     </li>
     <li
@@ -34,18 +34,19 @@
 </template>
 
 <script lang="ts">
-import { Options, prop, Vue } from 'vue-class-component';
-import ItemLink from './ItemLink.vue';
+import { Options, prop, Vue } from "vue-class-component";
+import ItemLink from "./ItemLink.vue";
 
 @Options({
-  name: 'SideBar',
+  name: "SideBar",
   props: {
-    features:{required:false},
-    isToggleSidebar:{required:true, default:true},
+    features: { required: false },
+    isToggleSidebar: { required: true, default: true },
+    isToggleMenu: { required: true },
   },
   components: {
-    ItemLink
-  }
+    ItemLink,
+  },
 })
 export default class extends Vue {
   private features: any[];
@@ -58,53 +59,66 @@ export default class extends Vue {
   }
 
   toggleSidebar() {
-    this.$emit('toggle-sidebar', this.isToggleSidebar);
+    this.$emit("toggle-sidebar", this.isToggleSidebar);
   }
 
   toggleMenu() {
-    this.$emit('toggle-menu', this.isToggleMenu);
+    this.$emit("toggle-menu", this.isToggleMenu);
   }
-
-  onShowAllMenu = (e: any) => {
-    const sysBody = (window as any).sysBody;
-    if (sysBody.classList.contains('top-menu2')) {
+  findParent(ele: HTMLElement, node: string): HTMLElement | null {
+    let current: HTMLElement | null = ele;
+    while (true) {
+      current = current.parentElement;
+      if (!current) {
+        return null;
+      }
+      if (current.nodeName === node) {
+        return current;
+      }
+    }
+  }
+  onShowAllMenu(e: any) {
+    e.preventDefault();
+    const parent = this.findParent(e.currentTarget, "NAV");
+    if (parent) {
+      parent.classList.add("expanded-all");
+      parent.classList.remove("collapsed-all");
       const navbar = Array.from(
-        document.querySelectorAll('.sidebar>nav>ul>li>ul.list-child')
-      );
-      const icons = Array.from(
-        document.querySelectorAll('.sidebar>nav>ul>li>a>i.down')
+        parent.querySelectorAll(".sidebar>nav>ul>li>ul.list-child")
       );
       if (navbar.length > 0) {
+        const icons = Array.from(parent.querySelectorAll("i.up"));
         let i = 0;
         for (i = 0; i < navbar.length; i++) {
-          navbar[i].className = 'list-child expanded';
-          if (icons[i]) {
-            icons[i].className = 'entity-icon up';
-          }
+          navbar[i].className = "list-child expanded";
+        }
+        for (i = 0; i < icons.length; i++) {
+          icons[i].className = "entity-icon down";
         }
       }
     }
   }
 
   onHideAllMenu = (e: any) => {
-    const sysBody = (window as any).sysBody;
-    if (sysBody.classList.contains('top-menu2')) {
+    e.preventDefault();
+    const parent = this.findParent(e.currentTarget, "NAV");
+    if (parent) {
+      parent.classList.add("collapsed-all");
+      parent.classList.remove("expanded-all");
       const navbar = Array.from(
-        document.querySelectorAll('.sidebar>nav>ul>li>ul.expanded')
-      );
-      const icons = Array.from(
-        document.querySelectorAll('.sidebar>nav>ul>li>a>i.up')
+        parent.querySelectorAll(".sidebar>nav>ul>li>ul.expanded")
       );
       if (navbar.length > 0) {
+        const icons = Array.from(parent.querySelectorAll("i.down"));
         let i = 0;
         for (i = 0; i < navbar.length; i++) {
-          navbar[i].className = 'list-child';
-          if (icons[i]) {
-            icons[i].className = 'entity-icon down';
-          }
+          navbar[i].className = "list-child";
+        }
+        for (i = 0; i < icons.length; i++) {
+          icons[i].className = "entity-icon up";
         }
       }
     }
-  }
+  };
 }
 </script>

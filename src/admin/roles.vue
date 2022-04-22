@@ -216,7 +216,7 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
     this.onCreated(
       roleService,
       storage.resource(),
-      storage.ui(),
+      storage.ui() as any,
       getLocale,
       toast,
       alertError,
@@ -236,7 +236,7 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
     masterDataService
       .getStatus()
       .then((statusList) => {
-        com.statusList = statusList;
+        com.statusList = statusList as any;
         com.load(s, auto);
       })
       .catch(com.handleError);
@@ -260,7 +260,9 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   }
 
   clearKeyworkOnClick() {
-    this.model.q = "";
+    if(this.model){
+      this.model.q = "";
+    }
   }
 }
 </script>

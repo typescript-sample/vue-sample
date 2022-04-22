@@ -21,11 +21,11 @@ import config from './config';
 import { resources as locales } from './core/resources';
 
 // import './App.css';
-import './assets/fonts/material-icon/css/material-icons.css';
 import './assets/css/reset.css';
+import './assets/fonts/material-icon/css/material-icons.css';
 import './assets/css/checkbox.css';
 import './assets/css/radio.css';
-import './assets/css/materialize-grid.css';
+import './assets/css/grid.css';
 import './assets/css/alert.css';
 import './assets/css/loader.css';
 import './assets/css/main.css';
@@ -39,14 +39,17 @@ import './assets/css/article.css';
 import './assets/css/list-view.css';
 import './assets/css/table.css';
 import './assets/css/list-detail.css';
-import './assets/css/navigation-bar.css';
+import './assets/css/navigation.css';
 import './assets/css/pagination.css';
 import './assets/css/solid-container.css';
-import './assets/css/common-button.css';
+import './assets/css/button.css';
 import './assets/css/search.css';
 import './assets/css/layout.css';
 import './assets/css/profile.css';
 import './assets/css/theme.css';
+import './assets/css/dark.css';
+import './assets/fonts/Roboto/font.css';
+
 import { Options, Vue } from 'vue-class-component';
 function parseDate(value: string, format: string): Date | null | undefined {
 
@@ -103,7 +106,7 @@ export function init() {
   uiresources.resource = storage.resource();
   resources.formatPhone = formatPhone;
   resources.formatFax = formatFax;
-  resources.currency = currency;
+  resources.currency = currency as any;
   resources.formatNumber = formatNumber;
 }
 

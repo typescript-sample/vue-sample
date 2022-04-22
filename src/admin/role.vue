@@ -34,13 +34,13 @@ export default class RoleComponent extends EditComponent<Role, string> {
   keyword = "";
   shownPrivileges: Privilege[] = [];
   allPrivilege: Privilege[] = [];
-  checkedAll = false;
+  checkedAll: boolean | undefined = false;
   created() {
     this.checkedCtrl = [];
     this.onCreated(
       this.roleService,
       storage.resource(),
-      storage.ui(),
+      storage.ui() as any,
       getLocale,
       toast,
       alertError,
@@ -64,16 +64,16 @@ export default class RoleComponent extends EditComponent<Role, string> {
       this.isCheckedAll(this.role.privileges, this.all);
     });
   }
-  assign(roleId: string){
+  assign(roleId: string) {
     navigate(this.$router, `/admin/roles/assigns/${roleId}`);
   }
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
-    const id = buildId(this.service.keys(), this.$route);
-    this.load(id);
+    if (this.service.keys) {
+      const id = buildId(this.service.keys(), this.$route);
+      this.load(id);
+    }
     this.showModel(this.role);
-    
-    
   }
   createModel(): Role {
     const role = createModel<Role>(this.metadata);
@@ -106,9 +106,11 @@ export default class RoleComponent extends EditComponent<Role, string> {
   };
   buildAll = (privileges: string[], all: Privilege[]): void => {
     for (const root of all) {
-      privileges.push(root.id);
-      if (root.children && root.children.length > 0) {
-        this.buildAll(privileges, root.children);
+      if (root.id) {
+        privileges.push(root.id);
+        if (root.children && root.children.length > 0) {
+          this.buildAll(privileges, root.children);
+        }
       }
     }
   };
@@ -166,7 +168,7 @@ export default class RoleComponent extends EditComponent<Role, string> {
       return false;
     }
     for (const m of all) {
-      if (privileges.includes(m.id)) {
+      if (privileges.includes(m.id as any)) {
         return true;
       }
     }
@@ -186,7 +188,7 @@ export default class RoleComponent extends EditComponent<Role, string> {
         if (this.containOne(privileges, parent.children)) {
           return ms;
         } else {
-          return ms.concat(parent.children.map((i) => i.id));
+          return ms.concat(parent.children.map((i ) => i.id as any ));
         }
       } else {
         return [];

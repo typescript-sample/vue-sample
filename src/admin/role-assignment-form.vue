@@ -185,7 +185,7 @@
                 </li>
               </template>
             </ul>
-          </form> 
+          </form>
         </section>
       </div>
       <footer>
@@ -236,7 +236,7 @@ export default class RoleAssignmentForm extends EditComponent<Role, string> {
     this.onCreated(
       this.roleService,
       storage.resource(),
-      storage.ui(),
+      storage.ui() as any,
       getLocale,
       toast,
       alertError,
@@ -245,11 +245,13 @@ export default class RoleAssignmentForm extends EditComponent<Role, string> {
     );
   }
   mounted() {
-    const id = buildId(this.service.keys(), this.$route);
-    this.userService.getUsersByRole(id).then((users) => {
-      this.users = users;
-    });
-    this.load(id);
+    if (this.service.keys) {
+      const id = buildId(this.service.keys(), this.$route);
+      this.userService.getUsersByRole(id).then((users) => {
+        this.users = users;
+      });
+      this.load(id);
+    }
   }
   showModel(obj: Role) {
     if (!obj) return;
@@ -302,7 +304,7 @@ export default class RoleAssignmentForm extends EditComponent<Role, string> {
     );
     confirm(
       msg.message,
-      msg.title,
+      msg.title as any,
       () => {
         this.roleService
           .assign(this.role.roleId, userIDs)
