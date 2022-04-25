@@ -45,7 +45,7 @@
           <h4>
             {{ resource.user }}
             <div class="btn-group">
-              <button type="button" @click="isOpenModel = true">
+              <button type="button" @click="showModal">
                 {{ resource.add }}
               </button>
               <button type="button" @click="onShowCheckBox">

@@ -19,6 +19,7 @@ module.exports = {
     'no-useless-escape':'off',
     'no-constant-condition':'off',
     '@typescript-eslint/no-this-alias':'off',
-    '@typescript-eslint/no-empty-function':'off'
+    '@typescript-eslint/no-empty-function':'off',
+    '@typescript-eslint/no-empty-interface':'off'
   }
 }

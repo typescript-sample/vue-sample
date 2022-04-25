@@ -83,12 +83,55 @@
                   v-if="!user"
                   :class="getClassProfile + ' dropdown-content-profile'"
                 >
-                  <li class="menu" @click="changeMenu()">
-                    <label>User Name: {{ username }} </label>
-                    <br />
-                    <label
-                      >Role : {{ userType === "M" ? "Maker" : "Checker" }}
-                    </label>
+                  <li @click="changeMenu">
+                    <template v-if="isTopMenu === true">
+                      <i class="material-icons">view_list</i
+                      ><span class="dropdown-item-profile">{{
+                        resource.sidebar
+                      }}</span>
+                    </template>
+                    <template v-else>
+                      <i class="material-icons">credit_card</i
+                      ><span class="dropdown-item-profile">{{
+                        resource.menu
+                      }}</span>
+                    </template>
+                  </li>
+                  <li @click="changeClassicMenu" class="classic-menu">
+                    <template v-if="isClassicMenu">
+                      <i class="material-icons">assessment</i
+                      ><span class="dropdown-item-profile">{{
+                        resource.modern_menu
+                      }}</span>
+                    </template>
+                    <template v-else>
+                      <i class="material-icons">credit_card</i
+                      ><span class="dropdown-item-profile">{{
+                        resource.classic_menu
+                      }}</span>
+                    </template>
+                  </li>
+                  <hr style="margin: 0" />
+                  <li @click="changeMode">
+                    <template v-if="isDarkMode === true">
+                      <i class="material-icons">radio_button_checked</i
+                      ><span class="dropdown-item-profile">{{
+                        resource.light_mode
+                      }}</span>
+                    </template>
+                    <template v-if="isDarkMode === false">
+                      <i class="material-icons">timelapse</i
+                      ><span class="dropdown-item-profile">{{
+                        resource.dark_mode
+                      }}</span>
+                    </template>
+                  </li>
+                  <hr style="margin: 0" />
+                  <li>
+                    <i class="material-icons">account_circle</i
+                    ><a class="dropdown-item-profile" href="/">{{
+                      resource.signin
+                    }}</a>
                   </li>
                   <hr style="margin: 0" />
                   <li>
@@ -217,12 +260,12 @@ export default class extends BaseComponent {
   protected pageSize = 20;
   protected pageSizes = [10, 20, 40, 60, 100, 200, 400, 10000];
   DarkMode = false;
-  classicMenu:boolean;
+  classicMenu: boolean;
   private user: any = {};
   protected username: any = "";
   protected userType: any = "";
-  sysBody: HTMLElement | null | undefined;
-  
+  sysBody: HTMLElement | null | undefined = null;
+
   mounted() {
     this.httpRequest = new HttpRequest(axios, options);
     const username = storage.username();
@@ -242,9 +285,6 @@ export default class extends BaseComponent {
     this.loading = storage.loading();
     this.resourceService = storage.resource();
     this.resource = storage.resource().resource();
-    this.$watch("DarkMode",()=>{
-    this.isDarkMode
-  })
   }
 
   created() {
@@ -252,8 +292,16 @@ export default class extends BaseComponent {
     this.privileges =
       this.forms && this.forms["privileges"] ? this.forms["privileges"] : [];
     this.onCreated();
+    this.$watch('DarkMode',()=>{
+    })
   }
 
+  viewMyProfile() {
+    navigate(this.$router, "/my-profile");
+  }
+  viewMySettings() {
+    navigate(this.$router, "my-profile/settings");
+  }
   changeMenu() {
     if (!this.sysBody) {
       this.sysBody = document.getElementById("sysBody");
@@ -308,7 +356,7 @@ export default class extends BaseComponent {
   }
 
   async signout(event: any) {
-    event.preventDefault();
+    // event.preventDefault();
     /*
     this.signoutService.signout(GlobalApps.getUserName()).subscribe(success => {
       if (success === true) {
@@ -330,20 +378,20 @@ export default class extends BaseComponent {
       this.handleError(err);
     }
   }
-changeClassicMenu() {
+  changeClassicMenu() {
     if (!this.sysBody) {
-      this.sysBody = document.getElementById('sysBody');
+      this.sysBody = document.getElementById("sysBody");
     }
     if (this.sysBody) {
-      if (this.sysBody.classList.contains('classic')) {
-        this.sysBody.classList.remove('classic');
+      if (this.sysBody.classList.contains("classic")) {
+        this.sysBody.classList.remove("classic");
         this.classicMenu = true;
       } else {
-        this.sysBody.classList.add('classic');
+        this.sysBody.classList.add("classic");
         this.classicMenu = false;
       }
     }
-}
+  }
   clearKeyworkOnClick = () => {
     this.keyword = "";
   };

@@ -220,8 +220,8 @@ export default class RoleComponent extends EditComponent<Role, string> {
           {{ resource.role }}
           <i
             @click="assign(this.role.roleId)"
-            class="btn mdi mdi-account-multiple"
-          ></i>
+            class="btn material-icons"
+          >group</i>
         </h2>
       </header>
       <div>
