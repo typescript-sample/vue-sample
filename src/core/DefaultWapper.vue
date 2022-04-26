@@ -84,13 +84,13 @@
                   :class="getClassProfile + ' dropdown-content-profile'"
                 >
                   <li @click="changeMenu">
-                    <template v-if="isTopMenu === true">
+                    <template v-if="isTopMenu">
                       <i class="material-icons">view_list</i
                       ><span class="dropdown-item-profile">{{
                         resource.sidebar
                       }}</span>
                     </template>
-                    <template v-else>
+                    <template v-if="!isTopMenu">
                       <i class="material-icons">credit_card</i
                       ><span class="dropdown-item-profile">{{
                         resource.menu
@@ -104,7 +104,7 @@
                         resource.modern_menu
                       }}</span>
                     </template>
-                    <template v-else>
+                    <template v-if="!isClassicMenu">
                       <i class="material-icons">credit_card</i
                       ><span class="dropdown-item-profile">{{
                         resource.classic_menu
@@ -113,13 +113,13 @@
                   </li>
                   <hr style="margin: 0" />
                   <li @click="changeMode">
-                    <template v-if="isDarkMode === true">
+                    <template v-if="isDarkMode">
                       <i class="material-icons">radio_button_checked</i
                       ><span class="dropdown-item-profile">{{
                         resource.light_mode
                       }}</span>
                     </template>
-                    <template v-if="isDarkMode === false">
+                    <template v-if="isDarkMode">
                       <i class="material-icons">timelapse</i
                       ><span class="dropdown-item-profile">{{
                         resource.dark_mode
@@ -146,13 +146,13 @@
                   :class="getClassProfile + ' dropdown-content-profile'"
                 >
                   <li @click="changeMenu">
-                    <template v-if="isTopMenu === true">
+                    <template v-if="isTopMenu">
                       <i class="material-icons">view_list</i
                       ><span class="dropdown-item-profile">{{
                         resource.sidebar
                       }}</span>
                     </template>
-                    <template v-else>
+                    <template v-if="!isTopMenu">
                       <i class="material-icons">credit_card</i
                       ><span class="dropdown-item-profile">{{
                         resource.menu
@@ -166,7 +166,7 @@
                         resource.modern_menu
                       }}</span>
                     </template>
-                    <template v-else>
+                    <template v-if="!isClassicMenu">
                       <i class="material-icons">credit_card</i
                       ><span class="dropdown-item-profile">{{
                         resource.classic_menu
@@ -175,13 +175,13 @@
                   </li>
                   <hr style="margin: 0" />
                   <li @click="changeMode">
-                    <template v-if="isDarkMode === true">
+                    <template v-if="isDarkMode">
                       <i class="material-icons">radio_button_checked</i
                       ><span class="dropdown-item-profile">{{
                         resource.light_mode
                       }}</span>
                     </template>
-                    <template v-if="isDarkMode === false">
+                    <template v-if="!isDarkMode">
                       <i class="material-icons">timelapse</i
                       ><span class="dropdown-item-profile">{{
                         resource.dark_mode
@@ -260,12 +260,20 @@ export default class extends BaseComponent {
   protected pageSize = 20;
   protected pageSizes = [10, 20, 40, 60, 100, 200, 400, 10000];
   DarkMode = false;
-  classicMenu: boolean;
+  classicMenu = false;
   private user: any = {};
   protected username: any = "";
   protected userType: any = "";
-  sysBody: HTMLElement | null | undefined = null;
-
+  sysBody: HTMLElement | null | undefined;
+  // isDarkMode :boolean;
+  // isTopMenu :boolean;
+  // isClassicMenu :boolean;
+  // isDarkMode = false;
+  // isTopMenu = false;
+  // isClassicMenu = false;
+  isDarkMode = this.checkIsDarkMode();
+  isTopMenu = this.checkIsTopMenu();
+  isClassicMenu = this.checkIsClassicMenu();
   mounted() {
     this.httpRequest = new HttpRequest(axios, options);
     const username = storage.username();
@@ -285,6 +293,16 @@ export default class extends BaseComponent {
     this.loading = storage.loading();
     this.resourceService = storage.resource();
     this.resource = storage.resource().resource();
+    this.$watch("DarkMode", () => {
+      this.isDarkMode = this.checkIsDarkMode();
+    });
+    this.$watch("isMenu", () => {
+      this.isTopMenu = this.checkIsTopMenu();
+      this.isClassicMenu = this.checkIsClassicMenu();
+    });
+    this.$watch("classicMenu", () => {
+      this.isClassicMenu = this.checkIsClassicMenu();
+    });
   }
 
   created() {
@@ -292,8 +310,7 @@ export default class extends BaseComponent {
     this.privileges =
       this.forms && this.forms["privileges"] ? this.forms["privileges"] : [];
     this.onCreated();
-    this.$watch('DarkMode',()=>{
-    })
+    this.$watch("DarkMode", () => {});
   }
 
   viewMyProfile() {
@@ -316,7 +333,7 @@ export default class extends BaseComponent {
       }
     }
   }
-  get isClassicMenu(): boolean {
+  checkIsClassicMenu(): boolean {
     if (!this.sysBody) {
       this.sysBody = document.getElementById("sysBody");
     }
@@ -415,7 +432,7 @@ export default class extends BaseComponent {
     return topClassList.join(" ");
   }
 
-  get isTopMenu(): boolean {
+  checkIsTopMenu(): boolean {
     if (!this.sysBody) {
       this.sysBody = document.getElementById("sysBody");
     }
@@ -443,7 +460,7 @@ export default class extends BaseComponent {
       }
     }
   }
-  get isDarkMode(): boolean {
+  checkIsDarkMode(): boolean {
     if (!this.sysBody) {
       this.sysBody = document.getElementById("sysBody");
     }
