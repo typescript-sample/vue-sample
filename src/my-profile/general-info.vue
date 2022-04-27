@@ -162,7 +162,8 @@ export default class GeneralIfoComponent extends Vue.with(Props) {
   save(event: any) {
     event.preventDefault();
     const id = "XU3rkqafp";
-    this.service.saveMyProfile(this.user).then((success) => {
+    if(this.user){
+      this.service.saveMyProfile(this.user).then((success) => {
       let status = "";
       if (success) {
         status = "success";
@@ -172,6 +173,7 @@ export default class GeneralIfoComponent extends Vue.with(Props) {
       this.$emit("onSave", { status, user: this.user });
       this.$emit("closeModalFn");
     });
+    }
   }
   closeModal(event: any) {
           this.$emit("closeModalFn");

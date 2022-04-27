@@ -191,7 +191,7 @@ export default class extends Vue {
         }
       }
     }
-    if (target.nodeName === "A") {
+    if (target && target.nodeName === "A") {
       target = target.parentElement;
     }
     if (target && target.nodeName === "LI") {

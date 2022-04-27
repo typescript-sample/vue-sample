@@ -24,15 +24,15 @@ export function hasPrivilege(privileges: Privilege[], link: string): boolean {
       return true;
     } else if (privilege.children && privilege.children.length > 0) {
       for (const item of privilege.children) {
-        if (result.startsWith(item.path)) {
+        if (item.path && result.startsWith(item.path)) {
           return true;
         } else if (item.children && item.children.length > 0) {
           for (const sub of item.children) {
-            if (result.startsWith(sub.path)) {
+            if (sub.path && result.startsWith(sub.path)) {
               return true;
             } else if (sub.children && sub.children.length > 0) {
               for (const last of sub.children) {
-                if (result.startsWith(last.path)) {
+                if (last.path && result.startsWith(last.path)) {
                   return true;
                 }
               }

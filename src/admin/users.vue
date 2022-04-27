@@ -2,7 +2,12 @@
   <div class="view-container">
     <header>
       <h2>{{resource.users_list}}</h2>
+      <div class="btn-group">
+          <button type='button' v-if="viewMode!=='table'" id='btnTable' name='btnTable' class='btn-table' data-view='table' @click="changeView" />
+          <button type='button' v-if="viewMode ==='table'" id='btnListView' name='btnListView' class='btn-list-view' data-view='listview' @click="changeView" />
+          
       <button type="button" class="btn-new" id="btnNew" @click="addUser"></button>
+      </div>
     </header>
     <div>
       <form id="rolesForm" name="rolesForm" :novalidate="true" ref="form">
@@ -136,6 +141,7 @@ export default class UsersComponent extends SearchComponent<User, UserFilter> {
   status = [];
   statusList:any = [];
   displayName = '';
+  viewMode = '';
   created() {
     const userService = useUser();
     this.onCreated(
