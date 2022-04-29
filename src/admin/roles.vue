@@ -57,7 +57,17 @@
             <button type="button" class="btn-filter" @click="toggleFilter" />
             <button type="submit" class="btn-search" @click="search" />
           </label>
-          <!-- <Pagination class='col s12 m6' total={component.total} size={component.pageSize} max={component.pageMaxSize} page={component.pageIndex} onChange={pageChanged} /> -->
+          <paginateVue
+            :items-per-page="pageSize"
+            :item-total="itemTotal"
+            :margin-pages="pageSize"
+            :page-range="pageSize"
+            :forcePage="pageIndex"
+            :click-handler="pageChanged"
+            :page-class="'page-item'"
+            :pageLinkClass="'page-link'"
+            :container-class="'pagination'"
+          ></paginateVue>
         </section>
         <section class="row search-group inline" :hidden="hideFilter">
           <label class="col s12 m4 l4">
@@ -72,28 +82,35 @@
             />
           </label>
 
-          <label class="col s12 m4 l4">
+          <label class="col s12 m4 l4 checkbox-section">
             {{ resource.status }}
-            <section
-              class="checkbox-group"
-              v-for="ctrlItem in statusList"
-              :key="ctrlItem.value"
-            >
+            <section class="checkbox-group">
               <label>
                 <input
                   type="checkbox"
-                  :id="ctrlItem.value"
+                  id="A"
                   name="status"
-                  :value="ctrlItem.value"
+                  value="A"
                   @change="updateState"
-                  :checked="ctrlItem.value"
+                  checked="A"
                 />
-                {{ ctrlItem.text }}
+                {{ resource.active }}
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  id="I"
+                  name="status"
+                  value="I"
+                  @change="updateState"
+                  checked="I"
+                />
+                {{ resource.inactive }}
               </label>
             </section>
           </label>
         </section>
-        <section class="btn-group">
+        <!-- <section class="btn-group">
           <label>
             {{ resource.page_size }}
             <select @change="onPageSizeChanged">
@@ -107,8 +124,8 @@
               </option>
             </select>
           </label>
-          <!-- <button type="submit" class="btn-search" @click="search">{{resource.search}}</button> -->
-        </section>
+          <button type="submit" class="btn-search" @click="search">{{resource.search}}</button>
+        </section> -->
       </form>
       <form class="list-result">
         <div class="table-responsive" v-if="view==='table'">
@@ -170,19 +187,6 @@
             </section>
           </li>
         </ul>
-        <nav class="col s12 m6 l6">
-          <paginateVue
-            :items-per-page="pageSize"
-            :item-total="itemTotal"
-            :margin-pages="pageSize"
-            :page-range="pageSize"
-            :forcePage="pageIndex"
-            :click-handler="pageChanged"
-            :page-class="'page-item'"
-            :pageLinkClass="'page-link'"
-            :container-class="'pagination'"
-          ></paginateVue>
-        </nav>
       </form>
     </div>
   </div>
@@ -224,20 +228,7 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
     const s = this.mergeFilter(buildFromUrl(), ["status"]);
-    this.init(s, true);
-  }
-
-  init(s: RoleFilter, auto: boolean) {
-    const com = this;
-    const masterDataService = getMasterData();
-    // const roleService = useRole();
-    masterDataService
-      .getStatus()
-      .then((statusList) => {
-        com.statusList = statusList as any;
-        com.load(s, auto);
-      })
-      .catch(com.handleError);
+    this.load(s, true);
   }
 
   getSearchModel(): RoleFilter {

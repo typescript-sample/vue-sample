@@ -663,8 +663,6 @@ interface Edit {
 })
 export default class MyProfileComponent extends Vue {
   user: User = {} as any;
-  followers = "7 followers";
-  following = "10 following";
   resource: StringMap;
   isOpen = false;
   isEditing = false;

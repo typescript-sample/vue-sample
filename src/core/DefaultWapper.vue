@@ -259,6 +259,7 @@ export default class extends BaseComponent {
   protected pageSizes = [10, 20, 40, 60, 100, 200, 400, 10000];
   DarkMode = false;
   classicMenu = false;
+  private user: any = {};
   protected username: any = "";
   protected userType: any = "";
   sysBody: HTMLElement | null | undefined;
@@ -314,7 +315,7 @@ export default class extends BaseComponent {
     navigate(this.$router, "/my-profile");
   }
   viewMySettings() {
-    navigate(this.$router, "my-profile/settings");
+    navigate(this.$router, "/my-profile/settings");
   }
   changeMenu() {
     if (!this.sysBody) {
