@@ -1,5 +1,4 @@
 import { Attributes, Filter, Service, Tracking } from 'onecore';
-import { Client, HttpRequest } from 'web-clients';
 
 export interface UserFilter extends Filter {
   userId: string;
@@ -7,16 +6,6 @@ export interface UserFilter extends Filter {
   email: string;
   displayName: string;
   status: string[] | string;
-  imageURL:string;
-  page?: number;
-  limit?: number;
-  firstLimit?: number;
-  fields?: string[];
-  sort?: string;
-
-  q?: string;
-  excluding?: any;
-  refId?: string | number;
 }
 export interface User extends Tracking {
   userId: string;
@@ -33,7 +22,6 @@ export interface User extends Tracking {
 }
 export interface UserService extends Service<User, string, UserFilter> {
   getUsersByRole(id: string): Promise<User[]>;
-  getAllUsers(): Promise<User[]>;
 }
 
 export const userModel: Attributes = {
@@ -44,11 +32,13 @@ export const userModel: Attributes = {
   },
   username: {
     length: 100,
-    required: true
+    required: true,
+    q: true
   },
   displayName: {
     length: 100,
-    required: true
+    required: true,
+    q: true
   },
   imageURL: {
     length: 255
@@ -57,7 +47,8 @@ export const userModel: Attributes = {
     length: 10
   },
   title: {
-    length: 20
+    length: 20,
+    q: true
   },
   position: {
     length: 20
@@ -67,7 +58,8 @@ export const userModel: Attributes = {
     length: 14
   },
   email: {
-    length: 100
+    length: 100,
+    q: true
   },
   status: {
     length: 1
@@ -85,4 +77,3 @@ export const userModel: Attributes = {
     type: 'datetime'
   }
 };
-

@@ -17,7 +17,7 @@ import { storage } from 'uione';
 import { resources as vresources } from 'validation-core';
 import { DefaultCsvService, resources as resource } from 'web-clients';
 import { resources } from './common';
-import config from './config';
+import {config} from './config';
 import { resources as locales } from './core/resources';
 
 // import './App.css';

@@ -6,7 +6,7 @@
           type="button"
           id="btnBack"
           name="btnBack"
-          className="btn-back"
+          class="btn-back"
           @click="back"
         />
         <h2 v-if="role.roleName && role.roleName.length > 0">
@@ -65,30 +65,12 @@
               <button v-if="isCheckboxShown" type="button" @click="onDelete">
                 {{ resource.delete }}
               </button>
-              <div class="btn-group">
-                <button
-                  v-if="isTable === true"
-                  type="button"
-                  id="btnTable"
-                  name="btnTable"
-                  className="btn-table"
-                  data-view="table"
-                  @click="changeView"
-                />
-                <button
-                  v-if="isTable !== true"
-                  type="button"
-                  id="btnListView"
-                  name="btnListView"
-                  className="btn-list-view"
-                  data-view="listview"
-                  @Click="changeView"
-                />
-              </div>
+
+              
             </div>
           </h4>
-          <label className="col s12 search-input">
-            <i className="btn-search" />
+          <label class="col s12 search-input">
+            <i class="btn-search" />
             <input
               type="text"
               id="q"
@@ -100,50 +82,7 @@
             />
           </label>
           <form class="list-result">
-            <div class="table-responsive" v-if="isTable">
-              <table>
-                <thead>
-                  <tr>
-                    <th>{{ resource.sequence }}</th>
-                    <th data-field="userId">
-                      <button type="button" id="sortUserId" @click="sort">
-                        {{ resource.user_id }}
-                      </button>
-                    </th>
-                    <th data-field="userName">
-                      <button type="button" id="sortUsername" @click="sort">
-                        {{ resource.username }}
-                      </button>
-                    </th>
-                    <th data-field="status">
-                      <button type="button" id="sortStatus" @click="sort">
-                        {{ resource.status }}
-                      </button>
-                    </th>
-                    <th className="action">{{ resource.action }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, i) in list" :key="item.roleId">
-                    <td class="text-right">{{ item.sequenceNo }}</td>
-                    <td>{{ item.roleId }}</td>
-                    <td>{{ item.roleName }}</td>
-                    <td>{{ item.status }}</td>
-                    <td>
-                      <button
-                        v-if="editable"
-                        type="button"
-                        class="btn-edit"
-                        :id="i"
-                        @click="viewRoles(item.roleId)"
-                      ></button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <ul class="row list-view" v-else>
+            <ul class="row list-view">
               <template v-if="users">
                 <li
                   v-for="(user, index) in users"
@@ -204,58 +143,45 @@
 </template>
 
 <script lang="ts">
-import { buildId, EditComponent, message } from "../common";
-import { confirm, getLocale, storage } from "uione";
-import { Options } from "vue-class-component";
-import { Role, User, useRole, useUser } from "./service";
-import { toast } from "ui-toast";
-import { alertError } from "ui-alert";
+import { buildId, message } from "../common";
+import { confirm, getResource, handleError, showMessage } from "uione";
+import { Options, Vue } from "vue-class-component";
+import { getRoleService, getUserService, Role, User } from "./service";
 import UsersLookup from "./users-lookup.vue";
 import { clone } from "reflectx";
+import female from "../assets/images/female.png";
+import male from "../assets/images/male.png";
 @Options({
   name: "RoleAssignmentForm",
   components: {
     UsersLookup,
   },
 })
-export default class RoleAssignmentForm extends EditComponent<Role, string> {
-  role: Role = {} as any;
+export default class RoleAssignmentForm extends Vue {
+  role ={} as any;
   users: User[] = [];
   q = "";
-  isTable = true;
-
   isOpenModel = false;
   isCheckboxShown = false;
   selectedUsers: User[] = [];
-  userService = useUser();
-  roleService = useRole();
-
-  femaleIcon: "../../../assets/images/female.png";
-  maleIcon: "../../../assets/images/male.png";
-  created() {
-    this.onCreated(
-      this.roleService,
-      storage.resource(),
-      storage.ui() as any,
-      getLocale,
-      toast,
-      alertError,
-      confirm,
-      storage.loading()
-    );
-  }
+  userService = getUserService();
+  roleService = getRoleService();
+  resource = getResource().resource();
+  femaleIcon = female;
+  maleIcon = male;
+  created() {}
   mounted() {
-    if (this.service.keys) {
-      const id = buildId(this.service.keys(), this.$route);
-      this.userService.getUsersByRole(id).then((users) => {
-        this.users = users;
-      });
-      this.load(id);
+    if (this.roleService.keys) {
+      const id = buildId(this.roleService.keys(), this.$route);
+      Promise.all([
+        this.userService.getUsersByRole(id),
+        this.roleService.load(id),
+      ])
+        .then((values) => {
+            [this.users, this.role] = values;
+        })
+        .catch(handleError);
     }
-  }
-  showModel(obj: Role) {
-    if (!obj) return;
-    this.role = obj;
   }
   onCheck(userId: string) {
     if (this.users) {
@@ -285,10 +211,6 @@ export default class RoleAssignmentForm extends EditComponent<Role, string> {
       });
     }
   }
-  getModel(): Role {
-    const obj = clone(this.role);
-    return obj;
-  }
   getIds = (users?: User[]): string[] => {
     return users ? users.map((item) => item.userId) : [];
   };
@@ -309,9 +231,9 @@ export default class RoleAssignmentForm extends EditComponent<Role, string> {
         this.roleService
           .assign(this.role.roleId, userIDs)
           .then((result) => {
-            this.showMessage(this.resource.msg_save_success);
+            showMessage(this.resource.msg_save_success);
           })
-          .catch((error) => this.handleError(error));
+          .catch(handleError);
       },
       msg.no,
       msg.yes
@@ -352,8 +274,8 @@ export default class RoleAssignmentForm extends EditComponent<Role, string> {
       });
     }
   }
-  changeView() {
-    this.isTable = !this.isTable;
+  showModal(){
+    this.isOpenModel = true;
   }
   onModelClose(e: any) {
     this.isOpenModel = false;

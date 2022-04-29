@@ -19,7 +19,7 @@
     "js-base64": "^3.7.2",
     "locale-service": "^0.0.6",
     "moment": "^2.29.1",
-    "onecore": "^0.0.27",
+    "onecore": "0.0.28",
     "phonecodes": "^0.0.2",
     "query-string": "^7.1.1",
     "react-modal": "^3.14.4",

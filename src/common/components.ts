@@ -1,7 +1,7 @@
 import { diff, setValue } from 'reflectx';
 import { clone, makeDiff, trim } from 'reflectx';
 import { addParametersIntoUrl, append, buildMessage, changePage, changePageSize, formatResults, getFields, handleSortEvent, initFilter, mergeFilter, more, optimizeFilter, reset, showPaging } from 'search-core';
-import { Attributes, DiffApprService, Filter, getModelName, LoadingService, Locale, message, messageByHttpStatus, MetaModel, ResourceService, SearchResult, SearchService, UIService, ViewService } from './core';
+import { Attributes, DiffApprService, Filter, getModelName, handleToggle, LoadingService, Locale, message, messageByHttpStatus, MetaModel, ResourceService, SearchResult, SearchService, UIService, ViewService } from './core';
 // import {formatDiffModel} from './diff';
 import { build, createModel, GenericService, handleStatus, handleVersion, ResultInfo } from './edit';
 import { format, json } from './formatter';
@@ -627,6 +627,7 @@ export class SearchComponent<T, S extends Filter> extends BaseComponent {
   excluding: any;
   hideFilter: boolean | undefined;
 
+  view?:string;
   chkAll: any = null;
   searchable = true;
   viewable = true;
@@ -701,8 +702,24 @@ export class SearchComponent<T, S extends Filter> extends BaseComponent {
     this.sort = this.sort.bind(this);
     this.showMore = this.showMore.bind(this);
     this.pageChanged = this.pageChanged.bind(this);
+
+    this.changeView = this.changeView.bind(this);
+  }
+
+  changeView(event:any,view?:string):void{
+    if (view && view.length > 0) {
+      this.view = view;
+    } else if (event && event.target) {
+      const target = event.target as any;
+      const v: string = target.getAttribute('data-view');
+      if (v && v.length > 0) {
+        this.view =v;
+      }
+    }
   }
   toggleFilter(event?: any): void {
+    const x = !this.hideFilter;
+    handleToggle(event.target, this.hideFilter)
     this.hideFilter = !this.hideFilter;
   }
 

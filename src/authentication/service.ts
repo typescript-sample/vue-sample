@@ -2,7 +2,7 @@ import {AuthenClient, AuthenticationClient, AuthInfo} from 'authen-client';
 import axios from 'axios';
 import {HttpRequest} from 'axios-core';
 import {CookieService} from 'cookie-core';
-import config from '../config';
+import {config} from '../config';
 
 const httpRequest = new HttpRequest(axios);
 export function useAuthen(): AuthenClient<AuthInfo> {

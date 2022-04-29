@@ -1,23 +1,11 @@
 <script lang="ts">
-import { defineComponent, watch } from "@vue/runtime-core";
 import { clone } from "reflectx";
-import { alertError, confirm } from "ui-alert";
-import { toast } from "ui-toast";
-import {
-  emailOnBlur,
-  getLocale,
-  initForm,
-  phoneOnBlur,
-  Privilege,
-  registerEvents,
-  storage,
-} from "uione";
+import { initForm, inputEdit, Privilege, registerEvents } from "uione";
 import { Options } from "vue-class-component";
 import { buildId, createModel, EditComponent, navigate } from "../common";
-import { Role, useRole, useMasterData } from "./service";
+import { getMasterData, getRoleService, Role } from "./service";
 import { PrivilegesForm } from "./role/PrivilegesForm";
 import { useStore } from "vuex";
-import { param } from "web-clients";
 @Options({
   components: {
     PrivilegesForm,
@@ -27,8 +15,8 @@ export default class RoleComponent extends EditComponent<Role, string> {
   store = useStore();
   statusList = [];
   checkedCtrl: string[] = [];
-  roleService = useRole();
-  masterDataService = useMasterData();
+  roleService = getRoleService();
+  masterDataService = getMasterData();
   role: Role = {} as any;
   all: string[] = [];
   keyword = "";
@@ -37,15 +25,23 @@ export default class RoleComponent extends EditComponent<Role, string> {
   checkedAll: boolean | undefined = false;
   created() {
     this.checkedCtrl = [];
+    const editParams = inputEdit() as any;
     this.onCreated(
       this.roleService,
-      storage.resource(),
-      storage.ui() as any,
-      getLocale,
-      toast,
-      alertError,
-      confirm,
-      storage.loading()
+      // storage.resource(),
+      // storage.ui() as any,
+      // getLocale,
+      // toast,
+      // alertError,
+      // confirm,
+      // storage.loading()
+      editParams.resource,
+      editParams.ui,
+      editParams.getLocale,
+      editParams.showMessage,
+      editParams.showError,
+      editParams.confirm,
+      editParams.loading
     );
     this.patchable = false;
     this.roleService.getPrivileges().then((allPrivilege) => {
@@ -188,7 +184,7 @@ export default class RoleComponent extends EditComponent<Role, string> {
         if (this.containOne(privileges, parent.children)) {
           return ms;
         } else {
-          return ms.concat(parent.children.map((i ) => i.id as any ));
+          return ms.concat(parent.children.map((i) => i.id as any));
         }
       } else {
         return [];
@@ -218,11 +214,10 @@ export default class RoleComponent extends EditComponent<Role, string> {
         <h2>
           {{ newMode ? resource.button_create : resource.button_edit }}
           {{ resource.role }}
-          <i
-            @click="assign(this.role.roleId)"
-            class="btn material-icons"
-          >group</i>
         </h2>
+        <button class="btn-group btn-right">
+          <i @click="assign(this.role.roleId)" class="material-icons">group</i>
+        </button>
       </header>
       <div>
         <section class="row">

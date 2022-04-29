@@ -23,7 +23,6 @@ export interface Privilege {
 export interface RoleService extends Service<Role, string, RoleFilter> {
   getPrivileges(): Promise<Privilege[]>;
   assign(roleId: string, users: string[]): Promise<number>;
-  getRoles():Promise<Role[]>;
 }
 
 export const roleModel: Attributes = {

@@ -1,112 +1,66 @@
 <template>
   <div class="view-container">
     <header>
-      <h2>{{resource.users_list}}</h2>
+      <h2>{{ resource.users }}</h2>
       <div class="btn-group">
-          <button type='button' v-if="viewMode!=='table'" id='btnTable' name='btnTable' class='btn-table' data-view='table' @click="changeView" />
-          <button type='button' v-if="viewMode ==='table'" id='btnListView' name='btnListView' class='btn-list-view' data-view='listview' @click="changeView" />
-          
-      <button type="button" class="btn-new" id="btnNew" @click="addUser"></button>
+        <button
+          type="button"
+          v-if="view !== 'table'"
+          id="btnTable"
+          name="btnTable"
+          class="btn-table"
+          data-view ="table"
+          @click="changeView"
+        />
+        <button
+          type="button"
+          v-if="view === 'table'"
+          id="btnListView"
+          name="btnListView"
+          class="btn-list-view"
+          data-view="listview"
+          @click="changeView"
+        />
+        <button
+          v-if="addable"
+          type="button"
+          class="btn-new"
+          id="btnNew"
+          @click="add"
+        ></button>
       </div>
     </header>
     <div>
       <form id="rolesForm" name="rolesForm" :novalidate="true" ref="form">
-        <section class="row search-group inline">
-          <label class="col s12 m4 l4">
-            {{resource.username}}
-            <input
-              type="text"
-              :id="username"
-              name="username"
-              v-model="model.username"
-              maxlength="255"
-              :placeholder="resource.username"
-            />
-          </label>
-          <label class="col s12 m4 l4">
-            {{resource.display_name}}
-            <input
-              type="text"
-              :id="displayName"
-              name="displayName"
-              v-model="model.displayName"
-              maxlength="255"
-              :placeholder="resource.display_name"
-            />
-          </label>
-          <label class="col s12 m4 l4">
-            {{resource.status}}
-            <section
-              class="checkbox-group"
-              v-for="(ctrlItem) of statusList"
-              :key="ctrlItem.value"
-            >
-              <label>
-                <input
-                  type="checkbox"
-                  :id="ctrlItem.value"
-                  name="status"
-                  :value="ctrlItem.value"
-                  @change="updateState"
-                  :checked="ctrlItem.value"
-                />
-                {{ctrlItem.text}}
-              </label>
-            </section>
-          </label>
-        </section>
-        <section class="btn-group">
-          <label>
-            {{resource.page_size}}
+        <section class="row search-group">
+          <label className="col s12 m4 search-input">
             <select @change="onPageSizeChanged">
-              <option v-for="p of pageSizes" :value="p" :selected="p === pageSize" :key="p">{{p}}</option>
+              <option
+                v-for="p of pageSizes"
+                :value="p"
+                :selected="p === pageSize"
+                :key="p"
+              >
+                {{ p }}
+              </option>
             </select>
-            <!-- <PageSizeSelect :pageSize="pageSize" :pageSizes="pageSizes" :onPageSizeChanged="onPageSizeChanged" /> -->
-
+            <input
+              type="text"
+              id="q"
+              name="q"
+              v-model="model.q"
+              maxLength="255"
+              :placeholder="resource.keyword"
+            />
+            <button
+              type="button"
+              :hidden="!model.q"
+              class="btn-remove-text"
+              @click="clear()"
+            ></button>
+            <button type="button" class="btn-filter" @click="toggleFilter" />
+            <button type="submit" class="btn-search" @clcik="search" />
           </label>
-          <button type="submit" class="btn-search" @click="search">{{resource.search}}</button>
-        </section>
-      </form>
-      <form class="list-result">
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>{{resource.sequence}}</th>
-                <th data-field="userId">
-                  <button type="button" id="sortUserId" @click="sort">{{resource.user_id}}</button>
-                </th>
-                <th data-field="username">
-                  <button type="button" id="sortUsername" @click="sort">{{resource.username}}</button>
-                </th>
-                <th data-field="email">
-                  <button type="button" id="sortEmail" @click="sort">{{resource.email}}</button>
-                </th>
-                <th data-field="displayName">
-                  <button type="button" id="sortDisplayName" @click="sort">{{resource.display_name}}</button>
-                </th>
-                <th data-field="status">
-                  <button type="button" id="sortStatus" @click="sort">{{resource.status}}</button>
-                </th>
-                <th className='action'>{{resource.action}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, i) in list" :key="item.userId">
-                <td class="text-right">{{item.sequenceNo}}</td>
-                <td>{{item.userId}}</td>
-                <td>{{item.username}}</td>
-                <td>{{item.email}}</td>
-                <td>{{item.displayName}}</td>
-                <td>{{item.status}}</td>
-                <td>
-                  <button v-if="editable" type="button" class="btn-edit" :id="i" @click="viewUser(item.userId)"></button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <nav class="col s12 m6 l6">
           <PaginateVue
             :items-per-page="pageSize"
             :item-total="itemTotal"
@@ -118,75 +72,203 @@
             :pageLinkClass="'page-link'"
             :container-class="'pagination'"
           ></PaginateVue>
-        </nav>
+        </section>
+        <section class="row search-group inline" :hidden="hideFilter">
+          <label class="col s12 m4 l4">
+            {{ resource.username }}
+            <input
+              type="text"
+              :id="username"
+              name="username"
+              v-model="model.username"
+              maxlength="255"
+              :placeholder="resource.username"
+            />
+          </label>
+          <label class="col s12 m4 l4">
+            {{ resource.display_name }}
+            <input
+              type="text"
+              :id="displayName"
+              name="displayName"
+              v-model="model.displayName"
+              maxlength="255"
+              :placeholder="resource.display_name"
+            />
+          </label>
+          <label class="col s12 m4 l4 checkbox-section">
+            {{ resource.status }}
+            <section class="checkbox-group">
+              <label>
+                <input
+                  type="checkbox"
+                  id="A"
+                  name="status"
+                  value="A"
+                  @change="updateState"
+                  checked="A"
+                />
+                {{ resource.active }}
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  id="I"
+                  name="status"
+                  value="I"
+                  @change="updateState"
+                  checked="I"
+                />
+                {{ resource.inactive }}
+              </label>
+            </section>
+          </label>
+        </section>
+        <!-- <section class="btn-group">
+          <label>
+            {{ resource.page_size }}
+            <select @change="onPageSizeChanged">
+              <option
+                v-for="p of pageSizes"
+                :value="p"
+                :selected="p === pageSize"
+                :key="p"
+              >
+                {{ p }}
+              </option>
+            </select>
+            <PageSizeSelect :pageSize="pageSize" :pageSizes="pageSizes" :onPageSizeChanged="onPageSizeChanged" />
+          </label>
+          <button type="submit" class="btn-search" @click="search">
+            {{ resource.search }}
+          </button>
+        </section> -->
+      </form>
+      <form class="list-result">
+        <div v-if="view === 'table' && list && list.length > 0" class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ resource.sequence }}</th>
+                <th data-field="userId">
+                  <button type="button" id="sortUserId" @click="sort">
+                    {{ resource.user_id }}
+                  </button>
+                </th>
+                <th data-field="username">
+                  <button type="button" id="sortUsername" @click="sort">
+                    {{ resource.username }}
+                  </button>
+                </th>
+                <th data-field="email">
+                  <button type="button" id="sortEmail" @click="sort">
+                    {{ resource.email }}
+                  </button>
+                </th>
+                <th data-field="displayName">
+                  <button type="button" id="sortDisplayName" @click="sort">
+                    {{ resource.display_name }}
+                  </button>
+                </th>
+                <th data-field="status">
+                  <button type="button" id="sortStatus" @click="sort">
+                    {{ resource.status }}
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in list" :key="item.userId" @click="edit(item.userId)">
+                <td class="text-right">{{ item.sequenceNo }}</td>
+                <td>{{ item.userId }}</td>
+                <td>{{ item.username }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.displayName }}</td>
+                <td>{{ item.status }}</td>
+                
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ul v-if="view !== 'table' && list && list.length > 0" class='row list-view'>
+        <li v-for="(item,index) of list" class='col s12 m6 l4 xl3' @click="edit(item.userId)"  :key="index">
+          <section>
+            <img
+             :src='item.imageURL && item.imageURL.length > 0 ? item.imageURL : (item.gender === "F" ? femaleIcon : maleIcon)'
+              class='round-border'/>
+            <div>
+              <h3 @click="edit(item.id)">{{item.displayName}}</h3>
+              <p>{{item.email}}</p>
+            </div>
+            <button class='btn-detail'></button>
+          </section>
+        </li>
+      </ul>
       </form>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { alertError } from 'ui-alert';
-import { toast } from 'ui-toast';
-import { getLocale, initForm, registerEvents, storage } from 'uione';
-import { Options } from 'vue-class-component';
-import { buildFromUrl, navigate } from '../common';
-import { SearchComponent } from '../common';
-import PaginateVue from '../core/PaginateVue.vue';
-import { useMasterData, User, UserFilter, useUser } from './service/';
+import { initForm, inputSearch, registerEvents } from "uione";
+import { Options } from "vue-class-component";
+import { buildFromUrl, navigate } from "../common";
+import { SearchComponent } from "../common";
+import PaginateVue from "../core/PaginateVue.vue";
+import { getUserService, User, UserFilter } from "./service/";
 import PageSizeSelect from "../core/PageSizeSelect.vue";
+import female from '../assets/images/female.png';
+import male from '../assets/images/male.png';
 @Options({
-  components: { PaginateVue, PageSizeSelect }
+  components: { PaginateVue, PageSizeSelect },
 })
 export default class UsersComponent extends SearchComponent<User, UserFilter> {
-  username = '';
+  username = "";
   status = [];
-  statusList:any = [];
-  displayName = '';
-  viewMode = '';
-  created() {
-    const userService = useUser();
+  statusList: any = [];
+  displayName = "";
+  viewMode = "";
+  viewable = true;
+  editable = true;
+  hideFilter = true;
+  femaleIcon = female;
+  maleIcon = male;
+  view="listview";
+    created() {
+    const userService = getUserService();
+    const searchParameters = inputSearch() as any;
     this.onCreated(
       userService,
-      storage.resource(),
-      storage.ui() as any,
-      getLocale,
-      toast,
-      alertError,
-      storage.loading()
+      // storage.resource(),
+      // storage.ui() as any,
+      // getLocale,
+      // toast,
+      // alertError,
+      // storage.loading()
+      searchParameters.resource,
+      searchParameters.ui,
+      searchParameters.getLocale,
+      searchParameters.showMessage,
+      searchParameters.showError,
+      searchParameters.loading
+      
     );
   }
-  mounted() {    
+  mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
-    const s = this.mergeFilter(buildFromUrl(), ['status']);
+    const s = this.mergeFilter(buildFromUrl(), ["status"]);
     this.init(s, true);
   }
-  
+
   init(s: UserFilter, auto: boolean) {
-    const com = this;
-    // const userService = useUser();
-    const masterDataService = useMasterData();
-    masterDataService.getStatus()
-      .then(statusList => {
-        com.statusList = statusList;
-        com.load(s, auto);
-      })
-      .catch(com.handleError);
-      // userService.getAllUsers().then((users)=>{
-      //   com.list = users;
-        
-      // })
+        this.load(s, auto);
   }
 
-  getSearchModel(): UserFilter {
-    const model = this.populateFilter();
-    return model;
+  edit(id:string) {
+    navigate(this.$router, "/admin/users", [id]);
   }
 
-  viewUser(id) {
-    navigate(this.$router, 'users', [id]);
-  }
-
-  addUser() {
-    navigate(this.$router, '/admin/users/add');
+  add() {
+    navigate(this.$router, "/admin/users/add");
   }
 }
 </script>

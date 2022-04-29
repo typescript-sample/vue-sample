@@ -55,35 +55,35 @@ export function createModel<T>(attributes?: Attributes): T {
     switch (attr.type) {
       case 'string':
       case 'text':
-        obj[attr.name] = '';
+        obj[attr.name!] = '';
         break;
       case 'integer':
       case 'number':
-        obj[attr.name] = 0;
+        obj[attr.name!] = 0;
         break;
       case 'array':
-        obj[attr.name] = [];
+        obj[attr.name!] = [];
         break;
       case 'boolean':
-        obj[attr.name] = false;
+        obj[attr.name!] = false;
         break;
       case 'date':
-        obj[attr.name] = new Date();
+        obj[attr.name!] = new Date();
         break;
       case 'object':
         if (attr.typeof) {
           const object = createModel(attr.typeof);
-          obj[attr.name] = object;
+          obj[attr.name!] = object;
           break;
         } else {
-          obj[attr.name] = {};
+          obj[attr.name!] = {};
           break;
         }
       case 'ObjectId':
-        obj[attr.name] = null;
+        obj[attr.name!] = null;
         break;
       default:
-        obj[attr.name] = '';
+        obj[attr.name!] = '';
         break;
     }
   }

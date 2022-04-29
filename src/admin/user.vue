@@ -1,49 +1,68 @@
 <script lang="ts">
+import { Item } from "onecore";
 import { clone } from "reflectx";
-import { alertError, confirm } from "ui-alert";
-import { toast } from "ui-toast";
 import {
   emailOnBlur,
-  getLocale,
   initForm,
+  inputEdit,
   phoneOnBlur,
   registerEvents,
-  storage,
 } from "uione";
 import { Options } from "vue-class-component";
 import { buildId, createModel, EditComponent } from "../common";
-import { useMasterData, useUser } from "./service";
+import { getMasterData, getUserService } from "./service";
 import { User } from "./service";
 
 @Options({})
 export default class UserComponent extends EditComponent<User, string> {
   statusList = [];
-  checkedCtrl: string[] = [];
-  userService = useUser();
-  masterDataService = useMasterData();
+  titleList: Item[] = [];
+  positionList: Item[] = [];
+  userService = getUserService();
+  masterDataService = getMasterData();
   user: User = {} as any;
 
   created() {
-    this.checkedCtrl = [];
+    const editParams = inputEdit() as any;
     this.onCreated(
       this.userService,
-      storage.resource(),
-      storage.ui() as any,
-      getLocale,
-      toast,
-      alertError,
-      confirm,
-      storage.loading()
+      // storage.resource(),
+      // storage.ui() as any,
+      // getLocale,
+      // toast,
+      // alertError,
+      // confirm,
+      // storage.loading()
+      editParams.resource,
+      editParams.ui,
+      editParams.getLocale,
+      editParams.showMessage,
+      editParams.showError,
+      editParams.confirm,
+      editParams.loading
     );
     this.patchable = false;
   }
 
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
-    if(this.service.keys){
-    const id = buildId(this.service.keys(), this.$route);
-    this.load(id);
+    if (this.service.keys) {
+      const id = buildId(this.service.keys(), this.$route);
+      this.init(id);
     }
+  }
+  init(id: string | null) {
+    Promise.all([
+      this.masterDataService.getTitles(),
+      this.masterDataService.getPositions(),
+    ])
+      .then((values) => {
+        [this.titleList, this.positionList] = values;
+        if (id) {
+          this.load(id);
+        }
+      })
+      .catch(this.handleError);
   }
   updatePhoneState() {}
 
@@ -51,10 +70,6 @@ export default class UserComponent extends EditComponent<User, string> {
     const user = createModel<User>(this.metadata);
     user.status = "A";
     return user;
-  }
-  getModel(): User {
-    const obj = clone(this.user);
-    return obj;
   }
   showModel(obj: User) {
     this.user = obj;
@@ -102,10 +117,25 @@ export default class UserComponent extends EditComponent<User, string> {
             id="displayName"
             name="displayName"
             v-model="user.displayName"
-            maxlength="50"
+            maxlength="40"
             :required="true"
             :placeholder="resource.display_name"
           />
+        </label>
+        <label class="col s12 m6">
+          {{ resource.person_title }}
+          <select id="title" name="title" v-model="user.title">
+            <option selected="true" value="">
+              {{ resource.please_select }}
+            </option>
+            <option
+              v-for="(item, index) in titleList"
+              :key="index"
+              :value="item.value"
+            >
+              {{ item.text }}
+            </option>
+          </select>
         </label>
         <label class="col s12 m6">
           {{ resource.phone }}

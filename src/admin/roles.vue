@@ -2,22 +2,22 @@
   <div class="view-container">
     <header>
       <h2>{{ resource.role_list }}</h2>
-      <div className="btn-group">
+      <div class="btn-group">
         <button
-          v-if="isTable === true"
+          v-if="view !== 'table'"
           type="button"
           id="btnTable"
           name="btnTable"
-          className="btn-table"
+          class="btn-table"
           data-view="table"
           @click="changeView"
         />
         <button
-          v-if="isTable !== true"
+          v-if="view === 'table'"
           type="button"
           id="btnListView"
           name="btnListView"
-          className="btn-list-view"
+          class="btn-list-view"
           data-view="listview"
           @Click="changeView"
         />
@@ -26,15 +26,15 @@
           type="button"
           id="btnNew"
           name="btnNew"
-          className="btn-new"
+          class="btn-new"
           @click="addRole"
         />
       </div>
     </header>
     <div>
       <form id="rolesForm" name="rolesForm" :novalidate="true" ref="form">
-        <section className="row search-group">
-          <label className="col s12 m6 search-input">
+        <section class="row search-group">
+          <label class="col s12 m6 search-input">
             <PageSizeSelect
               :pageSize="pageSize"
               :pageSizes="pageSizes"
@@ -57,7 +57,7 @@
             <button type="button" class="btn-filter" @click="toggleFilter" />
             <button type="submit" class="btn-search" @click="search" />
           </label>
-          <!-- <Pagination className='col s12 m6' total={component.total} size={component.pageSize} max={component.pageMaxSize} page={component.pageIndex} onChange={pageChanged} /> -->
+          <!-- <Pagination class='col s12 m6' total={component.total} size={component.pageSize} max={component.pageMaxSize} page={component.pageIndex} onChange={pageChanged} /> -->
         </section>
         <section class="row search-group inline" :hidden="hideFilter">
           <label class="col s12 m4 l4">
@@ -111,7 +111,7 @@
         </section>
       </form>
       <form class="list-result">
-        <div class="table-responsive" v-if="isTable">
+        <div class="table-responsive" v-if="view==='table'">
           <table>
             <thead>
               <tr>
@@ -131,7 +131,7 @@
                     {{ resource.status }}
                   </button>
                 </th>
-                <th className="action">{{ resource.action }}</th>
+                <th class="action">{{ resource.action }}</th>
               </tr>
             </thead>
             <tbody>
@@ -189,15 +189,12 @@
 </template>
 
 <script lang="ts">
-import { alertError } from "ui-alert";
-import { registerEvents } from "ui-plus";
-import { toast } from "ui-toast";
-import { getLocale, initForm, privileges, storage } from "uione";
+import { initForm, inputSearch, registerEvents } from "uione";
 import { Options } from "vue-class-component";
 import { buildFromUrl, navigate, SearchComponent } from "../common";
 import { Role, RoleFilter } from "./service/role";
 import PaginateVue from "../core/PaginateVue.vue";
-import { useMasterData, useRole } from "./service";
+import { getMasterData, getRoleService } from "./service";
 import PageSizeSelect from "../core/PageSizeSelect.vue";
 @Options({
   components: { PaginateVue, PageSizeSelect },
@@ -210,17 +207,18 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   editable = true;
   list = [];
   hideFilter = false;
-  //   privilegesList=[];
+  view="listview";
   created() {
-    const roleService = useRole();
+    const roleService = getRoleService();
+    const searchParameters = inputSearch() as any;
     this.onCreated(
       roleService,
-      storage.resource(),
-      storage.ui() as any,
-      getLocale,
-      toast,
-      alertError,
-      storage.loading()
+      searchParameters.resource,
+      searchParameters.ui,
+      searchParameters.getLocale,
+      searchParameters.showMessage,
+      searchParameters.showError,
+      searchParameters.loading
     );
   }
   mounted() {
@@ -231,7 +229,7 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
 
   init(s: RoleFilter, auto: boolean) {
     const com = this;
-    const masterDataService = useMasterData();
+    const masterDataService = getMasterData();
     // const roleService = useRole();
     masterDataService
       .getStatus()
@@ -242,9 +240,6 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
       .catch(com.handleError);
   }
 
-  changeView() {
-    this.isTable = !this.isTable;
-  }
   getSearchModel(): RoleFilter {
     const model = this.populateFilter();
     return model;
@@ -253,14 +248,14 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   viewRoles(id) {
     console.log(this.$router);
 
-    navigate(this.$router, "roles", [id]);
+    navigate(this.$router, "/admin/roles", [id]);
   }
   addRole() {
     navigate(this.$router, "/admin/roles/add");
   }
 
   clearKeyworkOnClick() {
-    if(this.model){
+    if (this.model) {
       this.model.q = "";
     }
   }

@@ -229,14 +229,12 @@
 <script lang="ts">
 import axios from "axios";
 import { HttpRequest } from "axios-core";
-import { alertError, confirm } from "ui-alert";
 import { toast } from "ui-toast";
 import { options, storage } from "uione";
 import { getLocale } from "uione/src/index";
 import { Options } from "vue-class-component";
 import { navigate } from "../common";
 import { BaseComponent } from "../common";
-import config from "../config";
 import PageSizeSelect from "./PageSizeSelect.vue";
 import SideBar from "./SideBar/index.vue";
 
@@ -261,7 +259,6 @@ export default class extends BaseComponent {
   protected pageSizes = [10, 20, 40, 60, 100, 200, 400, 10000];
   DarkMode = false;
   classicMenu = false;
-  private user: any = {};
   protected username: any = "";
   protected userType: any = "";
   sysBody: HTMLElement | null | undefined;
