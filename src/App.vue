@@ -7,7 +7,6 @@
 <script lang="ts">
 import * as csv from 'csvtojson';
 import {currency, locale} from 'locale-service';
-import * as moment from 'moment';
 import { phonecodes } from 'phonecodes';
 import { alert, confirm } from 'ui-alert';
 import { loading } from 'ui-loading';
@@ -20,8 +19,8 @@ import { resources } from './common';
 import {config} from './config';
 import { resources as locales } from './core/resources';
 
-// import './App.css';
 import './assets/css/reset.css';
+import './App.css';
 import './assets/fonts/material-icon/css/material-icons.css';
 import './assets/css/checkbox.css';
 import './assets/css/radio.css';
@@ -48,7 +47,6 @@ import './assets/css/layout.css';
 import './assets/css/profile.css';
 import './assets/css/theme.css';
 import './assets/css/dark.css';
-import './assets/fonts/Roboto/font.css';
 
 import { Options, Vue } from 'vue-class-component';
 function parseDate(value: string, format: string): Date | null | undefined {
@@ -117,14 +115,3 @@ export default class App extends Vue {
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

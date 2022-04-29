@@ -73,7 +73,7 @@ import {
   handleCookie,
   initFromCookie,
   Status,
-} from "authentication-component";
+} from "authen-client";
 import { Base64 } from "js-base64";
 import { element } from "ui-plus";
 import { options } from "uione";

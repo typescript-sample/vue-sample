@@ -4,7 +4,7 @@
       <div class="logo-banner-wrapper">
         <img
           src="https://jacobspradlin.files.wordpress.com/2014/10/banner-people-connected.png"
-          alt="Logo of The Company"
+          alt="Baner of The Company"
         />
         <img
           src="https://jacobspradlin.files.wordpress.com/2014/10/banner-people-connected.png"
@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="menu sidebar">
-      <nav class="collapsed-all">
+      <nav class="expanded-all">
         <side-bar
           v-bind:features="features"
           @toggle-sidebar="setToggleSidebar"
@@ -29,9 +29,9 @@
         <form>
           <div class="search-group">
             <section>
-              <button type="button" class="toggle-menu"></button>
-              <button type="button" class="toggle-search"></button>
-              <button type="button" class="close-search"></button>
+              <button type="button" class="toggle-menu" @click="toggleMenu"></button>
+              <button type="button" class="toggle-search" @click="toggleSearch"></button>
+              <button type="button" class="close-search" @click="toggleSearch"></button>
             </section>
             <div class="logo-wrapper">
               <img
