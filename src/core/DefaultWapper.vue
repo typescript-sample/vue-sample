@@ -245,7 +245,7 @@ import SideBar from "./SideBar/index.vue";
     PageSizeSelect,
   },
 })
-export default class extends BaseComponent {
+export default class DefaultWapper extends BaseComponent {
   private isToggleSidebar = false;
   private isToggleMenu = false;
   private isToggleSearch = false;
