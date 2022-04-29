@@ -5,7 +5,7 @@ import UsersPage from '../profile/users-page.vue'
 const profileRouter: RouteRecordRaw = {
     path:'/profile',
     component: DefaultWrapper,
-    name: 'admin',
+    name: 'profile',
   meta: {
     title: '',
     icon: ''
