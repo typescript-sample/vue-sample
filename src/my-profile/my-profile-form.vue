@@ -20,7 +20,7 @@
           <img
             class="avatar"
             :src="
-              user.image ||
+              user.imageURL ||
               'https://www.bluebridgewindowcleaning.co.uk/wp-content/uploads/2016/04/default-avatar.png'
             "
             alt="avatar"
@@ -32,7 +32,7 @@
           />
         </div>
         <div class="profile-title">
-          <h3>{{ user.displayName }}</h3>
+          <h3>{{ user.username }}</h3>
           <p>{{ user.website }}</p>
         </div>
         <div class="profile-followers">
@@ -676,6 +676,8 @@ export default class MyProfileComponent extends Vue {
   description = "";
   highlight = false;
   modalIsOpen = false;
+  followers = "7 followers";
+  following = "7 following";
   edit: Edit = {
     hireable: false,
     lookingFor: "",

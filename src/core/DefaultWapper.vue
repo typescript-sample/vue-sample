@@ -230,9 +230,9 @@
 import axios from "axios";
 import { HttpRequest } from "axios-core";
 import { toast } from "ui-toast";
-import { options, storage } from "uione";
+import { handleError, options, storage, StringMap } from "uione";
 import { getLocale } from "uione/src/index";
-import { Options } from "vue-class-component";
+import { Options, Vue } from "vue-class-component";
 import { navigate } from "../common";
 import { BaseComponent } from "../common";
 import PageSizeSelect from "./PageSizeSelect.vue";
@@ -245,7 +245,7 @@ import SideBar from "./SideBar/index.vue";
     PageSizeSelect,
   },
 })
-export default class DefaultWapper extends BaseComponent {
+export default class DefaultWapper extends Vue {
   private isToggleSidebar = false;
   private isToggleMenu = false;
   private isToggleSearch = false;
@@ -263,6 +263,7 @@ export default class DefaultWapper extends BaseComponent {
   protected username: any = "";
   protected userType: any = "";
   sysBody: HTMLElement | null | undefined;
+  resource: StringMap;
   // isDarkMode :boolean;
   // isTopMenu :boolean;
   // isClassicMenu :boolean;
@@ -285,11 +286,11 @@ export default class DefaultWapper extends BaseComponent {
   }
 
   onCreated() {
-    this.ui = storage.ui() as any;
-    this.getLocale = getLocale;
-    this.showError = toast;
-    this.loading = storage.loading();
-    this.resourceService = storage.resource();
+    // this.ui = storage.ui() as any;
+    // this.getLocale = getLocale;
+    // this.showError = toast;
+    // this.loading = storage.loading();
+    // this.resourceService = storage.resource();
     this.resource = storage.resource().resource();
     this.$watch("DarkMode", () => {
       this.isDarkMode = this.checkIsDarkMode();
@@ -393,7 +394,7 @@ export default class DefaultWapper extends BaseComponent {
 
       // }
     } catch (err) {
-      this.handleError(err);
+      handleError(err);
     }
   }
   changeClassicMenu() {
