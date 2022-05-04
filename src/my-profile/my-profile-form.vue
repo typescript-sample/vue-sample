@@ -584,8 +584,7 @@
             <div v-if="resource">
               <vue-final-modal
                 v-model="modalIsOpen"
-                classes="modal-container"
-                content-class="modal-content"
+                content-class="modal-portal-content"
               >
                 <general-info-component
                   :resource="resource"
@@ -598,13 +597,12 @@
             <div>
               <vue-final-modal
                 v-model="modalConfirmIsOpen"
-                classes="modal-container"
-                content-class="modal-content"
+               content-class="modal-portal-content small-width-height"
               >
                 <div class="view-container profile-info">
                   <form model-name="data">
                     <header>
-                      <h2>{{ resource.user_profile_general_info }}</h2>
+                      <h2>Edit About</h2>
                       <button
                         type="button"
                         id="btnClose"
@@ -633,6 +631,7 @@
                     </footer>
                   </form>
                 </div>
+
               </vue-final-modal>
             </div>
           </div>
@@ -643,12 +642,11 @@
 </template>
 
 <script lang="ts">
-import { getResource, StringMap } from "uione";
+import { getResource, StringMap, UserAccount } from "uione";
 import { Options, Vue } from "vue-class-component";
 import GeneralIfoComponent from "./general-info.vue";
 import { useMyProfileService, User } from "./my-profile/index";
 import { Achievement, MyProfileService } from "./my-profile/user";
-
 interface Edit {
   hireable: boolean;
   lookingFor: string;
@@ -686,15 +684,17 @@ export default class MyProfileComponent extends Vue {
     description: "",
     subject: "",
   };
+  userAccount: UserAccount = JSON.parse(
+    sessionStorage.getItem("authService" || "{}")
+  );
   service: MyProfileService;
   modalConfirmIsOpen = false;
   created() {
     this.service = useMyProfileService();
-    const id = "XU3rkqafp";
-    this.service.getMyProfile(id).then((user) => {
+    this.service.getMyProfile(this.userAccount.id || "").then((user) => {
       if (user) {
         this.user = user;
-        this.bio = this.user.bio || '';
+        this.bio = this.user.bio || "";
       }
     });
     this.resource = getResource().resource();

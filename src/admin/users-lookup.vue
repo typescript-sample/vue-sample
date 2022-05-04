@@ -141,7 +141,7 @@
 import { SearchComponent } from "@/common";
 import { alertError } from "ui-alert";
 import { toast } from "ui-toast";
-import { getLocale, initForm, storage } from "uione";
+import { getLocale, initForm, inputSearch, storage } from "uione";
 import { Options } from "vue-class-component";
 import { getUserService, User, UserFilter } from "./service";
 import PageSizeSelect from "@/core/PageSizeSelect.vue";
@@ -175,14 +175,21 @@ export default class UsersLookup extends SearchComponent<User, UserFilter> {
   isOpenModel = true;
   created() {
     const userService = getUserService();
+       const searchParameters  = inputSearch();
     this.onCreated(
       userService,
-      storage.resource(),
-      storage.ui() as any,
-      getLocale,
-      toast,
-      alertError,
-      storage.loading()
+      // storage.resource(),
+      // storage.ui() as any,
+      // getLocale,
+      // toast,
+      // alertError,
+      // storage.loading()
+       searchParameters.resource,
+      searchParameters.ui,
+      searchParameters.getLocale,
+      searchParameters.showMessage,
+      searchParameters.showError,
+      searchParameters.loading
     );
   }
   mounted() {

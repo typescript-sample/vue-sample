@@ -706,7 +706,7 @@ export class SearchComponent<T, S extends Filter> extends BaseComponent {
     this.changeView = this.changeView.bind(this);
   }
 
-  changeView(event:any,view?:string):void{
+  changeView(event:any,view?:string):void{    
     if (view && view.length > 0) {
       this.view = view;
     } else if (event && event.target) {

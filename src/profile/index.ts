@@ -1,7 +1,8 @@
 import { authenticated } from "uione";
 import { RouteRecordRaw } from "vue-router";
 import DefaultWrapper from '../core/DefaultWapper.vue';
-import UsersPage from '../profile/users-page.vue'
+import UsersPage from '../profile/users-page.vue';
+import UserPage from '../profile/user-page.vue';
 const profileRouter: RouteRecordRaw = {
     path:'/profile',
     component: DefaultWrapper,
@@ -18,6 +19,7 @@ const profileRouter: RouteRecordRaw = {
   },
     children:[
         {path:'', component:UsersPage, name:'UsersPage', meta: { title: '', noCache: true }},
+        {path:':id', component:UserPage, name:'UserPage', meta: { title: '', noCache: true }},
     ]
 }
 

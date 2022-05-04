@@ -63,7 +63,7 @@
               <button type="submit" class="btn-search" @click="searchOnClick" />
             </label>
             <section class="quick-nav">
-              <a><i class="material-icons">home</i></a>
+              <a><i class="material-icons" @click="viewProfile">home</i></a>
               <div class="dropdown-menu-profile">
                 <!-- <img
                   v-if="user && user.imageURL"
@@ -316,6 +316,9 @@ export default class DefaultWapper extends BaseComponent {
   }
   viewMySettings() {
     navigate(this.$router, "/my-profile/settings");
+  }
+  viewProfile(){
+    navigate(this.$router, "/profile");
   }
   changeMenu() {
     if (!this.sysBody) {

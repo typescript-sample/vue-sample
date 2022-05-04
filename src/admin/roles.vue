@@ -210,7 +210,7 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   viewable = true;
   editable = true;
   list = [];
-  hideFilter = false;
+  hideFilter = true;
   view="listview";
   created() {
     const roleService = getRoleService();

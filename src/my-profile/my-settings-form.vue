@@ -253,5 +253,3 @@ export default class MySettingsComponent extends Vue {
     </form>
   </div>
 </template>
-<style>
-</style>

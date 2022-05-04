@@ -31,7 +31,7 @@
       </div>
     </header>
     <div>
-      <form id="rolesForm" name="rolesForm" :novalidate="true" ref="form">
+      <form id="usersForm" name="usersForm" :novalidate="true">
         <section class="row search-group">
           <label className="col s12 m4 search-input">
             <select @change="onPageSizeChanged">
@@ -224,9 +224,7 @@ import male from '../assets/images/male.png';
 export default class UsersComponent extends SearchComponent<User, UserFilter> {
   username = "";
   status = [];
-  statusList: any = [];
   displayName = "";
-  viewMode = "";
   viewable = true;
   editable = true;
   hideFilter = true;

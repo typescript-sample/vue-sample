@@ -24,7 +24,7 @@
     "react-modal": "^3.14.4",
     "reflectx": "^0.0.10",
     "search-core": "^0.1.1",
-    "ui-alert": "^0.0.7",
+    "ui-alert": "0.0.7",
     "ui-loading": "^0.0.5",
     "ui-plus": "0.0.9",
     "ui-toast": "^0.0.5",

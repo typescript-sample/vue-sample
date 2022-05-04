@@ -9,7 +9,7 @@
           id="btnTable"
           name="btnTable"
           class="btn-table"
-          @click="changeView('table')"
+          @click="changeView($event,'table')"
         ></button>
         <button
           v-if="view === 'table'"
@@ -17,7 +17,7 @@
           id="btnListView"
           name="btnListView"
           class="btn-list-view"
-          @click="changeView('listview')"
+          @click="changeView($event,'listview')"
         ></button>
       </div>
     </header>
@@ -46,24 +46,24 @@
               type="button"
               :hidden="!model.q"
               class="btn-remove-text"
-              @click="clearQ()"
+              @click="clear()"
             ></button>
             <button
               type="button"
-              class="btn-model"
-              @click="togglemodel($event)"
+              class="btn-filter"
+              @click="toggleFilter"
             ></button>
             <button
               type="submit"
               class="btn-search"
-              @click="search($event)"
+              @click="search"
             ></button>
           </label>
           <!-- <pagination class='col s12 m6' id='pageIndex' name='pageIndex' v-if='showPaging' v-model='pageIndex'
           (pageChanged)='pageChanged($event)' (numPages)='pageIndex = $event' [directionLinks]='false'
           [totalItems]='itemTotal' [maxSize]='pageMaxSize' [itemsPerPage]='pageSize'></pagination> -->
         </section>
-        <section class="row search-group inline" :hidden="hidemodel">
+        <section class="row search-group inline" :hidden="hideFilter">
           <label class="col s12 m4 l4">
             {{ resource.username }}
             <input
@@ -180,8 +180,8 @@
             <thead>
               <tr>
                 <!-- <th>{{resource.sequence}}</th> -->
-                <th data-field="userId">
-                  <button type="button" id="sortUserId" @click="sort($event)">
+                <th data-field="id">
+                  <button type="button" id="sortId" @click="sort($event)">
                     {{ resource.user_id }}
                   </button>
                 </th>
@@ -213,10 +213,10 @@
             </thead>
             <tr
               v-for="item in list"
-              @click="edit(item.userId)"
-              :key="item.userId"
+              @click.prevent="viewProfile(item.id)"
+              :key="item.id"
             >
-              <td>{{ item.userId }}</td>
+              <td>{{ item.id }}</td>
               <td>{{ item.username }}</td>
               <td>{{ item.email }}</td>
               <td>{{ item.displayName }}</td>
@@ -231,7 +231,7 @@
           <li
             v-for="item in list"
             class="col s12 m6 l4 xl3"
-            @click="edit(item.userId)" :key="item.userId"
+            @click.prevent="viewProfile(item.id)" :key="item.id"
           >
             <section>
               <img
@@ -245,7 +245,7 @@
                 class="round-border"
               />
               <div>
-                <h3 @click="edit(item.userId)">{{ item.displayName }}</h3>
+                <h3 @click.prevent="viewProfile(item.id)">{{ item.displayName }}</h3>
                 <p>{{ item.email }}</p>
               </div>
               <button class="btn-detail"></button>
@@ -257,13 +257,50 @@
   </div>
 </template>
 
-<script>
-import { SearchComponent } from "@/common";
+<script lang="ts">
+import { buildFromUrl, navigate, SearchComponent } from "@/common";
+import { initForm, inputSearch, registerEvents } from "uione";
 import { Options } from "vue-class-component";
-
+import {getUserService, User,UserFilter} from "./user";
+import female from '../assets/images/female.png';
+import male from '../assets/images/male.png';
 @Options({})
-export default class UsersPage extends SearchComponent {
-  
+export default class UsersPage extends SearchComponent<User,UserFilter> {
+  viewable = true;
+  editable = true;
+  femaleIcon = female;
+  maleIcon = male;
+  hideFilter = true;
+  view="listview";
+  interest='';
+  created(){
+   const userService = getUserService();
+   const searchParameters  = inputSearch() as any;
+   this.onCreated(
+      userService,
+      searchParameters.resource,
+      searchParameters.ui,
+      searchParameters.getLocale,
+      searchParameters.showMessage,
+      searchParameters.showError,
+      searchParameters.loading
+   )
+  }
+  mounted(){
+    this.form = initForm(this.$refs.form as any, registerEvents);
+    const s = this.mergeFilter(buildFromUrl());
+    this.init(s, true);
+  }
+
+  init(s: UserFilter, auto: boolean) {
+        this.load(s, auto);
+  }
+  viewProfile(id:string){
+    console.log(id);
+    
+    navigate(this.$router,'/profile',[id])
+    
+  }
 }
 </script>
 
