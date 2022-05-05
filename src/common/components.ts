@@ -439,22 +439,19 @@ export class EditComponent<T, ID> extends BaseComponent {
   */
   onCreated(service: GenericService<T, ID, number | ResultInfo<T>>,
     param: ResourceService | EditParameter,
-    showMessage: (msg: string) => void,
-    showError: (m: string, title?: string, detail?: string, callback?: () => void) => void,
-    confirm: (m2: string, header: string, yesCallback?: () => void, btnLeftText?: string, btnRightText?: string, noCallback?: () => void) => void,
-    getLocale: () => Locale,
-    ui: UIService,
-    loading?: LoadingService,
-    status?: EditStatusConfig,
-    patchable?: boolean,
-    ignoreDate?: boolean,
-    backOnSaveSuccess?: boolean
+    showMessage?: (msg: string, option?: string) => void,
+    showError?: (m: string, title?: string, detail?: string, callback?: () => void) => void,
+    confirm?: (m2: string, header: string, yesCallback?: () => void, btnLeftText?: string, btnRightText?: string, noCallback?: () => void) => void,
+    getLocale?: (profile?: string) => Locale,
+    uis?: UIService,
+    loading?: LoadingService, status?: EditStatusConfig, patchable?: boolean, ignoreDate?: boolean, backOnSaveSuccess?: boolean
   ) {
     const resourceService = getResource(param);
     this.resource = resourceService.resource();
+    debugger
     this.getLocale = getLocaleFunc(param, getLocale);
     this.loading = getLoadingFunc(param, loading);
-    this.ui = getUIService(param, ui);
+    this.ui = getUIService(param, uis);
     this.showError = getErrorFunc(param, showError);
     this.showMessage = getMsgFunc(param, showMessage);
     this.confirm = getConfirmFunc(param, confirm);
@@ -489,15 +486,7 @@ export class EditComponent<T, ID> extends BaseComponent {
     }
     this.insertSuccessMsg = this.resource['msg_save_success'];
     this.updateSuccessMsg = this.resource['msg_save_success'];
-
     this.service = service;
-    this.showMessage = showMessage;
-    this.confirm = confirm;
-
-    this.ui = ui;
-    this.getLocale = getLocale;
-    debugger;
-    this.showError = showError;
     this.loading = loading;
 
     this.bindFunctions = this.bindFunctions.bind(this);
@@ -532,7 +521,7 @@ export class EditComponent<T, ID> extends BaseComponent {
     this.postSave = this.postSave.bind(this);
     this.handleDuplicateKey = this.handleDuplicateKey.bind(this);
   }
-  load(_id: ID | null | undefined, fm?:(obj: T) => void, callback?: (m: T, showM: (m2: T) => void) => void) {
+  load(_id: ID | null | undefined, callback?: (m: T, showM: (m2: T) => void) => void) {
     const id: any = _id;
     if (id && id !== '') {
       this.service.load(id).then(obj => {
@@ -541,9 +530,7 @@ export class EditComponent<T, ID> extends BaseComponent {
         } else {
           this.newMode = false;
           this.orginalModel = clone(obj);
-          if (fm) {
-            fm(obj);
-          }
+          this.formatModel(obj);
           if (callback) {
             callback(obj, this.showModel);
           } else {

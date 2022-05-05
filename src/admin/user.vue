@@ -17,29 +17,10 @@ export default class UserComponent extends EditComponent<User, string> {
   statusList = [];
   titleList: Item[] = [];
   positionList: Item[] = [];
-  userService = getUserService();
-  masterDataService = getMasterData();
   user: User = {} as any;
 
   created() {
-    const editParams = inputEdit() as any;
-    this.onCreated(
-      this.userService,
-      // storage.resource(),
-      // storage.ui() as any,
-      // getLocale,
-      // toast,
-      // alertError,
-      // confirm,
-      // storage.loading()
-      editParams.resource,
-      editParams.ui,
-      editParams.getLocale,
-      editParams.showMessage,
-      editParams.showError,
-      editParams.confirm,
-      editParams.loading
-    );
+    this.onCreated(getUserService(), inputEdit());
     this.patchable = false;
   }
 
@@ -51,14 +32,15 @@ export default class UserComponent extends EditComponent<User, string> {
     }
   }
   init(id: string | null) {
+    const masterDataService = getMasterData();
     Promise.all([
-      this.masterDataService.getTitles(),
-      this.masterDataService.getPositions(),
+      masterDataService.getTitles(),
+      masterDataService.getPositions(),
     ])
       .then((values) => {
         [this.titleList, this.positionList] = values;
         if (id) {
-          this.load(id, this.formatModel);
+          this.load(id);
         }
       })
       .catch(this.handleError);

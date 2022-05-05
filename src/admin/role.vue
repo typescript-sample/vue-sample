@@ -14,8 +14,6 @@ export default class RoleComponent extends EditComponent<Role, string> {
   store = useStore();
   statusList = [];
   checkedCtrl: string[] = [];
-  roleService = getRoleService();
-  masterDataService = getMasterData();
   role: Role = {} as any;
   all: string[] = [];
   keyword = "";
@@ -25,25 +23,10 @@ export default class RoleComponent extends EditComponent<Role, string> {
   created() {
     this.checkedCtrl = [];
     const editParams = inputEdit() as any;
-    this.onCreated(
-      this.roleService,
-      // storage.resource(),
-      // storage.ui() as any,
-      // getLocale,
-      // toast,
-      // alertError,
-      // confirm,
-      // storage.loading()
-      editParams.resource,
-      editParams.ui,
-      editParams.getLocale,
-      editParams.showMessage,
-      editParams.showError,
-      editParams.confirm,
-      editParams.loading
-    );
+    const roleService = getRoleService();
+    this.onCreated(roleService, inputEdit());
     this.patchable = false;
-    this.roleService.getPrivileges().then((allPrivilege) => {
+    roleService.getPrivileges().then((allPrivilege) => {
       this.buildAll(this.all, allPrivilege);
       this.shownPrivileges = allPrivilege;
       this.allPrivilege = allPrivilege;
