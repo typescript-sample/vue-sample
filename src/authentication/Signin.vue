@@ -58,7 +58,7 @@
         <a id="btnForgotPassword" @click="forgotPassword">
           {{ resource.forgot_password }}
         </a>
-        <a id="btnSignup" name="btnSignup" @click="signup($event)">
+        <a id="btnSignup" name="btnSignup" @click.prevent="signup()">
           {{ resource.button_signup }}
         </a>
       </div>
@@ -172,14 +172,7 @@ export default class SigninComponent extends Vue {
     );
   }
 
-  protected mapToVModel(s: any) {
-    const keys = Object.keys(s);
-    keys.forEach((key) => {
-      // this.$set(this.$data, key, s[key]);
-      this.$data[key] = s[key];
-    });
-  }
-
+  
   initForm() {
     this.form = initForm(this.$refs.form as any, registerEvents);
     this.txtUserName = element(this.form, "userName");
@@ -219,12 +212,12 @@ export default class SigninComponent extends Vue {
     navigate(this.$router, "forgot-password");
   }
 
-  signup(event) {
+  signup(event:Event) {
     event.preventDefault();
     navigate(this.$router, "signup");
   }
 
-  signin(event) {
+  signin(event:Event) {
     event.preventDefault();
     this.txtUserName = element(this.form, "username");
     this.txtPassword = element(this.form, "password");
@@ -273,7 +266,7 @@ export default class SigninComponent extends Vue {
           } else {
             const message3 = r.value("msg_account_reactivated");
             // storage.alert(message3, null, '', function () {
-            storage.alert(message3, "", "", function () {
+            storage.alert(message3, "", "", ()=> {
               storage.setUser(result.user);
 
               this.navigateToHome();

@@ -302,9 +302,16 @@ export default class DefaultWapper extends Vue {
   }
 
   created() {
-    this.forms = JSON.parse(sessionStorage.getItem("authService") as any);
-    this.privileges =
-      this.forms && this.forms["privileges"] ? this.forms["privileges"] : [];
+     const config: any = storage.config();
+    const httpRequest = new HttpRequest(axios, options);
+    httpRequest.get(config.public_privilege_url).then(
+      (forms:any) =>{
+        this.privileges = forms.privileges;
+      }
+    ).catch(err => { });
+    // this.forms = JSON.parse(sessionStorage.getItem("authService") as any);
+    // this.privileges =
+    //   this.forms && this.forms["privileges"] ? this.forms["privileges"] : [];
     this.onCreated();
     this.$watch("DarkMode", () => {});
   }

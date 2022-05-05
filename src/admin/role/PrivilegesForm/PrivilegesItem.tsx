@@ -88,7 +88,7 @@ import { PrivilegesForm } from "../PrivilegesForm";
 // }
 // </script>
 
-export const PrivilegesItem = defineComponent({
+export const PrivilegesItem: any = defineComponent({
   name: "PrivilegesItem",
 
   components: {

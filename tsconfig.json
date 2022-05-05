@@ -19,8 +19,8 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
-    "noImplicitThis": false,
-    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
     "paths": {
       "components/*": ["src/components/*"],
       "@/*":["src/*"]

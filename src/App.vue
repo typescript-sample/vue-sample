@@ -75,7 +75,7 @@ function parseDate(value: string, format: string): Date | null | undefined {
 
 export function init() {
   // const conf = merge(config, process.env, env, process.env.ENV);
-  console.log(parseDate('2000.12.25','yyyy.m.d'));
+  // console.log(parseDate('2000.12.25','yyyy.m.d'));
   
   storage.setConfig(config);
   resource.csv = new DefaultCsvService(csv);

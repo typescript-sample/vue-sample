@@ -58,7 +58,7 @@ export default class UserComponent extends EditComponent<User, string> {
       .then((values) => {
         [this.titleList, this.positionList] = values;
         if (id) {
-          this.load(id);
+          this.load(id, this.formatModel);
         }
       })
       .catch(this.handleError);

@@ -13,15 +13,34 @@
       ></a>
     </li>
 
-    <li v-for="page in pages"
-        :class="[pageClass, page.selected ? activeClass : '', page.disabled ? disabledClass : '', page.breakView ? breakViewClass: '']" :key="page.index">
-      <a v-if="page.breakView" :class="[pageLinkClass, breakViewLinkClass]" tabindex="0">
+    <li
+      v-for="page in pages"
+      :class="[
+        pageClass,
+        page.selected ? activeClass : '',
+        page.disabled ? disabledClass : '',
+        page.breakView ? breakViewClass : '',
+      ]"
+      :key="page.index"
+    >
+      <a
+        v-if="page.breakView"
+        :class="[pageLinkClass, breakViewLinkClass]"
+        tabindex="0"
+      >
         <slot name="breakViewContent">{{ breakViewText }}</slot>
       </a>
-      <a v-else-if="page.disabled" :class="pageLinkClass" tabindex="0">{{ page.content }}</a>
-      <a v-else v-on:click="handlePageSelected(page.index + 1, $event)"
-         @keyup.enter="handlePageSelected(page.index + 1)"
-         :class="pageLinkClass" tabindex="0">{{ page.content }}</a>
+      <a v-else-if="page.disabled" :class="pageLinkClass" tabindex="0">{{
+        page.content
+      }}</a>
+      <a
+        v-else
+        v-on:click="handlePageSelected(page.index + 1, $event)"
+        @keyup.enter="handlePageSelected(page.index + 1)"
+        :class="pageLinkClass"
+        tabindex="0"
+        >{{ page.content }}</a
+      >
     </li>
 
     <li
@@ -47,15 +66,36 @@
       tabindex="0"
       v-html="firstButtonText"
     ></a>
-    <template v-for="page in pages"  :key="page.index">
-      <a v-if="page.breakView" :class="[pageLinkClass, breakViewLinkClass, page.disabled ? disabledClass : '']"
-         tabindex="0">
+    <template v-for="page in pages" :key="page.index">
+      <a
+        v-if="page.breakView"
+        :class="[
+          pageLinkClass,
+          breakViewLinkClass,
+          page.disabled ? disabledClass : '',
+        ]"
+        tabindex="0"
+      >
         <slot name="breakViewContent">{{ breakViewText }}</slot>
       </a>
-      <a v-else-if="page.disabled" :class="[pageLinkClass, page.selected ? activeClass : '', disabledClass]"
-         tabindex="0">{{ page.content }}</a>
-      <a v-else @click="handlePageSelected(page.index + 1)" @keyup.enter="handlePageSelected(page.index + 1)"
-         :class="[pageLinkClass, page.selected ? activeClass : '']" tabindex="0">{{ page.content }}</a>
+      <a
+        v-else-if="page.disabled"
+        :class="[
+          pageLinkClass,
+          page.selected ? activeClass : '',
+          disabledClass,
+        ]"
+        tabindex="0"
+        >{{ page.content }}</a
+      >
+      <a
+        v-else
+        @click="handlePageSelected(page.index + 1)"
+        @keyup.enter="handlePageSelected(page.index + 1)"
+        :class="[pageLinkClass, page.selected ? activeClass : '']"
+        tabindex="0"
+        >{{ page.content }}</a
+      >
     </template>
     <a
       v-if="firstLastButton"
@@ -135,7 +175,7 @@ export default class PaginateVue extends Vue {
   }
   get pages() {
     this.pageCount = this.getPageCount();
-    const items = {};
+    let items = [];
     if (this.pageCount <= this.pageRange) {
       for (let index = 0; index < this.pageCount; index++) {
         const page = {
@@ -147,7 +187,7 @@ export default class PaginateVue extends Vue {
       }
     } else {
       const halfPageRange = Math.floor((this.pageRange as any) / 2);
-      const setPageItem = (index) => {
+      const setPageItem = (index:number) => {
         const page = {
           index,
           content: index + 1,
@@ -155,7 +195,7 @@ export default class PaginateVue extends Vue {
         };
         items[index] = page;
       };
-      const setBreakView = (index) => {
+      const setBreakView = (index:number) => {
         const breakView = {
           disabled: true,
           breakView: true,

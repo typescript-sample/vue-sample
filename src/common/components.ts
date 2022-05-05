@@ -496,6 +496,7 @@ export class EditComponent<T, ID> extends BaseComponent {
 
     this.ui = ui;
     this.getLocale = getLocale;
+    debugger;
     this.showError = showError;
     this.loading = loading;
 
@@ -531,39 +532,45 @@ export class EditComponent<T, ID> extends BaseComponent {
     this.postSave = this.postSave.bind(this);
     this.handleDuplicateKey = this.handleDuplicateKey.bind(this);
   }
-  async load(_id: ID, callback?: (m: T) => void) {
+  load(_id: ID | null | undefined, fm?:(obj: T) => void, callback?: (m: T, showM: (m2: T) => void) => void) {
     const id: any = _id;
     if (id && id !== '') {
-      try {
-        this.running = true;
-        if (this.loading) {
-          this.loading.showLoading();
-        }
-        const obj = await this.service.load(id);
+      this.service.load(id).then(obj => {
         if (!obj) {
           this.handleNotFound(this.form);
         } else {
-          if (callback) {
-            callback(obj);
+          this.newMode = false;
+          this.orginalModel = clone(obj);
+          if (fm) {
+            fm(obj);
           }
-          this.resetState(false, obj, clone(obj));
+          if (callback) {
+            callback(obj, this.showModel);
+          } else {
+            this.showModel(obj);
+          }
         }
-      } catch (err) {
-        const data = (err && (err as any).response) ? (err as any).response : err;
+        this.running = false;
+        hideLoading(this.loading);
+      }).catch(err => {
+        const data = (err && err.response) ? err.response : err;
         if (data && data.status === 404) {
           this.handleNotFound(this.form);
         } else {
-          this.handleError(err);
+          error(err, this.resource, this.showError);
         }
-      } finally {
         this.running = false;
-        if (this.loading) {
-          this.loading.hideLoading();
-        }
-      }
+        hideLoading(this.loading);
+      });
     } else {
+      this.newMode = true;
+      this.orginalModel = undefined;
       const obj = this.createModel();
-      this.resetState(true, obj, null);
+      if (callback) {
+        callback(obj, this.showModel);
+      } else {
+        this.showModel(obj);
+      }
     }
   }
   resetState(newMod: boolean, model: T, originalModel?: T | null) {

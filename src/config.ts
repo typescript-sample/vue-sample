@@ -6,7 +6,7 @@ export const config = {
 
   user_url: 'http://localhost:8083/users',
   role_url: 'http://localhost:8083/roles',
-  privilege_url: 'http://localhost:8080/privileges',
+  privilege_url: 'http://localhost:8083/privileges',
   audit_log_url: 'http://localhost:8080/audit-logs',
   cinema_url: 'http://localhost:8080/cinema',
   category_url: 'http://localhost:8080/categories',

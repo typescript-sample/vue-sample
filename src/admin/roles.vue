@@ -227,8 +227,7 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
     return model;
   }
 
-  viewRoles(id) {
-    console.log(this.$router);
+  viewRoles(id:string) {
 
     navigate(this.$router, "/admin/roles", [id]);
   }

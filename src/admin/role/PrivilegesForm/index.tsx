@@ -45,7 +45,7 @@ import { PrivilegesItem } from "./PrivilegesItem";
 // </script>
 
 
-export const PrivilegesForm = defineComponent({
+export const PrivilegesForm:any = defineComponent({
     name: "PrivilegesForm",
     components: {
         PrivilegesItem,
@@ -79,8 +79,7 @@ export const PrivilegesForm = defineComponent({
             return "";
         }
         return (
-            <>
-            
+            <>   
                 {this.modules.map(m => {
                     return <privileges-item roles={this.roles} m={m} parentId={this.parentId} disableds={this.disableds} allPrivilege={this.allPrivilege} key={m.id} />
                 })}

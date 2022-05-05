@@ -54,7 +54,7 @@ export default class extends Vue {
   private isToggleMenu = true;
   private pinnedModules: any[] = [];
 
-  changePinnedModules(pinnedModules) {
+  changePinnedModules(pinnedModules: any[]) {
     this.pinnedModules = pinnedModules;
   }
 
