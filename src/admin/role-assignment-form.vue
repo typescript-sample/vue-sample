@@ -148,7 +148,6 @@ import { confirm, getResource, handleError, showMessage } from "uione";
 import { Options, Vue } from "vue-class-component";
 import { getRoleService, getUserService, Role, User } from "./service";
 import UsersLookup from "./users-lookup.vue";
-import { clone } from "reflectx";
 import female from "../assets/images/female.png";
 import male from "../assets/images/male.png";
 @Options({
@@ -270,7 +269,7 @@ export default class RoleAssignmentForm extends Vue {
 
       const keys = Object.keys(obj);
       keys.forEach((key) => {
-        this[key] = obj[key];
+        (this as any)[key] = obj[key];
       });
     }
   }

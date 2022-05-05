@@ -1,6 +1,5 @@
 <script lang="ts">
 import { Item } from "onecore";
-import { clone } from "reflectx";
 import {
   emailOnBlur,
   initForm,

@@ -48,13 +48,13 @@
               type="text"
               id="q"
               name="q"
-              v-model="model.q"
+              v-model="filter.q"
               maxLength="255"
               :placeholder="resource.keyword"
             />
             <button
               type="button"
-              :hidden="!model.q"
+              :hidden="!filter.q"
               class="btn-remove-text"
               @click="clear()"
             ></button>
@@ -80,7 +80,7 @@
               type="text"
               :id="username"
               name="username"
-              v-model="model.username"
+              v-model="filter.username"
               maxlength="255"
               :placeholder="resource.username"
             />
@@ -91,7 +91,7 @@
               type="text"
               :id="displayName"
               name="displayName"
-              v-model="model.displayName"
+              v-model="filter.displayName"
               maxlength="255"
               :placeholder="resource.display_name"
             />
@@ -211,8 +211,8 @@
 <script lang="ts">
 import { initForm, inputSearch, registerEvents } from "uione";
 import { Options } from "vue-class-component";
-import { buildFromUrl, navigate } from "../common";
-import { SearchComponent } from "../common";
+import { buildFromUrl, navigate } from "vuex-one";
+import { SearchComponent } from "vuex-one";
 import PaginateVue from "../core/PaginateVue.vue";
 import { getUserService, User, UserFilter } from "./service/";
 import PageSizeSelect from "../core/PageSizeSelect.vue";
@@ -233,23 +233,7 @@ export default class UsersComponent extends SearchComponent<User, UserFilter> {
   view="listview";
     created() {
     const userService = getUserService();
-    const searchParameters = inputSearch() as any;
-    this.onCreated(
-      userService,
-      // storage.resource(),
-      // storage.ui() as any,
-      // getLocale,
-      // toast,
-      // alertError,
-      // storage.loading()
-      searchParameters.resource,
-      searchParameters.ui,
-      searchParameters.getLocale,
-      searchParameters.showMessage,
-      searchParameters.showError,
-      searchParameters.loading
-      
-    );
+    this.onCreated(userService, inputSearch());
   }
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);

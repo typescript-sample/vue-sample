@@ -642,7 +642,7 @@
 </template>
 
 <script lang="ts">
-import { getResource, StringMap, UserAccount } from "uione";
+import { getResource, storage, StringMap, UserAccount } from "uione";
 import { Options, Vue } from "vue-class-component";
 import GeneralIfoComponent from "./general-info.vue";
 import { useMyProfileService, User } from "./my-profile/index";
@@ -686,19 +686,20 @@ export default class MyProfileComponent extends Vue {
     description: "",
     subject: "",
   };
-  userAccount: UserAccount = JSON.parse(
-    sessionStorage.getItem("authService" || "{}")
-  );
+  
   service: MyProfileService;
   modalConfirmIsOpen = false;
   created() {
     this.service = useMyProfileService();
-    this.service.getMyProfile(this.userAccount.id || "").then((user) => {
+    const id = storage.getUserId();
+    if (id) {
+      this.service.getMyProfile(id).then((user) => {
       if (user) {
         this.user = user;
         this.bio = this.user.bio || "";
       }
     });
+    }
     this.resource = getResource().resource();
   }
   toggleSkill(event: any): void {

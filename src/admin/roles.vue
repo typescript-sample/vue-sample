@@ -44,13 +44,13 @@
               type="text"
               id="q"
               name="q"
-              v-model="model.q"
+              v-model="filter.q"
               maxLength="255"
               :placeholder="resource.keyword"
             />
             <button
               type="button"
-              :hidden="!model.q || model.q.length === 0"
+              :hidden="!filter.q || filter.q.length === 0"
               class="btn-remove-text"
               @click="clearKeyworkOnClick"
             />
@@ -76,7 +76,7 @@
               type="text"
               id="roleName"
               name="roleName"
-              v-model="model.roleName"
+              v-model="filter.roleName"
               maxlength="255"
               :placeholder="resource.role_name"
             />
@@ -214,16 +214,7 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   view="listview";
   created() {
     const roleService = getRoleService();
-    const searchParameters = inputSearch() as any;
-    this.onCreated(
-      roleService,
-      searchParameters.resource,
-      searchParameters.ui,
-      searchParameters.getLocale,
-      searchParameters.showMessage,
-      searchParameters.showError,
-      searchParameters.loading
-    );
+    this.onCreated(roleService, inputSearch());
   }
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
@@ -231,8 +222,8 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
     this.load(s, true);
   }
 
-  getSearchModel(): RoleFilter {
-    const model = this.populateFilter();
+  getFilter(): RoleFilter {
+    const model = super.getFilter();
     return model;
   }
 
@@ -246,8 +237,8 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   }
 
   clearKeyworkOnClick() {
-    if (this.model) {
-      this.model.q = "";
+    if (this.filter) {
+      this.filter.q = "";
     }
   }
 }

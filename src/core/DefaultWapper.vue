@@ -229,12 +229,9 @@
 <script lang="ts">
 import axios from "axios";
 import { HttpRequest } from "axios-core";
-import { toast } from "ui-toast";
 import { handleError, options, storage, StringMap } from "uione";
-import { getLocale } from "uione/src/index";
 import { Options, Vue } from "vue-class-component";
 import { navigate } from "../common";
-import { BaseComponent } from "../common";
 import PageSizeSelect from "./PageSizeSelect.vue";
 import SideBar from "./SideBar/index.vue";
 

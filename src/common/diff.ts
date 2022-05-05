@@ -1,11 +1,24 @@
-import {clone, diff} from 'reflectx';
-import {DiffApprService, DiffModel, messageByHttpStatus} from './core';
-import {Locale} from './core';
-import {ResourceService} from './core';
-import {LoadingService} from './core';
+import { DiffModel } from './core';
+import { clone, diff } from './reflect';
 
+export function showDiff<T>(form: HTMLFormElement, value: T, origin?: T): void {
+  if (!origin) {
+    origin = ({} as any);
+  }
+  const differentKeys = diff(origin, value);
+  for (const differentKey of differentKeys) {
+    const y = form.querySelector('.' + differentKey);
+    if (y) {
+      if (y.childNodes.length === 3) {
+        y.children[1].classList.add('highlight');
+        y.children[2].classList.add('highlight');
+      } else {
+        y.classList.add('highlight');
+      }
+    }
+  }
+}
 export function formatDiffModel<T, ID>(obj: DiffModel<T, ID>, formatFields?: (obj3: T) => T): DiffModel<T, ID> {
-
   if (!obj) {
     return obj;
   }

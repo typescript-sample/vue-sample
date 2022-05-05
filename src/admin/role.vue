@@ -1,8 +1,7 @@
 <script lang="ts">
-import { clone } from "reflectx";
 import { initForm, inputEdit, Privilege, registerEvents } from "uione";
 import { Options } from "vue-class-component";
-import { buildId, createModel, EditComponent, navigate } from "../common";
+import { buildId, clone, createModel, EditComponent, navigate } from "../common";
 import { getMasterData, getRoleService, Role } from "./service";
 import { PrivilegesForm } from "./role/PrivilegesForm";
 import { useStore } from "vuex";

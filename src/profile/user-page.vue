@@ -192,7 +192,9 @@ mounted(){
     // const id = buildId(getMyProfileService.keys(), this.$route);
     const id = this.$route.params.id as string;
     getMyProfileService().getMyProfile(id).then(usr =>{
+      if (usr) {
         this.user = usr;
+      }
     }).catch(handleError);
 }
 }

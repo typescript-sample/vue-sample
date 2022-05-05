@@ -35,13 +35,13 @@
                   id="q"
                   name="q"
                   @change="onChangeText"
-                  :value="model.q"
+                  :value="filter.q"
                   maxLength="40"
                   :placeholder="resource.user_lookup"
                 />
                 <button
                   type="button"
-                  :hidden="!model.userId"
+                  :hidden="!filter.userId"
                   class="btn-remove-text"
                   @click="clearUserId"
                 />
@@ -175,22 +175,7 @@ export default class UsersLookup extends SearchComponent<User, UserFilter> {
   isOpenModel = true;
   created() {
     const userService = getUserService();
-       const searchParameters  = inputSearch();
-    this.onCreated(
-      userService,
-      // storage.resource(),
-      // storage.ui() as any,
-      // getLocale,
-      // toast,
-      // alertError,
-      // storage.loading()
-       searchParameters.resource,
-      searchParameters.ui,
-      searchParameters.getLocale,
-      searchParameters.showMessage,
-      searchParameters.showError,
-      searchParameters.loading
-    );
+    this.onCreated(userService, inputSearch());
   }
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
@@ -198,17 +183,17 @@ export default class UsersLookup extends SearchComponent<User, UserFilter> {
   }
 
   onChangeText(e: any) {
-    this.model = {
-      ...this.model,
+    this.filter = {
+      ...this.filter,
       ...({ [e.target.name]: e.target.value } as any),
     };
   }
 
   clearUserId = () => {
-    const m = this.model;
+    const m = this.filter;
     if (m) {
       m.q = "";
-      this.model;
+      this.filter;
     }
   };
   createFilter(): UserFilter {
@@ -235,8 +220,8 @@ export default class UsersLookup extends SearchComponent<User, UserFilter> {
     this.$emit("onModelSave", this.usersLookup);
     this.usersLookup = [];
     this.availableUsers = [];
-    if(this.model){
-      this.model.q = "";
+    if(this.filter){
+      this.filter.q = "";
     }
     this.userIdsLookup = [];
 
@@ -246,8 +231,8 @@ export default class UsersLookup extends SearchComponent<User, UserFilter> {
   onModelClose() {
     this.usersLookup = [];
     this.availableUsers = [];
-    if(this.model){
-      this.model.q = "";
+    if(this.filter){
+      this.filter.q = "";
     }
     this.userIdsLookup = [];
     this.$emit("onModelClose");
