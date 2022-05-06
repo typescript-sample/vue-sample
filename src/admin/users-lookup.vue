@@ -138,7 +138,7 @@
 </template>
 
 <script lang="ts">
-import { SearchComponent } from "@/common";
+import { SearchComponent } from "vuex-one";
 import { initForm, inputSearch, storage } from "uione";
 import { Options } from "vue-class-component";
 import { getUserService, User, UserFilter } from "./service";

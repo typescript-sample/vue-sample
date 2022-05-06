@@ -256,7 +256,7 @@
 </template>
 
 <script lang="ts">
-import { buildFromUrl, navigate, SearchComponent } from "@/common";
+import { buildFromUrl, navigate, SearchComponent } from "vuex-one";
 import { initForm, inputSearch, registerEvents } from "uione";
 import { Options } from "vue-class-component";
 import { getUserService, User, UserFilter } from "./user";

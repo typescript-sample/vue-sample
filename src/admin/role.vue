@@ -47,8 +47,8 @@ export default class RoleComponent extends EditComponent<Role, string> {
   }
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
-    const id = buildId<string>(this.$route);
-    this.load(id, this.formatModel);
+    const id = buildId<string>(this.$route, ['roleId']);
+    this.load(id);
   }
   createModel(): Role {
     const role = createModel<Role>(this.metadata);

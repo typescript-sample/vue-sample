@@ -15,7 +15,7 @@ import { toast } from 'ui-toast';
 import { storage } from 'uione';
 import { resources as vresources } from 'validation-core';
 import { DefaultCsvService, resources as resource } from 'web-clients';
-import { resources } from './common';
+import { resources } from 'vuex-one';
 import {config} from './config';
 import { resources as locales } from './core/resources';
 

@@ -143,7 +143,7 @@ export default class UserComponent extends EditComponent<User, string> {
 
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
-    const id = buildId<string>(this.$route);
+    const id = buildId<string>(this.$route, ['userId']);
     this.init(id);
   }
   init(id: string | null) {

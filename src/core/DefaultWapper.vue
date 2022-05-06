@@ -243,7 +243,7 @@ import axios from "axios";
 import { HttpRequest } from "axios-core";
 import { handleError, options, storage, StringMap } from "uione";
 import { Options, Vue } from "vue-class-component";
-import { navigate } from "../common";
+import { navigate } from "vuex-one";
 import PageSizeSelect from "./PageSizeSelect.vue";
 import SideBar from "./SideBar/index.vue";
 

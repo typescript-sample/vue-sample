@@ -79,7 +79,7 @@ import { element } from "ui-plus";
 import { storage } from "uione";
 import { initForm, registerEvents } from "uione";
 import { Options, Vue } from "vue-class-component";
-import { messageByHttpStatus, navigate, readOnly } from "../common";
+import { messageByHttpStatus, navigate, readOnly } from "vuex-one";
 import { useAuthen, useCookie } from "./service";
 
 export const map = {

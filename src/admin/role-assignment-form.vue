@@ -141,7 +141,7 @@
 </template>
 
 <script lang="ts">
-import { buildId, message } from "../common";
+import { buildId, message } from "vuex-one";
 import { confirm, getResource, handleError, showMessage } from "uione";
 import { Options, Vue } from "vue-class-component";
 import { getRoleService, getUserService, User } from "./service";
