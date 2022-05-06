@@ -9,8 +9,8 @@ import {
 
 @Options({})
 export default class MySettingsComponent extends Vue {
-  resource: StringMap;
-  service: MyProfileService;
+  resource!: StringMap;
+  service!: MyProfileService;
   settings: UserSettings = {
     userId: "",
     language: "",
@@ -43,7 +43,7 @@ export default class MySettingsComponent extends Vue {
   created() {
     this.resource = getResource().resource();
     this.service = useMyProfileService();
-    this.load('XU3rkqafp');
+    this.load("XU3rkqafp");
   }
   save(e: any) {
     e.preventDefault();
@@ -65,7 +65,7 @@ export default class MySettingsComponent extends Vue {
       this.resource.no,
       this.resource.yes
     );
-  };
+  }
 }
 </script>
 <template>

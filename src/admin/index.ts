@@ -26,9 +26,9 @@ const adminRouter: RouteRecordRaw = {
     { path: 'users/:id', component: UserComponent, name: 'UserView', meta: { title: '', noCache: true } },
 
     { path: 'roles', component: RolesComponent, name: 'Roles', meta: { title: '', noCache: true } },
-    {path:'roles/add', component: RoleComponent, name: 'RoleAdd', meta: { title: '', noCache: true }},
-    {path:'roles/assigns/:id', component: RoleAssignmentForm, name: 'RoleAssigns', meta: { title: '', noCache: true }},
-    {path:'roles/:id', component: RoleComponent, name: 'RoleEdit', meta: { title: '', noCache: true }},
+    { path: 'roles/add', component: RoleComponent, name: 'RoleAdd', meta: { title: '', noCache: true } },
+    { path: 'roles/assigns/:id', component: RoleAssignmentForm, name: 'RoleAssigns', meta: { title: '', noCache: true } },
+    { path: 'roles/:id', component: RoleComponent, name: 'RoleEdit', meta: { title: '', noCache: true } },
   ]
 };
 

@@ -29,9 +29,21 @@
         <form>
           <div class="search-group">
             <section>
-              <button type="button" class="toggle-menu" @click="toggleMenu"></button>
-              <button type="button" class="toggle-search" @click="toggleSearch"></button>
-              <button type="button" class="close-search" @click="toggleSearch"></button>
+              <button
+                type="button"
+                class="toggle-menu"
+                @click="toggleMenu"
+              ></button>
+              <button
+                type="button"
+                class="toggle-search"
+                @click="toggleSearch"
+              ></button>
+              <button
+                type="button"
+                class="close-search"
+                @click="toggleSearch"
+              ></button>
             </section>
             <div class="logo-wrapper">
               <img
@@ -249,7 +261,6 @@ export default class DefaultWapper extends Vue {
   isMenu = false;
   private keyword = "";
   private classProfile = "";
-  private httpRequest: HttpRequest;
   private forms = {};
   private privileges = [];
   protected pageSize = 20;
@@ -260,7 +271,7 @@ export default class DefaultWapper extends Vue {
   protected username: any = "";
   protected userType: any = "";
   sysBody: HTMLElement | null | undefined;
-  resource: StringMap;
+  resource!: StringMap;
   // isDarkMode :boolean;
   // isTopMenu :boolean;
   // isClassicMenu :boolean;
@@ -271,7 +282,6 @@ export default class DefaultWapper extends Vue {
   isTopMenu = this.checkIsTopMenu();
   isClassicMenu = this.checkIsClassicMenu();
   mounted() {
-    this.httpRequest = new HttpRequest(axios, options);
     const username = storage.username();
     const storageRole = storage.getUserType();
     // this.resource = storage.getResource();
@@ -302,13 +312,14 @@ export default class DefaultWapper extends Vue {
   }
 
   created() {
-     const config: any = storage.config();
+    const config: any = storage.config();
     const httpRequest = new HttpRequest(axios, options);
-    httpRequest.get(config.public_privilege_url).then(
-      (forms:any) =>{
+    httpRequest
+      .get(config.public_privilege_url)
+      .then((forms: any) => {
         this.privileges = forms.privileges;
-      }
-    ).catch(err => { });
+      })
+      .catch((err) => {});
     // this.forms = JSON.parse(sessionStorage.getItem("authService") as any);
     // this.privileges =
     //   this.forms && this.forms["privileges"] ? this.forms["privileges"] : [];
@@ -322,7 +333,7 @@ export default class DefaultWapper extends Vue {
   viewMySettings() {
     navigate(this.$router, "/my-profile/settings");
   }
-  viewProfile(){
+  viewProfile() {
     navigate(this.$router, "/profile");
   }
   changeMenu() {

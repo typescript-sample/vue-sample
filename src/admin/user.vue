@@ -1,72 +1,3 @@
-<script lang="ts">
-import { Item } from "onecore";
-import {
-  emailOnBlur,
-  initForm,
-  inputEdit,
-  phoneOnBlur,
-  registerEvents,
-} from "uione";
-import { Options } from "vue-class-component";
-import { buildId, createModel, EditComponent } from "../common";
-import { getMasterData, getUserService } from "./service";
-import { User } from "./service";
-
-@Options({})
-export default class UserComponent extends EditComponent<User, string> {
-  statusList = [];
-  titleList: Item[] = [];
-  positionList: Item[] = [];
-  user: User = {} as any;
-
-  created() {
-    this.onCreated(getUserService(), inputEdit());
-    this.patchable = false;
-  }
-
-  mounted() {
-    this.form = initForm(this.$refs.form as any, registerEvents);
-    if (this.service.keys) {
-      const id = buildId(this.service.keys(), this.$route);
-      this.init(id);
-    }
-  }
-  init(id: string | null) {
-    const masterDataService = getMasterData();
-    Promise.all([
-      masterDataService.getTitles(),
-      masterDataService.getPositions(),
-    ])
-      .then((values) => {
-        [this.titleList, this.positionList] = values;
-        if (id) {
-          this.load(id);
-        }
-      })
-      .catch(this.handleError);
-  }
-  updatePhoneState() {}
-
-  createModel(): User {
-    const user = createModel<User>(this.metadata);
-    user.status = "A";
-    return user;
-  }
-  showModel(obj: User) {
-    this.user = obj;
-  }
-  emailOnBlur = (event: any) => {
-    emailOnBlur(event);
-  };
-  phoneOnBlur = (event: any) => {
-    phoneOnBlur(event);
-  };
-  check = (e: any) => {
-    e.preventDefault();
-    console.log(this.user);
-  };
-}
-</script>
 <template>
   <div class="view-container">
     <form id="userForm" name="userForm" ref="form">
@@ -184,3 +115,70 @@ export default class UserComponent extends EditComponent<User, string> {
     </form>
   </div>
 </template>
+<script lang="ts">
+import { Item } from "onecore";
+import {
+  emailOnBlur,
+  initForm,
+  inputEdit,
+  phoneOnBlur,
+  registerEvents,
+} from "uione";
+import { Options } from "vue-class-component";
+import { buildId, createModel, EditComponent } from "vuex-one";
+import { getMasterData, getUserService } from "./service";
+import { User } from "./service";
+
+@Options({})
+export default class UserComponent extends EditComponent<User, string> {
+  statusList = [];
+  titleList: Item[] = [];
+  positionList: Item[] = [];
+  user: User = {} as any;
+
+  created() {
+    this.onCreated(getUserService(), inputEdit());
+    this.patchable = false;
+  }
+
+  mounted() {
+    this.form = initForm(this.$refs.form as any, registerEvents);
+    const id = buildId<string>(this.$route);
+    this.init(id);
+  }
+  init(id: string | null) {
+    const masterDataService = getMasterData();
+    Promise.all([
+      masterDataService.getTitles(),
+      masterDataService.getPositions(),
+    ])
+      .then((values) => {
+        [this.titleList, this.positionList] = values;
+        if (id) {
+          this.load(id);
+        }
+      })
+      .catch(this.handleError);
+  }
+  updatePhoneState() {}
+
+  createModel(): User {
+    const user = createModel<User>(this.metadata);
+    user.status = "A";
+    return user;
+  }
+  showModel(obj: User) {
+    this.user = obj;
+  }
+  emailOnBlur = (event: any) => {
+    emailOnBlur(event);
+  };
+  phoneOnBlur = (event: any) => {
+    phoneOnBlur(event);
+  };
+  check = (e: any) => {
+    e.preventDefault();
+    console.log(this.user);
+  };
+}
+</script>

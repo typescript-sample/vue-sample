@@ -128,7 +128,7 @@
         </section> -->
       </form>
       <form class="list-result">
-        <div class="table-responsive" v-if="view==='table'">
+        <div class="table-responsive" v-if="view === 'table'">
           <table>
             <thead>
               <tr>
@@ -195,11 +195,12 @@
 <script lang="ts">
 import { initForm, inputSearch, registerEvents } from "uione";
 import { Options } from "vue-class-component";
-import { buildFromUrl, navigate, SearchComponent } from "../common";
+import { buildFromUrl, navigate, SearchComponent } from "vuex-one";
 import { Role, RoleFilter } from "./service/role";
 import PaginateVue from "../core/PaginateVue.vue";
-import { getMasterData, getRoleService } from "./service";
+import { getRoleService } from "./service";
 import PageSizeSelect from "../core/PageSizeSelect.vue";
+
 @Options({
   components: { PaginateVue, PageSizeSelect },
 })
@@ -211,7 +212,7 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   editable = true;
   list = [];
   hideFilter = true;
-  view="listview";
+  view = "listview";
   created() {
     const roleService = getRoleService();
     this.onCreated(roleService, inputSearch());
@@ -227,8 +228,7 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
     return model;
   }
 
-  viewRoles(id:string) {
-
+  viewRoles(id: string) {
     navigate(this.$router, "/admin/roles", [id]);
   }
   addRole() {

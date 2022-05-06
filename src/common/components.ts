@@ -1,6 +1,6 @@
 import { Vue } from 'vue-class-component';
 import { createDiffStatus } from '.';
-import { Attributes, createEditStatus, EditStatusConfig, DiffApprService, DiffParameter, DiffStatusConfig, error, Filter, getModelName, handleToggle, hideLoading, LoadingService, Locale, message, messageByHttpStatus, MetaModel, ResourceService, SearchParameter, SearchResult, SearchService, showLoading, StringMap, UIService, ViewContainerRef, ViewParameter, ViewService } from './core';
+import { Attributes, createEditStatus, EditStatusConfig, DiffApprService, DiffParameter, DiffStatusConfig, error, Filter, getModelName, handleToggle, hideLoading, LoadingService, Locale, message, messageByHttpStatus, MetaModel, ResourceService, SearchParameter, SearchResult, SearchService, showLoading, StringMap, UIService, ViewParameter, ViewService } from './core';
 import { formatDiffModel, showDiff } from './diff';
 import { build, createModel, EditParameter, GenericService, handleStatus, handleVersion, ResultInfo } from './edit';
 import { format, json } from './formatter';
@@ -24,7 +24,7 @@ export const enLocale = {
 export class ViewComponent<T, ID> extends Vue {
   protected name?: string;
   protected loading?: LoadingService;
-  protected showError: (msg: string, title?: string, detail?: string, callback?: () => void) => void;
+  protected showError!: (msg: string, title?: string, detail?: string, callback?: () => void) => void;
   protected loadData?: (id: ID, ctx?: any) => Promise<T | null | undefined>;
   // protected service?: ViewService<T, ID>;
   protected keys?: string[];
@@ -210,7 +210,7 @@ interface BaseUIService {
   removeError(el: HTMLInputElement): void;
 }
 export class BaseComponent extends Vue {
-  showError: ((m: string, title?: string, detail?: string, callback?: () => void) => void);
+  showError!: ((m: string, title?: string, detail?: string, callback?: () => void) => void);
   includingCurrencySymbol = false;
   resource: StringMap = {} as any;
   running = false;
@@ -349,11 +349,11 @@ export function valueOfCheckbox(ctrl: HTMLInputElement): string | number | boole
   }
 }
 export class EditComponent<T, ID> extends BaseComponent {
-  protected service: GenericService<T, ID, number | ResultInfo<T>>;
-  status: EditStatusConfig;
-  protected showMessage: (msg: string) => void;
-  protected confirm: (msg: string, header: string, yesCallback?: () => void, btnLeftText?: string, btnRightText?: string, noCallback?: () => void) => void;
-  ui: UIService;
+  protected service!: GenericService<T, ID, number | ResultInfo<T>>;
+  status!: EditStatusConfig;
+  protected showMessage!: (msg: string) => void;
+  protected confirm!: (msg: string, header: string, yesCallback?: () => void, btnLeftText?: string, btnRightText?: string, noCallback?: () => void) => void;
+  ui!: UIService;
   protected name?: string;
   protected metadata?: Attributes;
   protected metamodel?: MetaModel;
@@ -448,7 +448,6 @@ export class EditComponent<T, ID> extends BaseComponent {
   ) {
     const resourceService = getResource(param);
     this.resource = resourceService.resource();
-    debugger
     this.getLocale = getLocaleFunc(param, getLocale);
     this.loading = getLoadingFunc(param, loading);
     this.ui = getUIService(param, uis);
@@ -813,9 +812,10 @@ export interface PageParam {
 }
 export class SearchComponent<T, S extends Filter> extends BaseComponent {
   // service: SearchService<T, S> | undefined;
-  resourceService: ResourceService;
-  searchFn: (s: S, limit?: number, offset?: number | string, fields?: string[]) => Promise<SearchResult<T>>;
-  showMessage: (msg: string, option?: string) => void;
+  // service: SearchService<T, S> | undefined;
+  resourceService!: ResourceService;
+  searchFn!: (s: S, limit?: number, offset?: number | string, fields?: string[]) => Promise<SearchResult<T>>;
+  showMessage!: (msg: string, option?: string) => void;
   ui?: UIService;
   // Pagination
   nextPageToken?: string;
@@ -1246,18 +1246,18 @@ export class SearchComponent<T, S extends Filter> extends BaseComponent {
 }
 
 export class DiffApprComponent<T, ID> extends Vue {
-  protected status: DiffStatusConfig;
-  protected showMessage: (msg: string, option?: string) => void;
-  protected showError: (m: string, title?: string, detail?: string, callback?: () => void) => void;
+  protected status!: DiffStatusConfig;
+  protected showMessage!: (msg: string, option?: string) => void;
+  protected showError!: (m: string, title?: string, detail?: string, callback?: () => void) => void;
   protected loading?: LoadingService;
   resource: StringMap = {} as any;
   protected running?: boolean;
   protected form?: HTMLFormElement;
   protected id?: ID;
   origin?: T;
-  value: T;
+  value!: T;
   disabled?: boolean;
-  service: DiffApprService<T, ID>;
+  service!: DiffApprService<T, ID>;
   /*
   constructor(service: DiffApprService<T, ID>,
     param: ResourceService | DiffParameter,

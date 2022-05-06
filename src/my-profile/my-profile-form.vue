@@ -597,7 +597,7 @@
             <div>
               <vue-final-modal
                 v-model="modalConfirmIsOpen"
-               content-class="modal-portal-content small-width-height"
+                content-class="modal-portal-content small-width-height"
               >
                 <div class="view-container profile-info">
                   <form model-name="data">
@@ -631,7 +631,6 @@
                     </footer>
                   </form>
                 </div>
-
               </vue-final-modal>
             </div>
           </div>
@@ -661,7 +660,7 @@ interface Edit {
 })
 export default class MyProfileComponent extends Vue {
   user: User = {} as any;
-  resource: StringMap;
+  resource!: StringMap;
   isOpen = false;
   isEditing = false;
   isEditingBio = false;
@@ -686,19 +685,19 @@ export default class MyProfileComponent extends Vue {
     description: "",
     subject: "",
   };
-  
-  service: MyProfileService;
+
+  service!: MyProfileService;
   modalConfirmIsOpen = false;
   created() {
     this.service = useMyProfileService();
     const id = storage.getUserId();
     if (id) {
       this.service.getMyProfile(id).then((user) => {
-      if (user) {
-        this.user = user;
-        this.bio = this.user.bio || "";
-      }
-    });
+        if (user) {
+          this.user = user;
+          this.bio = this.user.bio || "";
+        }
+      });
     }
     this.resource = getResource().resource();
   }

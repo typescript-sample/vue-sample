@@ -1,10 +1,11 @@
 <script lang="ts">
 import { initForm, inputEdit, Privilege, registerEvents } from "uione";
 import { Options } from "vue-class-component";
-import { buildId, clone, createModel, EditComponent, navigate } from "../common";
-import { getMasterData, getRoleService, Role } from "./service";
+import { buildId, clone, createModel, EditComponent, navigate } from "vuex-one";
+import { getRoleService, Role } from "./service";
 import { PrivilegesForm } from "./role/PrivilegesForm";
 import { useStore } from "vuex";
+
 @Options({
   components: {
     PrivilegesForm,
@@ -22,7 +23,6 @@ export default class RoleComponent extends EditComponent<Role, string> {
   checkedAll: boolean | undefined = false;
   created() {
     this.checkedCtrl = [];
-    const editParams = inputEdit() as any;
     const roleService = getRoleService();
     this.onCreated(roleService, inputEdit());
     this.patchable = false;
@@ -47,9 +47,8 @@ export default class RoleComponent extends EditComponent<Role, string> {
   }
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
-      const id = buildId(['roleId'], this.$route);
-      // const id = this.$route.params.id as string;
-      this.load(id, this.formatModel);
+    const id = buildId<string>(this.$route);
+    this.load(id, this.formatModel);
   }
   createModel(): Role {
     const role = createModel<Role>(this.metadata);

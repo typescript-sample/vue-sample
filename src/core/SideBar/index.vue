@@ -49,7 +49,7 @@ import ItemLink from "./ItemLink.vue";
   },
 })
 export default class extends Vue {
-  private features: any[];
+  private features!: any[];
   private isToggleSidebar = false;
   private isToggleMenu = true;
   private pinnedModules: any[] = [];

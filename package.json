@@ -24,7 +24,7 @@
     "react-modal": "^3.14.4",
     "ui-alert": "^0.0.7",
     "ui-loading": "^0.0.5",
-    "ui-plus": "0.0.10",
+    "ui-plus": "^0.0.10",
     "ui-toast": "^0.0.5",
     "uione": "^0.0.17",
     "validation-core": "^0.0.3",
@@ -33,7 +33,7 @@
     "vue-final-modal": "^3.4.3",
     "vue-router": "^4.0.14",
     "vuex": "^4.0.2",
-    "vuex-one": "0.0.1",
+    "vuex-one": "^0.0.2",
     "web-clients": "^0.1.22"
   },
   "devDependencies": {

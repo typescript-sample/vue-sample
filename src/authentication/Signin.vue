@@ -76,7 +76,6 @@ import {
 } from "authen-client";
 import { Base64 } from "js-base64";
 import { element } from "ui-plus";
-import { options } from "uione";
 import { storage } from "uione";
 import { initForm, registerEvents } from "uione";
 import { Options, Vue } from "vue-class-component";
@@ -172,7 +171,6 @@ export default class SigninComponent extends Vue {
     );
   }
 
-  
   initForm() {
     this.form = initForm(this.$refs.form as any, registerEvents);
     this.txtUserName = element(this.form, "userName");
@@ -212,12 +210,12 @@ export default class SigninComponent extends Vue {
     navigate(this.$router, "forgot-password");
   }
 
-  signup(event:Event) {
+  signup(event: Event) {
     event.preventDefault();
     navigate(this.$router, "signup");
   }
 
-  signin(event:Event) {
+  signin(event: Event) {
     event.preventDefault();
     this.txtUserName = element(this.form, "username");
     this.txtPassword = element(this.form, "password");
@@ -266,7 +264,7 @@ export default class SigninComponent extends Vue {
           } else {
             const message3 = r.value("msg_account_reactivated");
             // storage.alert(message3, null, '', function () {
-            storage.alert(message3, "", "", ()=> {
+            storage.alert(message3, "", "", () => {
               storage.setUser(result.user);
 
               this.navigateToHome();

@@ -13,7 +13,7 @@
     "target": "es5",
     "strict": true,
     "strictNullChecks": true,
-    "strictPropertyInitialization": false,
+    "strictPropertyInitialization": true,
     "skipLibCheck": true,
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
@@ -29,8 +29,9 @@
   "include": [
     "./shims-vue.d.ts",
     "./src/**/*.ts",
-    "./src/**/*.vue"
-, "src/admin/role/PrivilegesForm/index.js", "src/admin/role/PrivilegesForm/PrivilegesItem.tsx"  ],
+    "./src/**/*.vue",
+    "src/admin/role/PrivilegesForm/index.js", "src/admin/role/PrivilegesForm/PrivilegesItem.tsx"
+  ],
   "exclude": [
     "node_modules"
   ]

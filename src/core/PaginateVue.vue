@@ -141,26 +141,26 @@ export interface PageItem {
   },
 })
 export default class PaginateVue extends Vue {
-  private value: number;
-  private itemTotal: number;
-  private itemsPerPage: number;
-  private forcePage: number;
-  private clickHandler: (t: PageItem, e?: MouseEvent) => void;
-  private pageRange: number;
-  private marginPages: number;
-  private breakViewText: string;
-  private containerClass: string;
-  private pageClass: string;
-  private pageLinkClass: string;
-  private breakViewClass: string;
-  private breakViewLinkClass: string;
-  private activeClass: string;
-  private disabledClass: string;
-  private noLiSurround: boolean;
-  private firstLastButton: boolean;
-  private firstButtonText: string;
-  private lastButtonText: string;
-  private hidePrevNext: boolean;
+  private value!: number;
+  private itemTotal!: number;
+  private itemsPerPage!: number;
+  private forcePage!: number;
+  private clickHandler!: (t: PageItem, e?: MouseEvent) => void;
+  private pageRange!: number;
+  private marginPages!: number;
+  private breakViewText!: string;
+  private containerClass!: string;
+  private pageClass!: string;
+  private pageLinkClass!: string;
+  private breakViewClass!: string;
+  private breakViewLinkClass!: string;
+  private activeClass!: string;
+  private disabledClass!: string;
+  private noLiSurround!: boolean;
+  private firstLastButton!: boolean;
+  private firstButtonText!: string;
+  private lastButtonText!: string;
+  private hidePrevNext!: boolean;
   innerValue = 1;
   pageCount = 0;
 
@@ -187,7 +187,7 @@ export default class PaginateVue extends Vue {
       }
     } else {
       const halfPageRange = Math.floor((this.pageRange as any) / 2);
-      const setPageItem = (index:number) => {
+      const setPageItem = (index: number) => {
         const page = {
           index,
           content: index + 1,
@@ -195,7 +195,7 @@ export default class PaginateVue extends Vue {
         };
         items[index] = page;
       };
-      const setBreakView = (index:number) => {
+      const setBreakView = (index: number) => {
         const breakView = {
           disabled: true,
           breakView: true,

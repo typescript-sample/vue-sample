@@ -62,7 +62,7 @@ export default class extends Vue {
   private features: any;
   private index: any;
   private pinnedModules: any;
-  private isPinnedModules: boolean;
+  private isPinnedModules!: boolean;
 
   private resource: any = resources["en"];
   private className: any = "";

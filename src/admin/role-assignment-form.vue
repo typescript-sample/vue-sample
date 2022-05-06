@@ -65,8 +65,6 @@
               <button v-if="isCheckboxShown" type="button" @click="onDelete">
                 {{ resource.delete }}
               </button>
-
-              
             </div>
           </h4>
           <label class="col s12 search-input">
@@ -146,7 +144,7 @@
 import { buildId, message } from "../common";
 import { confirm, getResource, handleError, showMessage } from "uione";
 import { Options, Vue } from "vue-class-component";
-import { getRoleService, getUserService, Role, User } from "./service";
+import { getRoleService, getUserService, User } from "./service";
 import UsersLookup from "./users-lookup.vue";
 import female from "../assets/images/female.png";
 import male from "../assets/images/male.png";
@@ -157,7 +155,7 @@ import male from "../assets/images/male.png";
   },
 })
 export default class RoleAssignmentForm extends Vue {
-  role ={} as any;
+  role = {} as any;
   users: User[] = [];
   q = "";
   isOpenModel = false;
@@ -171,15 +169,17 @@ export default class RoleAssignmentForm extends Vue {
   created() {}
   mounted() {
     if (this.roleService.keys) {
-      const id = buildId(this.roleService.keys(), this.$route);
-      Promise.all([
-        this.userService.getUsersByRole(id),
-        this.roleService.load(id),
-      ])
-        .then((values) => {
+      const id = buildId<string>(this.$route, this.roleService.keys());
+      if (id) {
+        Promise.all([
+          this.userService.getUsersByRole(id),
+          this.roleService.load(id),
+        ])
+          .then((values) => {
             [this.users, this.role] = values;
-        })
-        .catch(handleError);
+          })
+          .catch(handleError);
+      }
     }
   }
   onCheck(userId: string) {
@@ -273,7 +273,7 @@ export default class RoleAssignmentForm extends Vue {
       });
     }
   }
-  showModal(){
+  showModal() {
     this.isOpenModel = true;
   }
   onModelClose(e: any) {
@@ -287,6 +287,5 @@ export default class RoleAssignmentForm extends Vue {
   }
 }
 </script>
-
 <style>
 </style>

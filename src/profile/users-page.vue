@@ -9,7 +9,7 @@
           id="btnTable"
           name="btnTable"
           class="btn-table"
-          @click="changeView($event,'table')"
+          @click="changeView($event, 'table')"
         ></button>
         <button
           v-if="view === 'table'"
@@ -17,7 +17,7 @@
           id="btnListView"
           name="btnListView"
           class="btn-list-view"
-          @click="changeView($event,'listview')"
+          @click="changeView($event, 'listview')"
         ></button>
       </div>
     </header>
@@ -27,9 +27,10 @@
           <label class="col s12 m4 search-input">
             <select @change="onPageSizeChanged($event)">
               <option
-                v-for="(p,index) in pageSizes"
+                v-for="(p, index) in pageSizes"
                 :value="p"
-                :selected="p === pageSize" :key="index"
+                :selected="p === pageSize"
+                :key="index"
               >
                 {{ p }}
               </option>
@@ -53,11 +54,7 @@
               class="btn-filter"
               @click="toggleFilter"
             ></button>
-            <button
-              type="submit"
-              class="btn-search"
-              @click="search"
-            ></button>
+            <button type="submit" class="btn-search" @click="search"></button>
           </label>
           <!-- <pagination class='col s12 m6' id='pageIndex' name='pageIndex' v-if='showPaging' v-model='pageIndex'
           (pageChanged)='pageChanged($event)' (numPages)='pageIndex = $event' [directionLinks]='false'
@@ -135,9 +132,7 @@
                 ></button>
               </div>
               <template v-if="model.interests">
-                <template
-                  *v-for="(item,index) in model.interests"
-                >
+                <template *v-for="(item,index) in model.interests">
                   <div class="chip" :tabindex="index" :key="item">
                     {{ item }}
                     <button
@@ -231,7 +226,8 @@
           <li
             v-for="item in list"
             class="col s12 m6 l4 xl3"
-            @click.prevent="viewProfile(item.id)" :key="item.id"
+            @click.prevent="viewProfile(item.id)"
+            :key="item.id"
           >
             <section>
               <img
@@ -245,7 +241,9 @@
                 class="round-border"
               />
               <div>
-                <h3 @click.prevent="viewProfile(item.id)">{{ item.displayName }}</h3>
+                <h3 @click.prevent="viewProfile(item.id)">
+                  {{ item.displayName }}
+                </h3>
                 <p>{{ item.email }}</p>
               </div>
               <button class="btn-detail"></button>
@@ -261,22 +259,22 @@
 import { buildFromUrl, navigate, SearchComponent } from "@/common";
 import { initForm, inputSearch, registerEvents } from "uione";
 import { Options } from "vue-class-component";
-import {getUserService, User,UserFilter} from "./user";
-import female from '../assets/images/female.png';
-import male from '../assets/images/male.png';
+import { getUserService, User, UserFilter } from "./user";
+import female from "../assets/images/female.png";
+import male from "../assets/images/male.png";
 @Options({})
-export default class UsersPage extends SearchComponent<User,UserFilter> {
+export default class UsersPage extends SearchComponent<User, UserFilter> {
   viewable = true;
   editable = true;
   femaleIcon = female;
   maleIcon = male;
   hideFilter = true;
-  view="listview";
-  interest='';
-  created(){
-   const userService = getUserService();
-   const searchParameters  = inputSearch() as any;
-   this.onCreated(
+  view = "listview";
+  interest = "";
+  created() {
+    const userService = getUserService();
+    const searchParameters = inputSearch() as any;
+    this.onCreated(
       userService,
       searchParameters.resource,
       searchParameters.ui,
@@ -284,22 +282,21 @@ export default class UsersPage extends SearchComponent<User,UserFilter> {
       searchParameters.showMessage,
       searchParameters.showError,
       searchParameters.loading
-   )
+    );
   }
-  mounted(){
+  mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
     const s = this.mergeFilter(buildFromUrl());
     this.init(s, true);
   }
 
   init(s: UserFilter, auto: boolean) {
-        this.load(s, auto);
+    this.load(s, auto);
   }
-  viewProfile(id:string){
+  viewProfile(id: string) {
     console.log(id);
-    
-    navigate(this.$router,'/profile',[id])
-    
+
+    navigate(this.$router, "/profile", [id]);
   }
 }
 </script>

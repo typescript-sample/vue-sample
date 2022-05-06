@@ -155,28 +155,28 @@ class Props {
   emits: ["onSave", "closeModalFn"],
 })
 export default class GeneralIfoComponent extends Vue.with(Props) {
-  service: MyProfileService;
-  created(){
-      this.service = useMyProfileService();
+  service!: MyProfileService;
+  created() {
+    this.service = useMyProfileService();
   }
   save(event: any) {
     event.preventDefault();
     const id = "XU3rkqafp";
-    if(this.user){
+    if (this.user) {
       this.service.saveMyProfile(this.user).then((success) => {
-      let status = "";
-      if (success) {
-        status = "success";
-      } else {
-        status = "fail";
-      }
-      this.$emit("onSave", { status, user: this.user });
-      this.$emit("closeModalFn");
-    });
+        let status = "";
+        if (success) {
+          status = "success";
+        } else {
+          status = "fail";
+        }
+        this.$emit("onSave", { status, user: this.user });
+        this.$emit("closeModalFn");
+      });
     }
   }
   closeModal(event: any) {
-          this.$emit("closeModalFn");
+    this.$emit("closeModalFn");
   }
 }
 </script>

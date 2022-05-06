@@ -9,7 +9,7 @@
           id="btnTable"
           name="btnTable"
           class="btn-table"
-          data-view ="table"
+          data-view="table"
           @click="changeView"
         />
         <button
@@ -145,7 +145,10 @@
         </section> -->
       </form>
       <form class="list-result">
-        <div v-if="view === 'table' && list && list.length > 0" class="table-responsive">
+        <div
+          v-if="view === 'table' && list && list.length > 0"
+          class="table-responsive"
+        >
           <table>
             <thead>
               <tr>
@@ -178,32 +181,50 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in list" :key="item.userId" @click="edit(item.userId)">
+              <tr
+                v-for="item in list"
+                :key="item.userId"
+                @click="edit(item.userId)"
+              >
                 <td class="text-right">{{ item.sequenceNo }}</td>
                 <td>{{ item.userId }}</td>
                 <td>{{ item.username }}</td>
                 <td>{{ item.email }}</td>
                 <td>{{ item.displayName }}</td>
                 <td>{{ item.status }}</td>
-                
               </tr>
             </tbody>
           </table>
         </div>
-        <ul v-if="view !== 'table' && list && list.length > 0" class='row list-view'>
-        <li v-for="(item,index) of list" class='col s12 m6 l4 xl3' @click="edit(item.userId)"  :key="index">
-          <section>
-            <img
-             :src='item.imageURL && item.imageURL.length > 0 ? item.imageURL : (item.gender === "F" ? femaleIcon : maleIcon)'
-              class='round-border'/>
-            <div>
-              <h3 @click="edit(item.id)">{{item.displayName}}</h3>
-              <p>{{item.email}}</p>
-            </div>
-            <button class='btn-detail'></button>
-          </section>
-        </li>
-      </ul>
+        <ul
+          v-if="view !== 'table' && list && list.length > 0"
+          class="row list-view"
+        >
+          <li
+            v-for="(item, index) of list"
+            class="col s12 m6 l4 xl3"
+            @click="edit(item.userId)"
+            :key="index"
+          >
+            <section>
+              <img
+                :src="
+                  item.imageURL && item.imageURL.length > 0
+                    ? item.imageURL
+                    : item.gender === 'F'
+                    ? femaleIcon
+                    : maleIcon
+                "
+                class="round-border"
+              />
+              <div>
+                <h3 @click="edit(item.id)">{{ item.displayName }}</h3>
+                <p>{{ item.email }}</p>
+              </div>
+              <button class="btn-detail"></button>
+            </section>
+          </li>
+        </ul>
       </form>
     </div>
   </div>
@@ -211,13 +232,13 @@
 <script lang="ts">
 import { initForm, inputSearch, registerEvents } from "uione";
 import { Options } from "vue-class-component";
-import { buildFromUrl, navigate } from "vuex-one";
-import { SearchComponent } from "vuex-one";
+import { buildFromUrl, navigate, SearchComponent } from "vuex-one";
 import PaginateVue from "../core/PaginateVue.vue";
 import { getUserService, User, UserFilter } from "./service/";
 import PageSizeSelect from "../core/PageSizeSelect.vue";
-import female from '../assets/images/female.png';
-import male from '../assets/images/male.png';
+import female from "../assets/images/female.png";
+import male from "../assets/images/male.png";
+
 @Options({
   components: { PaginateVue, PageSizeSelect },
 })
@@ -230,8 +251,8 @@ export default class UsersComponent extends SearchComponent<User, UserFilter> {
   hideFilter = true;
   femaleIcon = female;
   maleIcon = male;
-  view="listview";
-    created() {
+  view = "listview";
+  created() {
     const userService = getUserService();
     this.onCreated(userService, inputSearch());
   }
@@ -242,10 +263,10 @@ export default class UsersComponent extends SearchComponent<User, UserFilter> {
   }
 
   init(s: UserFilter, auto: boolean) {
-        this.load(s, auto);
+    this.load(s, auto);
   }
 
-  edit(id:string) {
+  edit(id: string) {
     navigate(this.$router, "/admin/users", [id]);
   }
 

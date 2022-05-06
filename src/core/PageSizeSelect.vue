@@ -12,21 +12,21 @@ import { Options, Vue } from "vue-class-component";
 
 @Options({
   name: "PageSizeSelect",
-  props:{
+  props: {
     pageSizes: {
-    required: true,
+      required: true,
+    },
+    pageSize: {
+      required: true,
+    },
+    onPageSizeChanged: {
+      required: true,
+    },
   },
-  pageSize: {
-    required: true,
-  },
-  onPageSizeChanged: {
-    required: true,
-  },
-  }
 })
 export default class extends Vue {
-  private pageSizes: number[];
-  private pageSize: number[];
-  private onPageSizeChanged: () => void;
+  private pageSizes!: number[];
+  private pageSize!: number[];
+  private onPageSizeChanged: (() => void) | undefined;
 }
 </script>

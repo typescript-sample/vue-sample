@@ -139,9 +139,7 @@
 
 <script lang="ts">
 import { SearchComponent } from "@/common";
-import { alertError } from "ui-alert";
-import { toast } from "ui-toast";
-import { getLocale, initForm, inputSearch, storage } from "uione";
+import { initForm, inputSearch, storage } from "uione";
 import { Options } from "vue-class-component";
 import { getUserService, User, UserFilter } from "./service";
 import PageSizeSelect from "@/core/PageSizeSelect.vue";
@@ -201,7 +199,7 @@ export default class UsersLookup extends SearchComponent<User, UserFilter> {
     return obj;
   }
   onCheckUser = (e: any) => {
-    const target: HTMLInputElement = e.target as HTMLInputElement;    
+    const target: HTMLInputElement = e.target as HTMLInputElement;
     const result = this.list
       ? this.list.find((v) => v.userId === target.value)
       : undefined;
@@ -209,37 +207,29 @@ export default class UsersLookup extends SearchComponent<User, UserFilter> {
       const index = this.usersLookup.indexOf(result);
       if (index !== -1) {
         this.usersLookup.splice(index, 1);
-        
       } else {
         this.usersLookup.push(result);
       }
     }
   };
   onModelSave = () => {
-
     this.$emit("onModelSave", this.usersLookup);
     this.usersLookup = [];
     this.availableUsers = [];
-    if(this.filter){
+    if (this.filter) {
       this.filter.q = "";
     }
     this.userIdsLookup = [];
-
-    // this.props.onModelSave(this.state.users);
   };
 
   onModelClose() {
     this.usersLookup = [];
     this.availableUsers = [];
-    if(this.filter){
+    if (this.filter) {
       this.filter.q = "";
     }
     this.userIdsLookup = [];
     this.$emit("onModelClose");
-    // if (this.props.onModelClose) {
-    //   this.props.onModelClose(e);
-    // }
   }
 }
-</script>   
-
+</script>
