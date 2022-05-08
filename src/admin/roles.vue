@@ -193,7 +193,7 @@
 </template>
 
 <script lang="ts">
-import { initForm, inputSearch, registerEvents } from "uione";
+import { initForm, inputSearch, registerEvents, storage } from "uione";
 import { Options } from "vue-class-component";
 import { buildFromUrl, navigate, SearchComponent } from "vuex-one";
 import { Role, RoleFilter } from "./service/role";
@@ -219,8 +219,8 @@ export default class RolesComponent extends SearchComponent<Role, RoleFilter> {
   }
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
-    const s = this.mergeFilter(buildFromUrl(), ["status"]);
-    this.load(s, true);
+    const filter = this.mergeFilter(buildFromUrl(), ["status"]);
+    this.load(filter, storage.autoSearch);
   }
 
   getFilter(): RoleFilter {

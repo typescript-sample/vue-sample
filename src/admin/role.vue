@@ -1,10 +1,237 @@
+<template>
+  <div class="view-container">
+    <form id="roleForm" name="roleForm" ref="form">
+      <header>
+        <button type="button" class="btn-back" @click="back(event)"></button>
+        <h2>
+          {{ newMode ? resource.button_create : resource.button_edit }}
+          {{ resource.role }}
+        </h2>
+        <button class="btn-group btn-right">
+          <i @click="assign(this.role.roleId)" class="material-icons">group</i>
+        </button>
+      </header>
+      <div>
+        <section class="row">
+          <label class="col s12 m6">
+            {{ resource.role_id }}
+            <input
+              type="text"
+              id="roleId"
+              name="roleId"
+              v-model="role.roleId"
+              @change="updateState"
+              maxlength="40"
+              :required="true"
+              :placeholder="resource.user_id"
+            />
+          </label>
+          <label class="col s12 m6">
+            {{ resource.role_name }}
+            <input
+              type="text"
+              id="roleName"
+              name="roleName"
+              v-model="role.roleName"
+              maxlength="50"
+              :required="true"
+              :placeholder="resource.role_name"
+            />
+          </label>
+          <label className="col s12 m6">
+            {{ resource.remark }}
+            <input
+              type="text"
+              id="remark"
+              name="remark"
+              @change="updateState"
+              maxLength="255"
+              v-model="role.remark"
+              :placeholder="resource.remark"
+            />
+          </label>
+          <label className="col s12 m6 radio-section">
+            {{ resource.status }}
+            <div class="radio-group">
+              <label>
+                <input
+                  type="radio"
+                  id="active"
+                  name="status"
+                  value="A"
+                  v-model="role.status"
+                  @change="updateState"
+                  :checked="role.status === 'A'"
+                />
+                {{ resource.yes }}
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  id="inactive"
+                  name="status"
+                  value="I"
+                  @change="updateState"
+                  v-model="role.status"
+                  :checked="role.status === 'I'"
+                />
+                {{ resource.no }}
+              </label>
+            </div>
+          </label>
+        </section>
+        <h4>
+          <label>
+            <input
+              type="checkbox"
+              value="all"
+              :disabled="keyword !== ''"
+              data-type="all"
+              :checked="checkedAll"
+              @change="handleCheckAll"
+            />
+            {{ resource.all_privileges }}
+          </label>
+          <label className="col s12 search-input">
+            <i className="btn-search" />
+            <input
+              type="text"
+              id="keyword"
+              name="keyword"
+              maxLength="40"
+              :placeholder="resource.role_filter_modules"
+              v-model="keyword"
+              @change="onChange"
+            />
+          </label>
+        </h4>
+        <section className="row hr-height-1">
+          <privileges-form
+            :roles="role"
+            :modules="shownPrivileges"
+            parentId=""
+            :disableds="keyword !== ''"
+            :allPrivilege="allPrivilege"
+          />
+        </section>
+      </div>
+      <footer>
+        <button type="submit" id="btnSave" name="btnSave" @click="save">
+          {{ resource.save }}
+        </button>
+      </footer>
+    </form>
+  </div>
+</template>
 <script lang="ts">
-import { initForm, inputEdit, Privilege, registerEvents } from "uione";
+import { initForm, inputEdit, registerEvents } from "uione";
 import { Options } from "vue-class-component";
 import { buildId, clone, createModel, EditComponent, navigate } from "vuex-one";
 import { getRoleService, Role } from "./service";
 import { PrivilegesForm } from "./role/PrivilegesForm";
 import { useStore } from "vuex";
+
+export interface Privilege {
+  id: string;
+  name: string;
+  children?: Privilege[];
+}
+
+function getPrivilege(id: string, all: Privilege[]): Privilege | undefined {
+  if (!all || !id) {
+    return undefined;
+  }
+  for (const root of all) {
+    if (root.id === id) {
+      return root;
+    }
+    if (root.children && root.children.length > 0) {
+      const m = getPrivilege(id, root.children);
+      if (m) {
+        return m;
+      }
+    }
+  }
+  return undefined;
+}
+function containOne(privileges?: string[], all?: Privilege[]): boolean {
+  if (!privileges || privileges.length === 0 || !all || all.length === 0) {
+    return false;
+  }
+  for (const m of all) {
+    if (privileges.includes(m.id)) {
+      return true;
+    }
+  }
+  return false;
+}
+function buildAll(privileges: string[], all: Privilege[]): void {
+  for (const root of all) {
+    privileges.push(root.id);
+    if (root.children && root.children.length > 0) {
+      buildAll(privileges, root.children);
+    }
+  }
+}
+function buildPrivileges(
+  id: string,
+  type: string,
+  privileges: string[],
+  all: Privilege[]
+): string[] {
+  if (type === "parent") {
+    const parent = getPrivilege(id, all);
+    if (parent && parent.children) {
+      const ids = parent.children.map((i) => i.id);
+      const ms = privileges.filter((i) => !ids.includes(i));
+      if (containOne(privileges, parent.children)) {
+        return ms;
+      } else {
+        return ms.concat(parent.children.map((i) => i.id));
+      }
+    } else {
+      return [];
+    }
+  } else {
+    let checked = true;
+    if (privileges && privileges.length > 0) {
+      const m = privileges.find((item) => item === id);
+      checked = m != null;
+    } else {
+      checked = false;
+    }
+    if (!checked) {
+      return privileges.concat([id]);
+    } else {
+      return privileges.filter((item) => item !== id);
+    }
+  }
+}
+function buildShownModules(
+  keyword: string,
+  allPrivileges: Privilege[]
+): Privilege[] {
+  if (!keyword || keyword === "") {
+    return allPrivileges;
+  }
+  const w = keyword.toLowerCase();
+  const shownPrivileges = allPrivileges
+    .map((parent) => {
+      const parentCopy = Object.assign({}, parent);
+      if (parentCopy.children) {
+        parentCopy.children = parentCopy.children.filter((child) =>
+          child.name.toLowerCase().includes(w)
+        );
+      }
+      return parentCopy;
+    })
+    .filter(
+      (item) =>
+        (item.children && item.children.length > 0) ||
+        item.name.toLowerCase().includes(w)
+    );
+  return shownPrivileges;
+}
 
 @Options({
   components: {
@@ -47,7 +274,7 @@ export default class RoleComponent extends EditComponent<Role, string> {
   }
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
-    const id = buildId<string>(this.$route, ['roleId']);
+    const id = buildId<string>(this.$route);
     this.load(id);
   }
   createModel(): Role {
@@ -185,128 +412,3 @@ export default class RoleComponent extends EditComponent<Role, string> {
   };
 }
 </script>
-<template>
-  <div class="view-container">
-    <form id="roleForm" name="roleForm" ref="form">
-      <header>
-        <button type="button" class="btn-back" @click="back(event)"></button>
-        <h2>
-          {{ newMode ? resource.button_create : resource.button_edit }}
-          {{ resource.role }}
-        </h2>
-        <button class="btn-group btn-right">
-          <i @click="assign(this.role.roleId)" class="material-icons">group</i>
-        </button>
-      </header>
-      <div>
-        <section class="row">
-          <label class="col s12 m6">
-            {{ resource.role_id }}
-            <input
-              type="text"
-              id="roleId"
-              name="roleId"
-              v-model="role.roleId"
-              @change="updateState"
-              maxlength="40"
-              :required="true"
-              :placeholder="resource.user_id"
-            />
-          </label>
-          <label class="col s12 m6">
-            {{ resource.role_name }}
-            <input
-              type="text"
-              id="roleName"
-              name="roleName"
-              v-model="role.roleName"
-              maxlength="50"
-              :required="true"
-              :placeholder="resource.role_name"
-            />
-          </label>
-          <label className="col s12 m6">
-            {{ resource.remark }}
-            <input
-              type="text"
-              id="remark"
-              name="remark"
-              @change="updateState"
-              maxLength="255"
-              v-model="role.remark"
-              :placeholder="resource.remark"
-            />
-          </label>
-          <label className="col s12 m6 radio-section">
-            {{ resource.status }}
-            <div class="radio-group">
-              <label>
-                <input
-                  type="radio"
-                  id="active"
-                  name="status"
-                  value="A"
-                  v-model="role.status"
-                  @change="updateState"
-                  :checked="role.status === 'A'"
-                />
-                {{ resource.yes }}
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  id="inactive"
-                  name="status"
-                  value="I"
-                  @change="updateState"
-                  v-model="role.status"
-                  :checked="role.status === 'I'"
-                />
-                {{ resource.no }}
-              </label>
-            </div>
-          </label>
-        </section>
-        <h4>
-          <label>
-            <input
-              type="checkbox"
-              value="all"
-              :disabled="keyword !== ''"
-              data-type="all"
-              :checked="checkedAll"
-              @change="handleCheckAll"
-            />
-            {{ resource.all_privileges }}
-          </label>
-          <label className="col s12 search-input">
-            <i className="btn-search" />
-            <input
-              type="text"
-              id="keyword"
-              name="keyword"
-              maxLength="40"
-              :placeholder="resource.role_filter_modules"
-              v-model="keyword"
-              @change="onChange"
-            />
-          </label>
-        </h4>
-        <section className="row hr-height-1">
-          <privileges-form
-            :roles="role"
-            :modules="shownPrivileges"
-            parentId=""
-            :disableds="keyword !== ''"
-            :allPrivilege="allPrivilege"
-          />
-        </section>
-      </div>
-      <footer>
-        <button type="submit" id="btnSave" name="btnSave" @click="save">
-          {{ resource.save }}
-        </button>
-      </footer>
-    </form>
-  </div>
-</template>

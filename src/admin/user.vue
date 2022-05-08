@@ -138,15 +138,11 @@ export default class UserComponent extends EditComponent<User, string> {
 
   created() {
     this.onCreated(getUserService(), inputEdit());
-    this.patchable = false;
   }
 
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
-    const id = buildId<string>(this.$route, ['userId']);
-    this.init(id);
-  }
-  init(id: string | null) {
+    const id = buildId<string>(this.$route);
     const masterDataService = getMasterData();
     Promise.all([
       masterDataService.getTitles(),

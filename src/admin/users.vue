@@ -230,7 +230,7 @@
   </div>
 </template>
 <script lang="ts">
-import { initForm, inputSearch, registerEvents } from "uione";
+import { initForm, inputSearch, registerEvents, storage } from "uione";
 import { Options } from "vue-class-component";
 import { buildFromUrl, navigate, SearchComponent } from "vuex-one";
 import PaginateVue from "../core/PaginateVue.vue";
@@ -258,12 +258,8 @@ export default class UsersComponent extends SearchComponent<User, UserFilter> {
   }
   mounted() {
     this.form = initForm(this.$refs.form as any, registerEvents);
-    const s = this.mergeFilter(buildFromUrl(), ["status"]);
-    this.init(s, true);
-  }
-
-  init(s: UserFilter, auto: boolean) {
-    this.load(s, auto);
+    const filter = this.mergeFilter(buildFromUrl(), ["status"]);
+    this.load(filter, storage.autoSearch);
   }
 
   edit(id: string) {
