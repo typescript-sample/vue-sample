@@ -10,25 +10,25 @@
     </li>
     <li
       is="vue:item-link"
-      v-for="(module, index) in pinnedModules"
-      :features="features"
+      v-for="(item, index) in pinnedItems"
+      :items="items"
       :key="`${index}-'pinned'`"
       :index="index"
-      v-bind:pinnedModules="pinnedModules"
+      v-bind:pinnedItems="pinnedItems"
       @setPinnedModules="changePinnedModules"
-      :module="module"
-      :isPinnedModules="true"
+      :item="item"
+      :isPinned="true"
     ></li>
     <li
       is="vue:item-link"
-      v-for="(module, index) in features"
-      :features="features"
+      v-for="(item, index) in items"
+      :items="items"
       :key="`${index}-'unpinned'`"
       :index="index"
-      v-bind:pinnedModules="pinnedModules"
+      v-bind:pinnedItems="pinnedItems"
       @setPinnedModules="changePinnedModules"
-      :module="module"
-      :isPinnedModules="false"
+      :item="item"
+      :isPinned="false"
     ></li>
   </ul>
 </template>
@@ -40,7 +40,7 @@ import ItemLink, {Item} from "./ItemLink.vue";
 @Options({
   name: "SideBar",
   props: {
-    features: { required: false },
+    items: { required: false },
     isToggleSidebar: { required: true, default: true },
     isToggleMenu: { required: true },
   },
@@ -49,13 +49,13 @@ import ItemLink, {Item} from "./ItemLink.vue";
   },
 })
 export default class extends Vue {
-  private features!: Item[];
+  private items!: Item[];
   private isToggleSidebar = false;
   private isToggleMenu = true;
-  private pinnedModules: Item[] = [];
+  private pinnedItems: Item[] = [];
 
-  changePinnedModules(pinnedModules: Item[]) {
-    this.pinnedModules = pinnedModules;
+  changePinnedModules(pinnedItems: Item[]) {
+    this.pinnedItems = pinnedItems;
   }
 
   toggleSidebar() {

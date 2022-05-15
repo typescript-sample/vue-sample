@@ -1,40 +1,37 @@
 <template>
   <li
-    v-if="module && module.children && Array.isArray(module.children)"
-    :class="'open' + this.activeWithPath(link, true, features)"
+    v-if="item && item.children && Array.isArray(item.children)"
+    :class="'open' + this.activeWithPath(link, true, items)"
   >
     <a class="menu-item" @click="toggleMenuItem">
       <button
         type="button"
-        :class="`btn-pin ${isPinnedModules ? 'pinned' : ''}`"
-        @click="pinModulesHandler(index, module.sequence)"
+        :class="`btn-pin ${isPinned ? 'pinned' : ''}`"
+        @click="pinModulesHandler(index, item.sequence)"
       />
       <i class="material-icons">{{ className }}</i>
-      <!-- <i :class="`mdi mdi-${className}`"></i> -->
-
       <span>{{ name }}</span>
       <i class="entity-icon down" />
     </a>
     <ul
       class="sub-list"
-      v-if="module && module.children && Array.isArray(module.children)"
+      v-if="item && item.children && Array.isArray(item.children)"
     >
       <li
         is="vue:item-link"
-        v-for="(module, index) in featuresChild"
-        :features="features"
+        v-for="(item, index) in featuresChild"
+        :items="items"
         :key="index"
         :index="index"
-        v-bind:pinnedModules="[]"
-        :module="module"
-        :isPinnedModules="false"
+        v-bind:pinnedItems="[]"
+        :item="item"
+        :isPinned="false"
       ></li>
     </ul>
   </li>
-  <li v-else :class="activeWithPath(module.path, false)">
-    <router-link :to="module.path" class="menu-item">
+  <li v-else :class="activeWithPath(item.path, false)">
+    <router-link :to="item.path" class="menu-item">
       <i class="material-icons">{{ className }}</i>
-      <!-- <i :class="`mdi mdi-${className}`"></i> -->
       <span>{{ name }}</span>
     </router-link>
   </li>
@@ -60,44 +57,44 @@ export interface Item {
 @Options({
   name: "item-link",
   props: {
-    module: { required: true },
-    features: { required: true },
+    item: { required: true },
+    items: { required: true },
     index: { required: true },
-    pinnedModules: { required: false },
-    isPinnedModules: { required: false, default: false },
+    pinnedItems: { required: false },
+    isPinned: { required: false, default: false },
   },
   components: {
     "item-link": ItemLink,
   },
 })
 export default class extends Vue {
-  private module?: Item;
-  private features: any;
-  private index: any;
-  private pinnedModules: any;
-  private isPinnedModules!: boolean;
+  private item?: Item;
+  private items!: Item[];
+  private index!: number;
+  private pinnedItems: any;
+  private isPinned!: boolean;
 
   private resource: StringMap = resources["en"];
-  private className: string = "";
+  private className?: string;
   private link?: string;
   private name!: string;
   private featuresChild?: Item[];
 
-  get getPinnedModules() {
-    return this.pinnedModules;
+  get getPinnedItems() {
+    return this.pinnedItems;
   }
 
   created() {
-    const module = this.module;
-    if (module) {
-      const n = module.resource ? this.resource[module.resource] : undefined;
-      this.name = n ? n : module.name;
-      if (module && module.children && Array.isArray(module.children)) {
-        this.className = !module.icon || module.icon === "" ? "settings" : module.icon;
-        this.link = module.path;
-        this.featuresChild = module.children;
+    const item = this.item;
+    if (item) {
+      const n = item.resource ? this.resource[item.resource] : undefined;
+      this.name = n ? n : item.name;
+      if (item && item.children && Array.isArray(item.children)) {
+        this.className = !item.icon || item.icon === "" ? "settings" : item.icon;
+        this.link = item.path;
+        this.featuresChild = item.children;
       } else {
-        this.className = !module.icon || module.icon === "" ? "settings" : module.icon;
+        this.className = !item.icon || item.icon === "" ? "settings" : item.icon;
       }
     }
   }
@@ -113,35 +110,35 @@ export default class extends Vue {
       }
     }
   }
-  activeWithPath = (path: string, isParent: boolean, features?: any[]) => {
+  activeWithPath = (path: string, isParent: boolean, items?: Item[]) => {
     const pathName = window.location.pathname;
-    if (isParent && features && Array.isArray(features)) {
-      const hasChildLink = features.some((item) =>
-        pathName.startsWith(item["link"])
+    if (isParent && items && Array.isArray(items)) {
+      const hasChildLink = items.some((item) =>
+        item.path && pathName.startsWith(item.path)
       );
       return path && pathName.startsWith(path) && hasChildLink ? "active" : "";
     }
     return path && pathName.startsWith(path) ? "active" : "";
   };
 
-  pinModulesHandler(index: any, moduleSequence: any) {
-    const pinnedModulesTemp = Object.assign([], this.getPinnedModules);
+  pinModulesHandler(index: number, sequence?: number) {
+    const pinnedModulesTemp = Object.assign([], this.getPinnedItems);
     if (
-      this.features.find(
-        (moduleItem: any) =>
-          moduleItem && moduleItem["sequence"] === moduleSequence
+      this.items.find(
+        (moduleItem: Item) =>
+          moduleItem && moduleItem.sequence === sequence
       )
     ) {
-      const removedModule = this.features.splice(index, 1);
+      const removedModule = this.items.splice(index, 1);
       pinnedModulesTemp.push(removedModule[0]);
-      this.features.sort(
+      this.items.sort(
         (moduleA: any, moduleB: any) => moduleA.sequence - moduleB.sequence
       );
     } else {
       if (pinnedModulesTemp.length > 0) {
         const removedModule = pinnedModulesTemp.splice(index, 1);
-        this.features.push(removedModule[0]);
-        this.features.sort(
+        this.items.push(removedModule[0]);
+        this.items.sort(
           (moduleA: any, moduleB: any) => moduleA.sequence - moduleB.sequence
         );
       }

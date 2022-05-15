@@ -16,7 +16,7 @@
     <div class="menu sidebar">
       <nav class="expanded-all">
         <side-bar
-          v-bind:features="features"
+          v-bind:items="items"
           @toggle-sidebar="setToggleSidebar"
           @toggle-menu="setToggleMenu"
           :isToggleSidebar="isToggleSidebar"
@@ -439,7 +439,7 @@ export default class DefaultWapper extends Vue {
     this.keyword = "";
   };
 
-  get features() {
+  get items() {
     return this.privileges;
   }
 
