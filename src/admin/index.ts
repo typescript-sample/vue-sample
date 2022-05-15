@@ -1,6 +1,6 @@
 import { authenticated } from 'uione';
 import { RouteRecordRaw } from 'vue-router';
-import DefaultWapper from '../core/DefaultWapper.vue';
+import Layout from '../core/Layout.vue';
 import RoleComponent from './role.vue';
 import UsersComponent from './users.vue';
 import RolesComponent from './roles.vue';
@@ -8,7 +8,7 @@ import UserComponent from './user.vue';
 import RoleAssignmentForm from './role-assignment-form.vue'
 const adminRouter: RouteRecordRaw = {
   path: '/admin',
-  component: DefaultWapper,
+  component: Layout,
   name: 'admin',
   meta: {
     title: '',

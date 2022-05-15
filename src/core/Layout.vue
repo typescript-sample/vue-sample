@@ -246,13 +246,13 @@ import PageSizeSelect from "./PageSizeSelect.vue";
 import SideBar from "./SideBar/index.vue";
 
 @Options({
-  name: "DefaultWapper",
+  name: "Layout",
   components: {
     SideBar,
     PageSizeSelect,
   },
 })
-export default class DefaultWapper extends Vue {
+export default class Layout extends Vue {
   pageSize = 12;
   pageSizes = [12, 24, 60, 100, 120, 180, 300, 600];
   isToggleSidebar = false;

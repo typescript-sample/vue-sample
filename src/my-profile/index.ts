@@ -1,11 +1,11 @@
 import { authenticated } from "uione";
 import { RouteRecordRaw } from "vue-router";
-import DefaultWapper from '../core/DefaultWapper.vue'
+import Layout from '../core/Layout.vue'
 import MyProfileComponent from '../my-profile/my-profile-form.vue'
 import MySettingsComponent from '../my-profile/my-settings-form.vue'
 const myProfileRouter: RouteRecordRaw = {
   path: '/',
-  component: DefaultWapper,
+  component: Layout,
   name: 'my-profile',
   meta: {
     title: '',

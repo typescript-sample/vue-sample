@@ -1,11 +1,11 @@
 import { authenticated } from "uione";
 import { RouteRecordRaw } from "vue-router";
-import DefaultWrapper from '../core/DefaultWapper.vue';
+import Layout from '../core/Layout.vue';
 import UsersPage from '../profile/users-page.vue';
 import UserPage from '../profile/user-page.vue';
 const profileRouter: RouteRecordRaw = {
   path: '/profile',
-  component: DefaultWrapper,
+  component: Layout,
   name: 'profile',
   meta: {
     title: '',
