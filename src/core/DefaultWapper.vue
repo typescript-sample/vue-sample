@@ -270,7 +270,7 @@ export default class DefaultWapper extends Vue {
   username?: string = "";
   userType?: string = "";
   keyword = "";
-  classProfile = "";
+  showProfile = "";
   forms: Privilege[] = [];
   privileges: Privilege[] = [];
   created() {
@@ -405,11 +405,11 @@ export default class DefaultWapper extends Vue {
   search = () => {};
 
   toggleProfile() {
-    this.classProfile = this.classProfile === "show" ? "" : "show";
+    this.showProfile = this.showProfile === "show" ? "" : "show";
   }
 
   get getClassProfile() {
-    return this.classProfile;
+    return this.showProfile;
   }
 
   async signout(event: any) {

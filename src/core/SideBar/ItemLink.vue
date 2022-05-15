@@ -44,6 +44,19 @@
 import { Options, Vue } from "vue-class-component";
 import { resources } from "../resources";
 import ItemLink from "./ItemLink.vue";
+
+export interface StringMap {
+  [key: string]: string;
+}
+export interface Item {
+  id?: string;
+  name: string;
+  resource?: string;
+  path?: string;
+  icon?: string;
+  sequence?: number;
+  children?: Item[];
+}
 @Options({
   name: "item-link",
   props: {
@@ -58,17 +71,17 @@ import ItemLink from "./ItemLink.vue";
   },
 })
 export default class extends Vue {
-  private module: any;
+  private module?: Item;
   private features: any;
   private index: any;
   private pinnedModules: any;
   private isPinnedModules!: boolean;
 
-  private resource: any = resources["en"];
-  private className: any = "";
-  private link: any;
-  private name: any;
-  private featuresChild: any;
+  private resource: StringMap = resources["en"];
+  private className: string = "";
+  private link?: string;
+  private name!: string;
+  private featuresChild?: Item[];
 
   get getPinnedModules() {
     return this.pinnedModules;
@@ -77,19 +90,14 @@ export default class extends Vue {
   created() {
     const module = this.module;
     if (module) {
-      this.name =
-        !this.resource[module.resourceKey] ||
-        this.resource[module.resourceKey] === ""
-          ? module.name
-          : this.resource[module.resourceKey];
+      const n = module.resource ? this.resource[module.resource] : undefined;
+      this.name = n ? n : module.name;
       if (module && module.children && Array.isArray(module.children)) {
-        this.className =
-          !module.icon || module.icon === "" ? "settings" : module.icon;
+        this.className = !module.icon || module.icon === "" ? "settings" : module.icon;
         this.link = module.path;
         this.featuresChild = module.children;
       } else {
-        this.className =
-          !module.icon || module.icon === "" ? "settings" : module.icon;
+        this.className = !module.icon || module.icon === "" ? "settings" : module.icon;
       }
     }
   }

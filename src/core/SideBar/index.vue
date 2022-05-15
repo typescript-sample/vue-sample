@@ -34,8 +34,8 @@
 </template>
 
 <script lang="ts">
-import { Options, prop, Vue } from "vue-class-component";
-import ItemLink from "./ItemLink.vue";
+import { Options, Vue } from "vue-class-component";
+import ItemLink, {Item} from "./ItemLink.vue";
 
 @Options({
   name: "SideBar",
@@ -49,12 +49,12 @@ import ItemLink from "./ItemLink.vue";
   },
 })
 export default class extends Vue {
-  private features!: any[];
+  private features!: Item[];
   private isToggleSidebar = false;
   private isToggleMenu = true;
-  private pinnedModules: any[] = [];
+  private pinnedModules: Item[] = [];
 
-  changePinnedModules(pinnedModules: any[]) {
+  changePinnedModules(pinnedModules: Item[]) {
     this.pinnedModules = pinnedModules;
   }
 
