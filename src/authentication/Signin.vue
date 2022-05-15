@@ -73,10 +73,11 @@ import {
   handleCookie,
   initFromCookie,
   Status,
+  store,
 } from "authen-client";
 import { Base64 } from "js-base64";
 import { element } from "ui-plus";
-import { storage } from "uione";
+import { setPrivileges, setUser, storage } from "uione";
 import { initForm, registerEvents } from "uione";
 import { Options, Vue } from "vue-class-component";
 import { messageByHttpStatus, navigate, readOnly } from "vuex-one";
@@ -217,6 +218,7 @@ export default class SigninComponent extends Vue {
 
   signin(event: Event) {
     event.preventDefault();
+    debugger
     this.txtUserName = element(this.form, "username");
     this.txtPassword = element(this.form, "password");
     this.chkRemember = element(this.form, "remember");
@@ -236,6 +238,7 @@ export default class SigninComponent extends Vue {
     }
     const remember = this.chkRemember.checked;
     const authenticator = useAuthen();
+    debugger
     authenticator
       .authenticate(this.user)
       .then((result: AuthResult) => {
@@ -259,7 +262,9 @@ export default class SigninComponent extends Vue {
         */
           // tslint:disable-next-line:triple-equals
           if (s == status.success) {
-            storage.setUser(result.user);
+            // storage.setUser(result.user);
+            debugger
+            store(result.user, setUser, setPrivileges);
             this.navigateToHome();
           } else {
             const message3 = r.value("msg_account_reactivated");
@@ -272,6 +277,7 @@ export default class SigninComponent extends Vue {
           }
         } else {
           storage.setUser(null);
+          store(undefined, setUser, setPrivileges);
           const ms = getMessage(s, r.resource(), map);
           this.showDanger(ms);
         }

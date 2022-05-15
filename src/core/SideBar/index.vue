@@ -84,13 +84,13 @@ export default class extends Vue {
       parent.classList.add("expanded-all");
       parent.classList.remove("collapsed-all");
       const navbar = Array.from(
-        parent.querySelectorAll(".sidebar>nav>ul>li>ul.list-child")
+        parent.querySelectorAll(".sidebar>nav>ul>li>ul.sub-list")
       );
       if (navbar.length > 0) {
         const icons = Array.from(parent.querySelectorAll("i.up"));
         let i = 0;
         for (i = 0; i < navbar.length; i++) {
-          navbar[i].className = "list-child expanded";
+          navbar[i].className = "sub-list expanded";
         }
         for (i = 0; i < icons.length; i++) {
           icons[i].className = "entity-icon down";
@@ -112,7 +112,7 @@ export default class extends Vue {
         const icons = Array.from(parent.querySelectorAll("i.down"));
         let i = 0;
         for (i = 0; i < navbar.length; i++) {
-          navbar[i].className = "list-child";
+          navbar[i].className = "sub-list";
         }
         for (i = 0; i < icons.length; i++) {
           icons[i].className = "entity-icon up";

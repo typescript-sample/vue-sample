@@ -70,9 +70,9 @@
                 type="button"
                 :hidden="!keyword || keyword.length === 0"
                 class="btn-remove-text"
-                @click="clearKeyworkOnClick"
+                @click="clearQ"
               ></button>
-              <button type="submit" class="btn-search" @click="searchOnClick" />
+              <button type="submit" class="btn-search" @click="search" />
             </label>
             <section class="quick-nav">
               <a><i class="material-icons" @click="viewProfile">home</i></a>
@@ -239,9 +239,7 @@
 </template>
 
 <script lang="ts">
-import axios from "axios";
-import { HttpRequest } from "axios-core";
-import { handleError, options, storage, StringMap } from "uione";
+import { handleError, Privilege, storage, StringMap, useResource, UserAccount } from "uione";
 import { Options, Vue } from "vue-class-component";
 import { navigate } from "vuex-one";
 import PageSizeSelect from "./PageSizeSelect.vue";
@@ -255,51 +253,43 @@ import SideBar from "./SideBar/index.vue";
   },
 })
 export default class DefaultWapper extends Vue {
-  private isToggleSidebar = false;
-  private isToggleMenu = false;
-  private isToggleSearch = false;
+  pageSize = 12;
+  pageSizes = [12, 24, 60, 100, 120, 180, 300, 600];
+  isToggleSidebar = false;
+  isToggleMenu = false;
+  isToggleSearch = false;
   isMenu = false;
-  private keyword = "";
-  private classProfile = "";
-  private forms = {};
-  private privileges = [];
-  protected pageSize = 20;
-  protected pageSizes = [10, 20, 40, 60, 100, 200, 400, 10000];
-  DarkMode = false;
+  darkMode = false;
   classicMenu = false;
-  private user: any = {};
-  protected username: any = "";
-  protected userType: any = "";
   sysBody: HTMLElement | null | undefined;
   resource!: StringMap;
-  // isDarkMode :boolean;
-  // isTopMenu :boolean;
-  // isClassicMenu :boolean;
-  // isDarkMode = false;
-  // isTopMenu = false;
-  // isClassicMenu = false;
-  isDarkMode = this.checkIsDarkMode();
-  isTopMenu = this.checkIsTopMenu();
-  isClassicMenu = this.checkIsClassicMenu();
-  mounted() {
+  isDarkMode?: boolean;
+  isTopMenu?: boolean;
+  isClassicMenu?: boolean;
+  user?: UserAccount|null;
+  username?: string = "";
+  userType?: string = "";
+  keyword = "";
+  classProfile = "";
+  forms: Privilege[] = [];
+  privileges: Privilege[] = [];
+  created() {
+    this.user = storage.user();
     const username = storage.username();
-    const storageRole = storage.getUserType();
-    // this.resource = storage.getResource();
-    // this.resourceService = storage.resource();
-    if (username || storageRole) {
+    const userType = storage.getUserType();
+    if (username || userType) {
       this.username = username;
-      this.userType = storageRole;
+      this.userType = userType;
     }
-  }
-
-  onCreated() {
-    // this.ui = storage.ui() as any;
-    // this.getLocale = getLocale;
-    // this.showError = toast;
-    // this.loading = storage.loading();
-    // this.resourceService = storage.resource();
-    this.resource = storage.resource().resource();
-    this.$watch("DarkMode", () => {
+    if (!this.sysBody) {
+      this.sysBody = document.getElementById("sysBody");
+    }
+    this.isDarkMode = this.checkIsDarkMode();
+    this.isTopMenu = this.checkIsTopMenu();
+    this.isClassicMenu = this.checkIsClassicMenu();
+    this.privileges = storage.privileges();
+    this.resource = useResource();
+    this.$watch("darkMode", () => {
       this.isDarkMode = this.checkIsDarkMode();
     });
     this.$watch("isMenu", () => {
@@ -309,9 +299,8 @@ export default class DefaultWapper extends Vue {
     this.$watch("classicMenu", () => {
       this.isClassicMenu = this.checkIsClassicMenu();
     });
-  }
-
-  created() {
+    this.$watch("darkMode", () => {});
+    /*
     const config: any = storage.config();
     const httpRequest = new HttpRequest(axios, options);
     httpRequest
@@ -323,10 +312,8 @@ export default class DefaultWapper extends Vue {
     // this.forms = JSON.parse(sessionStorage.getItem("authService") as any);
     // this.privileges =
     //   this.forms && this.forms["privileges"] ? this.forms["privileges"] : [];
-    this.onCreated();
-    this.$watch("DarkMode", () => {});
+    */
   }
-
   viewMyProfile() {
     navigate(this.$router, "/my-profile");
   }
@@ -337,9 +324,6 @@ export default class DefaultWapper extends Vue {
     navigate(this.$router, "/profile");
   }
   changeMenu() {
-    if (!this.sysBody) {
-      this.sysBody = document.getElementById("sysBody");
-    }
     if (this.sysBody) {
       if (this.sysBody.classList.contains("top-menu")) {
         this.sysBody.classList.remove("top-menu");
@@ -350,10 +334,18 @@ export default class DefaultWapper extends Vue {
       }
     }
   }
-  checkIsClassicMenu(): boolean {
-    if (!this.sysBody) {
-      this.sysBody = document.getElementById("sysBody");
+  changeClassicMenu() {
+    if (this.sysBody) {
+      if (this.sysBody.classList.contains("classic")) {
+        this.sysBody.classList.remove("classic");
+        this.classicMenu = true;
+      } else {
+        this.sysBody.classList.add("classic");
+        this.classicMenu = false;
+      }
     }
+  }
+  checkIsClassicMenu(): boolean {
     if (this.sysBody) {
       if (this.sysBody.classList.contains("classic")) {
         return true;
@@ -361,10 +353,42 @@ export default class DefaultWapper extends Vue {
     }
     return false;
   }
+  checkIsTopMenu(): boolean {
+    if (this.sysBody) {
+      if (this.sysBody.classList.contains("top-menu")) {
+        return true;
+      }
+    }
+    return false;
+  }
+  changeMode(): void {
+    if (this.sysBody) {
+      const parent = this.sysBody.parentElement;
+      if (parent) {
+        if (parent.classList.contains("dark")) {
+          parent.classList.remove("dark");
+          this.darkMode = false;
+        } else {
+          parent.classList.add("dark");
+          this.darkMode = true;
+        }
+      }
+    }
+  }
+  checkIsDarkMode(): boolean {
+    if (this.sysBody) {
+      const parent = this.sysBody.parentElement;
+      if (parent) {
+        if (parent.classList.contains("dark")) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
   get toggleSidebar() {
     return this.isToggleSidebar;
   }
-
   setToggleSidebar(dataToggleSidebar: boolean) {
     this.isToggleSidebar = !dataToggleSidebar;
   }
@@ -372,14 +396,13 @@ export default class DefaultWapper extends Vue {
   get toggleMenu() {
     return this.isToggleMenu;
   }
-
   setToggleMenu(dataToggleMenu: boolean) {
     this.isToggleMenu = !dataToggleMenu;
   }
 
   pageSizeChanged = (event: any) => {};
 
-  searchOnClick = () => {};
+  search = () => {};
 
   toggleProfile() {
     this.classProfile = this.classProfile === "show" ? "" : "show";
@@ -412,21 +435,7 @@ export default class DefaultWapper extends Vue {
       handleError(err);
     }
   }
-  changeClassicMenu() {
-    if (!this.sysBody) {
-      this.sysBody = document.getElementById("sysBody");
-    }
-    if (this.sysBody) {
-      if (this.sysBody.classList.contains("classic")) {
-        this.sysBody.classList.remove("classic");
-        this.classicMenu = true;
-      } else {
-        this.sysBody.classList.add("classic");
-        this.classicMenu = false;
-      }
-    }
-  }
-  clearKeyworkOnClick = () => {
+  clearQ = () => {
     this.keyword = "";
   };
 
@@ -447,49 +456,6 @@ export default class DefaultWapper extends Vue {
       topClassList.push("search");
     }
     return topClassList.join(" ");
-  }
-
-  checkIsTopMenu(): boolean {
-    if (!this.sysBody) {
-      this.sysBody = document.getElementById("sysBody");
-    }
-    if (this.sysBody) {
-      if (this.sysBody.classList.contains("top-menu")) {
-        return true;
-      }
-    }
-    return false;
-  }
-  changeMode(): void {
-    if (!this.sysBody) {
-      this.sysBody = document.getElementById("sysBody");
-    }
-    if (this.sysBody) {
-      const parent = this.sysBody.parentElement;
-      if (parent) {
-        if (parent.classList.contains("dark")) {
-          parent.classList.remove("dark");
-          this.DarkMode = false;
-        } else {
-          parent.classList.add("dark");
-          this.DarkMode = true;
-        }
-      }
-    }
-  }
-  checkIsDarkMode(): boolean {
-    if (!this.sysBody) {
-      this.sysBody = document.getElementById("sysBody");
-    }
-    if (this.sysBody) {
-      const parent = this.sysBody.parentElement;
-      if (parent) {
-        if (parent.classList.contains("dark")) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 }
 </script>

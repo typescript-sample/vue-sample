@@ -16,7 +16,7 @@
       <i class="entity-icon down" />
     </a>
     <ul
-      class="list-child"
+      class="sub-list"
       v-if="module && module.children && Array.isArray(module.children)"
     >
       <li
@@ -142,7 +142,7 @@ export default class extends Vue {
   }
   isCollapsedAll(parent: HTMLElement): boolean {
     const navbar = Array.from(
-      parent.querySelectorAll(".sidebar>nav>ul>li>ul.list-child")
+      parent.querySelectorAll(".sidebar>nav>ul>li>ul.sub-list")
     );
     if (navbar.length > 0) {
       let i = 0;
@@ -157,7 +157,7 @@ export default class extends Vue {
   }
   isExpandedAll(parent: HTMLElement): boolean {
     const navbar = Array.from(
-      parent.querySelectorAll(".sidebar>nav>ul>li>ul.list-child")
+      parent.querySelectorAll(".sidebar>nav>ul>li>ul.sub-list")
     );
     if (navbar.length > 0) {
       let i = 0;
