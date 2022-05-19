@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { HttpRequest } from 'axios-core';
 import { options, storage } from 'uione';
-import { Client } from 'web-clients';
+import { Client, QueryClient } from 'web-clients';
 import { MyProfileService, User, UserFilter, userModel, UserService, UserSettings } from './user';
+import { QueryService } from 'onecore';
 
 export * from './user';
 
@@ -66,9 +67,15 @@ export class MyProfileClient implements MyProfileService {
 }
 export interface Config {
   myprofile_url: string;
+  interest_url: string;
+  looking_for_url: string;
+  skill_url: string;
 }
 class ApplicationContext {
   userService?: MyProfileService;
+  interestService?: QueryService<string>;
+  lookingForService?: QueryService<string>;
+  skillService?: QueryService<string>;
   getConfig(): Config {
     return storage.config();
   }
@@ -80,9 +87,48 @@ class ApplicationContext {
     return this.userService;
   }
 
+  getInterestService(): QueryService<string> {
+    
+    if (!this.interestService) {
+      const c = this.getConfig();
+      this.interestService = new QueryClient<string>(httpRequest, c.interest_url);
+    }
+    return this.interestService;
+  }
+
+  getLookingForService(): QueryService<string> {
+    
+    if (!this.lookingForService) {
+      const c = this.getConfig();
+      this.lookingForService = new QueryClient<string>(httpRequest, c.looking_for_url);
+    }
+    return this.lookingForService;
+  }
+
+  getSkillService(): QueryService<string> {
+    
+    if (!this.skillService) {
+      const c = this.getConfig();
+      this.skillService = new QueryClient<string>(httpRequest, c.skill_url);
+    }
+    return this.skillService;
+  }
+
 }
 
 export const context = new ApplicationContext();
 export function useMyProfileService(): MyProfileService {
   return context.getMyProfileService();
+}
+
+export function useInterestService(): QueryService<string> {
+  return context.getInterestService();
+}
+
+export function useLookingForService(): QueryService<string> {
+  return context.getLookingForService();
+}
+
+export function useSkillService(): QueryService<string> {
+  return context.getSkillService();
 }

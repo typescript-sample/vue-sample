@@ -114,7 +114,7 @@
                   ></button>
                 </div>
               </template>
-              <label class="checkbox-container">
+              <!-- <label class="checkbox-container"> 
                 <input
                   type="checkbox"
                   id="hireable"
@@ -122,7 +122,35 @@
                   v-model="edit.hireable"
                 />
                 {{ resource.user_profile_hireable_skill }}
+              </label> -->
+
+              <label class="form-group inline-input">
+                <input
+                  list='listSkill'
+                  type="text"
+                  name="skill"
+                  :placeholder="resource.placeholder_user_profile_skill"
+                  v-model="edit.skill"
+                  maxLength="100"
+                  @input="onChangeSkill()"
+                  autoComplete="on"
+                />
+                 
+                <datalist id='listSkill' v-if="listSkill" >
+          
+                  <option v-for="(skill, index) of listSkill" :key="index" :value="skill" />;
+                
+                </datalist>
+                        
+                <button
+                  type="button"
+                  id="btnAddInterest"
+                  name="btnAddInterest"
+                  class="btn-add"
+                  @click="addInterest($event)"
+                ></button>
               </label>
+
               <hr />
               <p class="description">
                 <i class="star highlight"></i
@@ -188,12 +216,23 @@
 
               <label class="form-group inline-input">
                 <input
+                  list='listLookingFor'
+                  type="text"
                   name="lookingFor"
                   class="form-control"
                   v-model="edit.lookingFor"
                   :placeholder="resource.placeholder_user_profile_looking_for"
+                  @input="onChangeLookingFor()"
                   maxLength="100"
+                  autoComplete="on"
                 />
+
+                <datalist id='listLookingFor' v-if="listLookingFor" >
+            
+                    <option v-for="(lookingFor, index) of listLookingFor" :key="index" :value="lookingFor" />;
+                  
+                  </datalist>
+
                 <button
                   type="button"
                   id="btnAddLookingFor"
@@ -446,12 +485,22 @@
 
               <label class="col s12 inline-input">
                 <input
+                  list='listInterest'
                   type="text"
                   name="interest"
                   :placeholder="resource.placeholder_user_profile_interest"
                   v-model="edit.interest"
                   maxLength="100"
+                  @input="onChangeInterest()"
+                  autoComplete="on"
                 />
+                 
+                  <datalist id='listInterest' v-if="listInterest" >
+            
+                    <option v-for="(interest, index) of listInterest" :key="index" :value="interest" />;
+                  
+                  </datalist>
+                        
                 <button
                   type="button"
                   id="btnAddInterest"
@@ -644,8 +693,9 @@
 import { getResource, storage, StringMap, UserAccount } from "uione";
 import { Options, Vue } from "vue-class-component";
 import GeneralIfoComponent from "./general-info.vue";
-import { useMyProfileService, User } from "./my-profile/index";
+import { useMyProfileService, User, useInterestService, useLookingForService, useSkillService} from "./my-profile/index";
 import { Achievement, MyProfileService } from "./my-profile/user";
+
 interface Edit {
   hireable: boolean;
   lookingFor: string;
@@ -653,6 +703,7 @@ interface Edit {
   highlight: boolean;
   description: string;
   subject: string;
+  skill: string;
 }
 
 @Options({
@@ -668,6 +719,9 @@ export default class MyProfileComponent extends Vue {
   isEditingLookingFor = false;
   isEditingSkill = false;
   isEditingAchievement = false;
+  listInterest: string[] = [];
+  listLookingFor: string[] = [];
+  listSkill: string[] = [];
   bio = "";
   skill = "";
   interest = "";
@@ -684,6 +738,7 @@ export default class MyProfileComponent extends Vue {
     highlight: false,
     description: "",
     subject: "",
+    skill: "",
   };
 
   service!: MyProfileService;
@@ -701,6 +756,71 @@ export default class MyProfileComponent extends Vue {
     }
     this.resource = getResource().resource();
   }
+
+  //-------------------------
+  onChangeInterest()
+  {
+    const newInterest = this.edit.interest;
+
+    if (newInterest) {
+      const interests = useInterestService();
+      interests.query(newInterest)
+      .then(res => {
+        
+        this.listInterest = res;
+        
+      })
+      .catch(err => {
+        console.log(err);
+        
+      })
+    }
+    
+  }
+  //--------------------------------
+
+  onChangeLookingFor()
+  {
+    const newLookingFor = this.edit.lookingFor;
+
+    if (newLookingFor) {
+      const lookingFors = useLookingForService();
+      lookingFors.query(newLookingFor)
+      .then(res => {
+        
+        this.listLookingFor = res;
+        
+      })
+      .catch(err => {
+        console.log(err);
+        
+      })
+    }
+    
+  }
+
+  //-----------------------
+  onChangeSkill()
+  {
+    const newSkill = this.edit.skill;
+
+    if (newSkill) {
+      const skills = useSkillService();
+      skills.query(newSkill)
+      .then(res => {
+        
+        this.listSkill = res;
+        
+      })
+      .catch(err => {
+        console.log(err);
+        
+      })
+    }
+    
+  }
+
+
   toggleSkill(event: any): void {
     event.preventDefault();
     this.isEditingSkill = !this.isEditingSkill;
