@@ -690,11 +690,12 @@
 </template>
 
 <script lang="ts">
-import { getResource, storage, StringMap, UserAccount } from "uione";
+import { getResource, storage, StringMap, UserAccount, handleError } from "uione";
 import { Options, Vue } from "vue-class-component";
 import GeneralIfoComponent from "./general-info.vue";
 import { useMyProfileService, User, useInterestService, useLookingForService, useSkillService} from "./my-profile/index";
 import { Achievement, MyProfileService } from "./my-profile/user";
+import { SuggestionService } from "suggestion-service";
 
 interface Edit {
   hireable: boolean;
@@ -704,6 +705,11 @@ interface Edit {
   description: string;
   subject: string;
   skill: string;
+}
+
+interface Previous{
+  keyword: string;
+  list: string[];
 }
 
 @Options({
@@ -722,6 +728,9 @@ export default class MyProfileComponent extends Vue {
   listInterest: string[] = [];
   listLookingFor: string[] = [];
   listSkill: string[] = [];
+  skillService = useSkillService();
+  interestService = useInterestService();
+  lookingForService = useLookingForService();
   bio = "";
   skill = "";
   interest = "";
@@ -741,8 +750,43 @@ export default class MyProfileComponent extends Vue {
     skill: "",
   };
 
+  previousInterest: Previous = {
+    keyword: "",
+    list: [] as string[]
+  };
+
+  previousLookingFor: Previous = {
+    keyword: "",
+    list: [] as string[]
+  };
+
+  previousSkill: Previous = {
+    keyword: "",
+    list: [] as string[]
+  };
+
+
   service!: MyProfileService;
   modalConfirmIsOpen = false;
+
+  skillSuggestion = new SuggestionService<string>(
+    this.skillService.query,
+    20
+  );
+  skillSuggestionService:SuggestionService<string> = (this.skillSuggestion);
+
+  interestSuggestion = new SuggestionService<string>(
+    this.interestService.query,
+    20
+  );
+  interestSuggestionService:SuggestionService<string> = (this.interestSuggestion);
+
+  lookingForSuggestion = new SuggestionService<string>(
+    this.lookingForService.query,
+    20
+  );
+  lookingForSuggestionService:SuggestionService<string> = (this.lookingForSuggestion);
+
   created() {
     this.service = useMyProfileService();
     const id = storage.getUserId();
@@ -763,17 +807,19 @@ export default class MyProfileComponent extends Vue {
     const newInterest = this.edit.interest;
 
     if (newInterest) {
-      const interests = useInterestService();
-      interests.query(newInterest)
-      .then(res => {
-        
-        this.listInterest = res;
-        
-      })
-      .catch(err => {
-        console.log(err);
-        
-      })
+      if(this.interestSuggestionService)
+      {
+        this.interestSuggestionService
+        .load(newInterest, this.previousInterest)
+          .then((res) => {
+            if (res !== null) {
+              this.previousInterest = res.last;
+              this.listInterest = res.list;
+            }
+          })
+          .catch(handleError);
+
+      }
     }
     
   }
@@ -784,17 +830,18 @@ export default class MyProfileComponent extends Vue {
     const newLookingFor = this.edit.lookingFor;
 
     if (newLookingFor) {
-      const lookingFors = useLookingForService();
-      lookingFors.query(newLookingFor)
-      .then(res => {
-        
-        this.listLookingFor = res;
-        
-      })
-      .catch(err => {
-        console.log(err);
-        
-      })
+      if(this.lookingForSuggestionService) 
+      {
+        this.lookingForSuggestionService
+        .load(newLookingFor, this.previousLookingFor)
+          .then((res) => {
+            if (res !== null) {
+              this.previousLookingFor = res.last;
+              this.listLookingFor = res.list;
+            }
+          })
+          .catch(handleError);
+      }
     }
     
   }
@@ -805,17 +852,18 @@ export default class MyProfileComponent extends Vue {
     const newSkill = this.edit.skill;
 
     if (newSkill) {
-      const skills = useSkillService();
-      skills.query(newSkill)
-      .then(res => {
-        
-        this.listSkill = res;
-        
-      })
-      .catch(err => {
-        console.log(err);
-        
-      })
+      if(this.skillSuggestionService)
+      {
+        this.skillSuggestionService
+        .load(newSkill, this.previousSkill)
+          .then((res) => {
+            if (res !== null) {
+              this.previousSkill = res.last;
+              this.listSkill = res.list;
+            }
+          })
+          .catch(handleError);
+      }
     }
     
   }
