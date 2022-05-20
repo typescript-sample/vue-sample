@@ -43,7 +43,8 @@
             type="checkbox"
             id="remember"
             name="remember"
-            v-model="remember"
+            :checked = "remember"
+            @change="toggleRemember()"
           />
           {{ resource.signin_remember_me }}
         </label>
@@ -77,7 +78,7 @@ import {
 } from "authen-client";
 import { Base64 } from "js-base64";
 import { element } from "ui-plus";
-import { setPrivileges, setUser, storage } from "uione";
+import { setPrivileges, setUser, storage, StringMap } from "uione";
 import { initForm, registerEvents } from "uione";
 import { Options, Vue } from "vue-class-component";
 import { messageByHttpStatus, navigate, readOnly } from "vuex-one";
@@ -108,15 +109,14 @@ export default class SigninComponent extends Vue {
     username: "",
     password: "",
   };
-  txtUserName: any;
-  txtPassword: any;
-  chkRemember: any;
-  remember = false;
+
+  // chkRemember: any;
+  remember: boolean = false;
   message = "";
   alertClass = "";
-  resource: any = storage.resource().resource();
-  running: any;
-  protected form: any;
+  resource: StringMap = storage.resource().resource();
+  running?: boolean;
+  // protected form: any;
   protected alertError(
     msg: string,
     title: string,
@@ -145,11 +145,11 @@ export default class SigninComponent extends Vue {
       }
       if (s === 403) {
         msg = r.value("error_forbidden");
-        readOnly(this.form);
+        // readOnly(this.form);
         this.alertError(msg, title);
       } else if (s === 401) {
         msg = r.value("error_unauthorized");
-        readOnly(this.form);
+        // readOnly(this.form);
         this.alertError(msg, title);
       } else {
         this.alertError(msg, title);
@@ -160,10 +160,12 @@ export default class SigninComponent extends Vue {
   }
   created() {
     this.resource = storage.resource().resource();
+
+    
   }
 
   public mounted() {
-    this.initForm();
+    // this.initForm();
     this.remember = initFromCookie(
       "data",
       this.user,
@@ -172,12 +174,12 @@ export default class SigninComponent extends Vue {
     );
   }
 
-  initForm() {
-    this.form = initForm(this.$refs.form as any, registerEvents);
-    this.txtUserName = element(this.form, "userName");
-    this.txtPassword = element(this.form, "password");
-    this.chkRemember = element(this.form, "remember");
-  }
+  // initForm() {
+    // this.form = initForm(this.$refs.form as any, registerEvents);
+    // this.userLogin.username = element(this.form, "userName");
+    // this.userLogin.password = element(this.form, "password");
+    // this.chkRemember = element(this.form, "remember");
+  // }
 
   protected navigateToHome() {
     navigate(this.$router, "/admin/users");
@@ -216,19 +218,25 @@ export default class SigninComponent extends Vue {
     navigate(this.$router, "signup");
   }
 
+  toggleRemember(){
+    this.remember = !this.remember;
+    console.log(this.remember);
+    
+  }
+
   signin(event: Event) {
     event.preventDefault();
-    debugger
-    this.txtUserName = element(this.form, "username");
-    this.txtPassword = element(this.form, "password");
-    this.chkRemember = element(this.form, "remember");
+    // debugger
+    // this.userLogin.username = element(this.form, "username");
+    // this.userLogin.password = element(this.form, "password");
+    // this.chkRemember = element(this.form, "remember");
     let valid = true;
     const r = storage.resource();
-    if (this.txtUserName.value === "") {
+    if (this.user.username === "") {
       valid = false;
       const message = r.format("error_required", "user_name");
       this.showDanger(message);
-    } else if (this.txtPassword.value === "") {
+    } else if (this.user.password === "") {
       valid = false;
       const message = r.format("error_required", "password");
       this.showDanger(message);
@@ -236,9 +244,9 @@ export default class SigninComponent extends Vue {
     if (valid === false) {
       return;
     }
-    const remember = this.chkRemember.checked;
+    // const remember = this.chkRemember.checked;
     const authenticator = useAuthen();
-    debugger
+    // debugger
     authenticator
       .authenticate(this.user)
       .then((result: AuthResult) => {
@@ -248,7 +256,7 @@ export default class SigninComponent extends Vue {
           handleCookie(
             "data",
             this.user,
-            remember,
+            this.remember,
             this.cookieService,
             60 * 24 * 3,
             Base64
@@ -263,7 +271,7 @@ export default class SigninComponent extends Vue {
           // tslint:disable-next-line:triple-equals
           if (s == status.success) {
             // storage.setUser(result.user);
-            debugger
+            // debugger
             store(result.user, setUser, setPrivileges);
             this.navigateToHome();
           } else {
@@ -296,4 +304,5 @@ export function addDays(date: Date, number: number) {
   newDate.setDate(newDate.getDate() + number);
   return newDate;
 }
+
 </script>
