@@ -5,6 +5,10 @@ import RoleComponent from './role.vue';
 import UsersComponent from './users.vue';
 import RolesComponent from './roles.vue';
 import UserComponent from './user.vue';
+import ArticleComponent from './article.vue';
+import ArtilcesComponent from './articles.vue';
+import ItemComponent from './item.vue';
+import ItemsComponent from './items.vue';
 import RoleAssignmentForm from './role-assignment-form.vue'
 const adminRouter: RouteRecordRaw = {
   path: '/admin',
@@ -29,6 +33,14 @@ const adminRouter: RouteRecordRaw = {
     { path: 'roles/add', component: RoleComponent, name: 'RoleAdd', meta: { title: '', noCache: true } },
     { path: 'roles/assigns/:id', component: RoleAssignmentForm, name: 'RoleAssigns', meta: { title: '', noCache: true } },
     { path: 'roles/:id', component: RoleComponent, name: 'RoleEdit', meta: { title: '', noCache: true } },
+
+    { path: 'articles', component: ArtilcesComponent, name: 'Articles', meta: { title: '', noCache: true } },
+    { path: 'articles/add', component: ArticleComponent, name: 'ArticleAdd', meta: { title: '', noCache: true } },
+    { path: 'articles/:id', component: ArticleComponent, name: 'ArticleView', meta: { title: '', noCache: true } },
+
+    { path: 'items', component: ItemsComponent, name: 'Items', meta: { title: '', noCache: true } },
+    { path: 'items/add', component: ItemComponent, name: 'ItemAdd', meta: { title: '', noCache: true } },
+    { path: 'items/:id', component: ItemComponent, name: 'ItemView', meta: { title: '', noCache: true } },
   ]
 };
 

@@ -3,6 +3,8 @@ import { HttpRequest } from 'axios-core';
 import { options, storage } from 'uione';
 import { Client } from 'web-clients';
 import { ProfileService, UserService, User, UserSettings, UserFilter, userModel } from './user';
+import { AppreciationService, AppreciationClient} from '../appreciation/index';
+import { AppreciationReplyService, AppreciationReplyClient} from '../appreciation-reply';
 
 export * from './user';
 
@@ -47,10 +49,15 @@ export interface Config {
   myprofile_url: string;
   user_url:string;
   profile_url:string;
+  appreciation_url:string;
+  appreciation_reply_url:string;
+  
 }
 class ApplicationContext {
   profileService?: ProfileService;
   userService?:UserService;
+  appreciationService?:AppreciationService;
+  appreciationReplyService?:AppreciationReplyService;
   getConfig(): Config {
     return storage.config();
   }
@@ -68,6 +75,23 @@ class ApplicationContext {
     }
     return this.userService;
   }
+
+  getAppreciationService(): AppreciationService {
+    if (!this.appreciationService) {
+      const c = this.getConfig();
+      this.appreciationService = new AppreciationClient(httpRequest, c.appreciation_url);
+    }
+    return this.appreciationService;
+  }
+  
+  getAppreciationReplyService(): AppreciationReplyService {
+    if (!this.appreciationReplyService) {
+      const c = this.getConfig();
+  
+      this.appreciationReplyService = new AppreciationReplyClient(httpRequest, c.appreciation_reply_url);
+    }
+    return this.appreciationReplyService;
+  }
 }
 
 export const context = new ApplicationContext();
@@ -77,4 +101,13 @@ export function getMyProfileService(): ProfileService {
 
 export function getUserService():UserService{
   return context.getUserService();
+}
+
+export function useAppreciationService(): AppreciationService {
+  return context.getAppreciationService();
+}
+
+
+export function useAppreciationReplyService(): AppreciationReplyService | undefined {
+  return context.getAppreciationReplyService();
 }

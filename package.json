@@ -9,13 +9,18 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@fawmi/vue-google-maps": "^0.9.67",
+    "@syncfusion/ej2-vue-maps": "^20.1.55",
+    "@vue-leaflet/vue-leaflet": "^0.6.1",
     "authen-client": "^0.1.0",
     "axios": "^0.27.2",
     "axios-core": "^0.0.3",
     "cookie-core": "^0.0.4",
     "core-js": "^3.22.5",
     "csvtojson": "^2.0.10",
+    "google-map-ts-vue3": "^0.2.5",
     "js-base64": "^3.7.2",
+    "leaflet": "^1.7.0",
     "locale-service": "^0.0.6",
     "moment": "^2.29.2",
     "onecore": "^0.0.36",
@@ -33,11 +38,13 @@
     "vue-class-component": "^8.0.0-0",
     "vue-final-modal": "^3.4.3",
     "vue-router": "^4.0.14",
+    "vue3-google-map": "^0.13.0",
     "vuex": "^4.0.2",
     "vuex-one": "^0.0.3",
     "web-clients": "^0.1.24"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.7.10",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "@vue/babel-plugin-jsx": "^1.1.1",
